@@ -1,0 +1,34 @@
+{
+  "name": "@makerdao/dai-plugin-governance",
+  "version": "0.0.1",
+  "license": "MIT",
+  "dependencies": {
+    "@makerdao/dai": "^0.9.5",
+    "babel-runtime": "^6.26.0",
+    "bignumber.js": "^7.2.1",
+    "lodash.round": "^4.0.4",
+    "ramda": "^0.25.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-2": "^6.24.1",
+    "copyfiles": "^2.1.0",
+    "ethers": "^3.0.27",
+    "ganache-cli": "^6.1.8",
+    "jest": "^23.5.0",
+    "prettier": "^1.14.2",
+    "web3": "1.0.0-beta.34",
+    "web3-fake-provider": "^0.1.0",
+    "web3-provider-engine": "^14.0.6"
+  },
+  "scripts": {
+    "test": "jest",
+    "testnet": "./gov-testchain/deploy-gov",
+    "ci": "./gov-testchain/deploy-gov --ci jest --coverage",
+    "build": "./scripts/build-backend.sh"
+  },
+  "module": "src/index.js",
+  "main": "src/index.js"
+}
