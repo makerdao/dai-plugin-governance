@@ -1,5 +1,5 @@
 import { PrivateService } from '@makerdao/dai';
-import PROXY_FACTORY from './utils/constants';
+import { PROXY_FACTORY } from './utils/constants';
 
 export default class VoteProxyFactoryService extends PrivateService {
   constructor(name = 'voteProxyFactory') {
