@@ -1,7 +1,6 @@
 import VoteProxy from './VoteProxy';
 import { PrivateService, MKR } from '@makerdao/dai';
-import ZERO_ADDRESS from './utils/constants';
-import PROXY_FACTORY from './utils/constants';
+import { PROXY_FACTORY, ZERO_ADDRESS } from './utils/constants';
 // maybe a "dai.js developer utils" package is useful?
 import { getCurrency } from '@makerdao/dai/src/eth/Currency';
 import voteProxyAbi from '../contracts/abis/VoteProxy.json';

@@ -16,13 +16,9 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-stage-2": "^6.24.1",
     "copyfiles": "^2.1.0",
-    "ethers": "^3.0.27",
     "ganache-cli": "^6.1.8",
     "jest": "^23.5.0",
-    "prettier": "^1.14.2",
-    "web3": "1.0.0-beta.34",
-    "web3-fake-provider": "^0.1.0",
-    "web3-provider-engine": "^14.0.6"
+    "prettier": "^1.14.2"
   },
   "scripts": {
     "test": "jest",

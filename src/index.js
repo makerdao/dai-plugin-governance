@@ -1,14 +1,10 @@
 import Maker from '@makerdao/dai';
+import { map, prop } from 'ramda';
 
+import { PROXY_FACTORY, CHIEF } from './utils/constants';
 import ChiefService from './ChiefService';
 import VoteProxyService from './VoteProxyService';
 import VoteProxyFactoryService from './VoteProxyFactoryService';
-
-import * as reads from './read';
-import * as writes from './write';
-import * as web3 from './web3';
-
-import { map, prop } from 'ramda';
 
 const contractAddresses = {
   kovan: require('../contracts/addresses/kovan.json'),
@@ -21,9 +17,6 @@ try {
 } catch (err) {
   // do nothing here; throw an error only if we later attempt to use ganache
 }
-
-const PROXY_FACTORY = 'PROXY_FACTORY';
-const CHIEF = 'CHIEF';
 
 class Governance {
   constructor(preset, config = {}) {
@@ -47,10 +40,6 @@ class Governance {
     });
   }
 }
-
-Object.assign(Governance.prototype, { ...reads });
-Object.assign(Governance.prototype, { ...writes });
-Object.assign(Governance.prototype, { ...web3 });
 
 const delegatedMakerMethods = [
   'authenticate',
