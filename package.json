@@ -7,7 +7,8 @@
     "babel-runtime": "^6.26.0",
     "bignumber.js": "^7.2.1",
     "lodash.round": "^4.0.4",
-    "ramda": "^0.25.0"
+    "ramda": "^0.25.0",
+    "sane": "^4.0.1"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -27,7 +28,8 @@
     "test": "jest",
     "testnet": "./gov-testchain/deploy-gov",
     "ci": "./gov-testchain/deploy-gov --ci jest --coverage",
-    "build": "./scripts/build-backend.sh"
+    "build": "./scripts/build-backend.sh",
+    "build:backend:watch": "sane ./scripts/build-backend.sh src --wait=10"
   },
   "module": "src/index.js",
   "main": "src/index.js"
