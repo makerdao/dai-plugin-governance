@@ -1,5 +1,5 @@
 import { PrivateService, MKR } from '@makerdao/dai';
-import CHIEF from './utils/constants';
+import { CHIEF } from './utils/constants';
 // maybe a "dai.js developer utils" package is useful?
 import { getCurrency } from '@makerdao/dai/src/eth/Currency';
 
@@ -7,8 +7,6 @@ export default class ChiefService extends PrivateService {
   constructor(name = 'chief') {
     super(name, ['smartContract']);
   }
-
-  // TODO: getVoteTally
 
   // Writes -----------------------------------------------
 
