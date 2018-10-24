@@ -45,12 +45,20 @@ dapp build 2>/dev/null
 PROXY_FACTORY=$(dapp create VoteProxyFactory $CHIEF)
 cd -
 
+cd  $CWD/src/symbolic-voting
+dapp update 2>/dev/null
+dapp build 2>/dev/null
+VOTE_PROXY_RESOLVER=$(dapp create VoteProxyResolver $PROXY_FACTORY)
+POLLING=$(dapp create Polling $GOV $IOU $VOTE_PROXY_RESOLVER '')
+cd -
+
 # Save the contract addresses to a JSON file
 cat > $CWD/../contracts/addresses/testnet.json <<- EOM
 {
   "mkr": "$GOV",
   "iou": "$IOU",
   "chief": "$CHIEF",
+  "polling": "$POLLING",
   "proxy_factory": "$PROXY_FACTORY"
 }
 EOM

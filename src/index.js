@@ -1,8 +1,9 @@
 import Maker from '@makerdao/dai';
 import { map, prop } from 'ramda';
 
-import { PROXY_FACTORY, CHIEF } from './utils/constants';
+import { PROXY_FACTORY, CHIEF, POLLING } from './utils/constants';
 import ChiefService from './ChiefService';
+import PollingService from './PollingService';
 import VoteProxyService from './VoteProxyService';
 import VoteProxyFactoryService from './VoteProxyFactoryService';
 
@@ -28,12 +29,17 @@ class Governance {
       [PROXY_FACTORY]: {
         address: map(prop('proxy_factory'), contractAddresses),
         abi: require('../contracts/abis/VoteProxyFactory.json')
+      },
+      [POLLING]: {
+        address: map(prop('polling'), contractAddresses),
+        abi: require('../contracts/abis/Polling.json')
       }
     };
     this.maker = Maker.create(preset, {
       ...config,
-      additionalServices: ['chief', 'voteProxy', 'voteProxyFactory'],
+      additionalServices: ['chief', 'polling', 'voteProxy', 'voteProxyFactory'],
       chief: [ChiefService],
+      polling: [PollingService],
       voteProxy: [VoteProxyService],
       voteProxyFactory: [VoteProxyFactoryService],
       smartContract: { addContracts }
