@@ -5,8 +5,7 @@
   "dependencies": {
     "@makerdao/dai": "^0.9.5",
     "babel-runtime": "^6.26.0",
-    "ramda": "^0.25.0",
-    "sane": "^4.0.1"
+    "ramda": "^0.25.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -16,7 +15,8 @@
     "copyfiles": "^2.1.0",
     "ganache-cli": "^6.1.8",
     "jest": "^23.5.0",
-    "prettier": "^1.14.2"
+    "prettier": "^1.14.2",
+    "sane": "^4.0.1"
   },
   "scripts": {
     "test": "jest",
