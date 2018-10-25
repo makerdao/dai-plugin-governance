@@ -18,28 +18,6 @@ try {
   // do nothing here; throw an error only if we later attempt to use ganache
 }
 
-// const delegatedMakerMethods = [
-//   'authenticate',
-//   'service',
-//   'getToken',
-//   'addAccount',
-//   'currentAccount',
-//   'currentAddress',
-//   'listAccounts',
-//   'useAccount',
-//   'useAccountWithAddress'
-// ];
-
-// for (let method of delegatedMakerMethods) {
-//   Governance.prototype[method] = function(...args) {
-//     return this.maker[method](...args);
-//   };
-// }
-
-// Governance.create = function(preset, config) {
-//   return new Governance(preset, config);
-// };
-
 const addContracts = {
   [CHIEF]: {
     address: map(prop('chief'), contractAddresses),
