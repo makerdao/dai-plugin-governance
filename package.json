@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "license": "MIT",
   "dependencies": {
-    "@makerdao/dai": "^0.9.5",
+    "@makerdao/dai": "^0.9.6",
     "babel-runtime": "^6.26.0",
     "ramda": "^0.25.0"
   },
