@@ -6,7 +6,7 @@ import {
 } from './helpers';
 import GovService from '../src/index';
 import Maker from '@makerdao/dai';
-import PollingService from '../src/PollingService';
+import ChiefService from '../src/ChiefService'
 
 let snapshotId, maker, addresses;
 
@@ -35,22 +35,7 @@ afterEach(async () => {
   await restoreSnapshot(snapshotId);
 });
 
-test('can create Polling Service', async () => {
-  const polling = maker.service('polling');
-  expect(polling).toBeInstanceOf(PollingService);
-});
-
-test.skip('can create a poll', async () => {
-  const polling = maker.service('polling');
-
-  // owner created the polling contract &
-  // is the only one w/ the auth to create polls at first
-  maker.useAccount('owner');
-
-  // poll -> 5 vote options, no delay, 1 day lifetime, empty multihash
-  await polling.createPoll(5, 0, 24 * 60 * 60, '');
-  expect(await polling.getNumberOfPolls()).toBe(1);
-
-  await polling.createPoll(5, 0, 24 * 60 * 60, '');
-  expect(await polling.getNumberOfPolls()).toBe(2);
+test('can create Chief Service', async () => {
+  const chief = maker.service('chief');
+  expect(chief).toBeInstanceOf(ChiefService);
 });
