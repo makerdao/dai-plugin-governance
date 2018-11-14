@@ -36,27 +36,28 @@ export default class VoteProxyService extends PrivateService {
 
   // Reads ------------------------------------------------
 
-  getLinkedAddress(proxyAddress, proxyRole) {
-    if (proxyRole === 'hot') return this._proxyContract(proxyAddress).cold();
-    else if (proxyRole === 'cold')
-      return this._proxyContract(proxyAddress).hot();
-    return null;
-  }
-
   async getVotedProposalAddresses(proxyAddress) {
     const _slate = await this.get('chief').getVotedSlate(proxyAddress);
     return this.get('chief').getSlateAddresses(_slate);
   }
 
-  async getVoteProxy(voterAddress) {
+  async getVoteProxy(addressToCheck) {
     const {
       hasProxy,
       role,
       address: proxyAddress
-    } = await this._getProxyStatus(voterAddress);
+    } = await this._getProxyStatus(addressToCheck);
+    if (!hasProxy) return { hasProxy, voteProxy: null };
+    const otherRole = role === 'hot' ? 'cold' : 'hot';
+    const otherAddress = await this._getAddressOfRole(proxyAddress, otherRole);
     return {
       hasProxy,
-      voteProxy: hasProxy ? new VoteProxy(this, proxyAddress, role) : null
+      voteProxy: new VoteProxy({
+        voteProxyService: this,
+        proxyAddress,
+        [`${role}Address`]: addressToCheck,
+        [`${otherRole}Address`]: otherAddress
+      })
     };
   }
 
@@ -83,6 +84,12 @@ export default class VoteProxyService extends PrivateService {
     if (proxyAddressHot !== ZERO_ADDRESS)
       return { role: 'hot', address: proxyAddressHot, hasProxy: true };
     return { role: null, address: '', hasProxy: false };
+  }
+
+  _getAddressOfRole(proxyAddress, role) {
+    if (role === 'hot') return this._proxyContract(proxyAddress).hot();
+    else if (role === 'cold') return this._proxyContract(proxyAddress).cold();
+    return null;
   }
 }
 

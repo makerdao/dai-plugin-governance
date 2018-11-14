@@ -1,30 +1,21 @@
 export default class VoteProxy {
-  constructor(voteProxyService, address = null, role = null) {
+  constructor({ voteProxyService, proxyAddress, coldAddress, hotAddress }) {
     this._voteProxyService = voteProxyService;
-    this._address = address;
-    this._role = role;
+    this._proxyAddress = proxyAddress;
+    this._coldAddress = coldAddress;
+    this._hotAddress = hotAddress;
   }
 
-  getAddress() {
-    return this._address;
+  getProxyAddress() {
+    return this._proxyAddress;
   }
 
-  getRole() {
-    return this._role;
+  getColdAddress() {
+    return this._coldAddress;
   }
 
-  getStatus() {
-    return {
-      proxyAddress: this.getAddress(),
-      proxyRole: this.getRole()
-    };
-  }
-
-  getLinkedAddress() {
-    return this._voteProxyService.getLinkedAddress(
-      this.getAddress(),
-      this.getRole()
-    );
+  getHotAddress() {
+    return this._hotAddress;
   }
 }
 
@@ -40,7 +31,7 @@ Object.assign(
   VoteProxy.prototype,
   passthroughMethods.reduce((acc, name) => {
     acc[name] = function(...args) {
-      return this._voteProxyService[name](this._address, ...args);
+      return this._voteProxyService[name](this._proxyAddress, ...args);
     };
     return acc;
   }, {})
