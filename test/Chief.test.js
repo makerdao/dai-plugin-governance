@@ -8,9 +8,11 @@ import GovService from '../src/index';
 import Maker from '@makerdao/dai';
 import ChiefService from '../src/ChiefService'
 
-let snapshotId, maker, addresses;
+let snapshotId, maker, addresses, chiefService;
 
 beforeAll(async () => {
+  snapshotId = await takeSnapshot();
+
   maker = Maker.create('test', {
     accounts: {
       owner: { type: 'privateKey', key: ganacheCoinbase.privateKey },
@@ -22,16 +24,15 @@ beforeAll(async () => {
     plugins: [GovService]
   });
   await maker.authenticate();
+
+  chiefService = maker.service('chief');
+
   addresses = maker
     .listAccounts()
     .reduce((acc, cur) => ({ ...acc, [cur.name]: cur.address }), {});
 });
 
-beforeEach(async () => {
-  snapshotId = await takeSnapshot();
-});
-
-afterEach(async () => {
+afterAll(async () => {
   await restoreSnapshot(snapshotId);
 });
 

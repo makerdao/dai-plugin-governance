@@ -5,10 +5,19 @@ import {
     ganacheCoinbase
   } from './helpers';
   import GovService from '../src/index';
+  import VoteProxyService from '../src/VoteProxyService';
+  import VoteProxy from '../src/VoteProxy';
   import Maker, { MKR } from '@makerdao/dai';
   import { stringToBytes32 } from '@makerdao/dai/src/utils/conversion';
   
-  let snapshotId, maker, addresses, voteProxyFactory, mkr;
+  let snapshotId,
+    maker, 
+    addresses, 
+    voteProxyService, 
+    voteProxyFactory, 
+    chiefService, 
+    pollingService,
+    mkr;
   
   beforeAll(async () => {
     snapshotId = await takeSnapshot();
@@ -27,6 +36,9 @@ import {
 
     voteProxyService = maker.service('voteProxy');
     voteProxyFactory = maker.service('voteProxyFactory');
+    chiefService = maker.service('chief');
+    pollingService = maker.service('polling');
+
     addresses = maker
       .listAccounts()
       .reduce((acc, cur) => ({ ...acc, [cur.name]: cur.address }), {});
@@ -35,14 +47,6 @@ import {
 
     await linkAccounts('ali', 'ava');
   });
-  
-  // beforeEach(async () => {
-  //   snapshotId = await takeSnapshot();
-  // });
-  
-  // afterEach(async () => {
-  //   await restoreSnapshot(snapshotId);
-  // });
 
   afterAll(async () => {
     await restoreSnapshot(snapshotId);
@@ -50,7 +54,6 @@ import {
 
   export const linkAccounts = async (initiator, approver) => {
     const lad = maker.currentAccount().name;
-    console.log(lad); //'owner' when test spins up
   
     // initiator wants to create a link with approver
     maker.useAccount(initiator);
@@ -68,128 +71,99 @@ import {
     const lad = maker.currentAccount().name;
   
     maker.useAccount(accountToUse);
-    const balanceAli = await mkr.balanceOf(receiver);
-    console.log('Ali balance before transfer', balanceAli.toNumber());
-  
     await mkr.transfer(receiver, amount);
-  
-    const balanceAliAfter = await mkr.balanceOf(receiver);
-    console.log('Ali balance after transfer', balanceAliAfter.toNumber());
-  
+
     maker.useAccount(lad);
   }
 
+  test('can create VP Service', async () => {
+    const vps = maker.service('voteProxy');
+    expect(vps).toBeInstanceOf(VoteProxyService);
+  });
+
   test('can lock an amount of MKR', async () => {
-    console.log('ENV', process.env.NETWORK);
-    const chiefService = maker.service('chief');
     const sendAmount = 5;
+    const amountToLock = 3;
     await sendMkrToAddress('owner', addresses.ali, sendAmount);
   
     maker.useAccount('ali');
-    console.log('current acct', maker.currentAccount());
 
-    const { voteProxy, hasProxy } = await maker
-      .service('voteProxy')
-      .getVoteProxy(addresses.ali);
+    const { voteProxy } = await voteProxyService.getVoteProxy(addresses.ali);
   
-    console.log(hasProxy);
-    const vpAddress = voteProxy.getAddress();
+    const vpAddress = voteProxy._proxyAddress;
+    const hotAddress = voteProxy._hotAddress;
+    const coldAddress = voteProxy._coldAddress;
 
-    const appr = await mkr.approveUnlimited(vpAddress);
-    console.log('approve tx', appr.metadata);
+    await mkr.approveUnlimited(vpAddress);
   
-    // make sure we have balance:
-    const balance = await mkr.balanceOf(maker.currentAccount().address);
-    console.log('balance before allowance', balance.toNumber());
+    // give allowance to vote proxy from cold address
+    await mkr.allowance(coldAddress, vpAddress);
   
-    const allowance = await mkr.allowance(maker.currentAccount().address, vpAddress);
-    console.log('allowance', allowance.toNumber());
-  
-    const lock = await maker.service('voteProxy')
-      .lock(vpAddress, 3);
+    // No deposits prior to locking maker
+    const preLockDeposits = await chiefService.getNumDeposits(vpAddress);
+    expect(preLockDeposits.toNumber()).toBe(0);
 
-    // TODO: Write expect based on this result:
-    const numDep = await chiefService.getNumDeposits(vpAddress)
+    await maker.service('voteProxy').lock(vpAddress, amountToLock);
+    
+    const postLockDeposits = await chiefService.getNumDeposits(vpAddress);
+    expect(postLockDeposits.toNumber()).toBe(amountToLock);
   })
 
-  test('can cast an executive vote', async () => {
-    const vpService = maker.service('voteProxy')
-    const pollingService = maker.service('polling');
-    const chiefService = maker.service('chief');
+  test('can cast an executive vote and retrieve voted on addresses from slate', async () => {
+    const { voteProxy } = await voteProxyService.getVoteProxy(addresses.ali);
+    const vpAddress = voteProxy.getProxyAddress();
+    const picks = [
+      '0x26EC003c72ebA27749083d588cdF7EBA665c0A1D',
+      '0x54F4E468FB0297F55D8DfE57336D186009A1455a'
+    ];
+
+    await voteProxyService.voteExec(vpAddress, picks);
     
-    // const pollContract = pollingService.getPollingContract();
-    const chiefContract = chiefService.getChiefContract();
-
-    const { voteProxy, hasProxy } = await vpService.getVoteProxy(addresses.ali);
-    const vpAddress = voteProxy.getAddress();
-
-    // use owner to create the poll
-    await maker.useAccount('owner');
-    const createPoll = await pollingService.createPoll(5, 0, 24 * 60 * 60, 'testText');
-    console.log('Create Poll Metadata', createPoll.metadata);
-    
-    // this is owner/creater of poll:
-    const picks = ['0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6'];
-    const numPols = await pollingService.getNumberOfPolls();
-    console.log('numPolls', numPols);
-    // console.log('poll at 0 index', await pollContract.polls(0));
-
-    // switch back to cold wallet
-    await maker.useAccount('ali');
-
-    console.log('votes() before vote', await chiefContract.votes(vpAddress));
-
-    const voteExec = await voteProxy.voteExec(vpAddress, picks);
-    console.log(voteExec.metadata);
-
-    // Write test expect based on this result:
-    console.log('votes() after vote', await chiefContract.votes(vpAddress));
-    
-    const owner = '0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6';
-    // const ali =  '0xda1495ebd7573d8e7f860862baa3abecebfa02e0'
-    // vpAddress = 0x603D52D6AE2b98A49f8f32817ad4EfFe7E8A2502 // slate adds 24 0's?
-    // kovan topic address: 0x0c0fC0952790A96D60CD82cA865C7bb1233477C3
-
-    const yays = await chiefContract.MAX_YAYS();
-    console.log('MAX YAYS', yays.toNumber());
-
-    const gvSlate = await chiefService.getVotedSlate(vpAddress);
-    console.log('gvSlate', gvSlate);
-
-    console.log(stringToBytes32('he'));
+    const addressesVotedOn = await voteProxyService.getVotedProposalAddresses(vpAddress);
+    expect(addressesVotedOn).toEqual(picks);
   })
 
-  // test('can free an amount of MKR', async () => {
-  //   const { voteProxy, hasProxy } = await maker
-  //     .service('voteProxy')
-  //     .getVoteProxy(addresses.ali);
+  test('can free an amount of MKR', async () => {
+    const amountToFree = 1;
+    const { voteProxy } = await voteProxyService.getVoteProxy(addresses.ali);
   
-  //   const vpAddress = voteProxy.getAddress();
+    const vpAddress = voteProxy.getProxyAddress();
 
-  //   const free = await maker.service('voteProxy')
-  //     .free(vpAddress, 1);
+    const preFreeDeposits = await chiefService.getNumDeposits(vpAddress);
+    await maker.service('voteProxy').free(vpAddress, amountToFree);
 
-  //   console.log(free);
-  //   // TODO: How to test that this worked correctly?
-  // })
+    const postFreeDeposits = await chiefService.getNumDeposits(vpAddress);
+    expect(postFreeDeposits.toNumber()).toBe(preFreeDeposits.toNumber() - amountToFree)
+  })
 
-  // test('can free all MKR', async () => {
-  //   const { voteProxy } = await maker
-  //     .service('voteProxy')
-  //     .getVoteProxy(addresses.ali);
+  test('can free all MKR', async () => {
+    const { voteProxy } = await voteProxyService.getVoteProxy(addresses.ali);
+    const vpAddress = voteProxy._proxyAddress;
   
-  //   const vpAddress = voteProxy.getAddress();
-  
-  //   const freeAll = await maker.service('voteProxy')
-  //     .freeAll(vpAddress);
+    const preFreeDeposits = await chiefService.getNumDeposits(vpAddress);
+    expect(preFreeDeposits.toNumber()).toBeGreaterThan(0);
 
-  //   console.log(freeAll);
-  //   // TODO: How to test that this worked correctly?
-  // })
+    await maker.service('voteProxy').freeAll(vpAddress);
+
+    const postFreeDeposits = await chiefService.getNumDeposits(vpAddress);
+    expect(postFreeDeposits.toNumber()).toBe(0);
+  })
+
+  test('getVoteProxy returns a VoteProxy if one exists for a given address', async () => {
+    const address = addresses.ali;
+    const { hasProxy, voteProxy } = await voteProxyService.getVoteProxy(address);
+
+    expect(hasProxy).toBe(true);
+    expect(voteProxy).toBeInstanceOf(VoteProxy);
+  })
+
+  test('getVoteProxy returns a null if none exists for a given address', async () => {
+    const address = addresses.ali;
+
+    await voteProxyFactory.breakLink();
+    const { hasProxy, voteProxy } = await voteProxyService.getVoteProxy(address);
+
+    expect(hasProxy).toBe(false);
+    expect(voteProxy).toBeNull();
+  })
   
-  /**
-   * VPS Tests TODO:
-   * getLinkedAddress - check for both roles
-   * getVotedProposalAddresses - invalid opcode error
-   * getVoteProxy - explicitly test this
-   */

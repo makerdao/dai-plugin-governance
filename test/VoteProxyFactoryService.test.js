@@ -1,12 +1,14 @@
 import { takeSnapshot, restoreSnapshot, ganacheAccounts, ganacheCoinbase } from './helpers';
 import { PROXY_FACTORY, ZERO_ADDRESS } from '../src/utils/constants';
 import GovService from '../src/index';
-import Maker from '@makerdao/dai';
 import VoteProxyFactoryService from '../src/VoteProxyFactoryService';
+import Maker from '@makerdao/dai';
 
-let snapshotId, maker, addresses, voteProxyFactory;
+let snapshotId, maker, addresses, voteProxyFactory, voteProxyService;
 
 beforeAll(async () => {
+  snapshotId = await takeSnapshot();
+
   maker = Maker.create('test', {
     accounts: {
       owner: { type: 'privateKey', key: ganacheCoinbase.privateKey },
@@ -23,18 +25,7 @@ beforeAll(async () => {
     .reduce((acc, cur) => ({ ...acc, [cur.name]: cur.address }), {});
 
     voteProxyFactory = maker.service('voteProxyFactory');
-});
-
-// beforeEach(async () => {
-//   snapshotId = await takeSnapshot();
-// });
-
-// afterEach(async () => {
-//   await restoreSnapshot(snapshotId);
-// });
-
-beforeAll(async () => {
-  snapshotId = await takeSnapshot();
+    voteProxyService = maker.service('voteProxy');
 });
 
 afterAll(async () => {
@@ -42,9 +33,7 @@ afterAll(async () => {
 });
 
 export const linkAccounts = async (initiator, approver) => {
-  // const voteProxyFactory = maker.service('voteProxyFactory');
   const lad = maker.currentAccount().name;
-  console.log(lad); //'owner' when test spins up
 
   // initiator wants to create a link with approver
   maker.useAccount(initiator);
@@ -58,34 +47,22 @@ export const linkAccounts = async (initiator, approver) => {
   maker.useAccount(lad);
 };
 
+test('can create VPFS Service', async () => {
+  const vpfs = maker.service('voteProxyFactory');
+  expect(vpfs).toBeInstanceOf(VoteProxyFactoryService);
+});
+
 test('can create a vote proxy linking two addressses', async () => {
   await linkAccounts('ali', 'ava');
 
-  //TODO use VPFS pointer
-  const { voteProxy, hasProxy } = await maker
-    .service('voteProxyFactory')
-    .getVoteProxy(addresses.ali);
-
-    expect(hasProxy).toBeTruthy();
+  const { hasProxy } = await voteProxyService.getVoteProxy(addresses.ali);
+  expect(hasProxy).toBeTruthy();
 });
 
-/** TODO uncomment this, break link test passes. */
-// const breakLink = async () => {
-//   // const voteProxyFactory = maker.service('voteProxyFactory');
-//   const lad = maker.currentAccount().name;
-
-//   maker.useAccount(lad);
-//   await voteProxyFactory.breakLink();
-// };
-
 test('can break a link between linked accounts', async () => {
-  // await breakLink();
   maker.useAccount('ali');
   await voteProxyFactory.breakLink();
 
-  const { hasProxy } = await maker
-    .service('voteProxyFactory')
-    .getVoteProxy(addresses.ali);
-
-    expect(hasProxy).toBe(false);
+  const { hasProxy } = await voteProxyService.getVoteProxy(addresses.ali);
+  expect(hasProxy).toBe(false);
 });

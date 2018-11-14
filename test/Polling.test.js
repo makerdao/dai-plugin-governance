@@ -11,6 +11,8 @@ import PollingService from '../src/PollingService';
 let snapshotId, maker, addresses;
 
 beforeAll(async () => {
+  snapshotId = await takeSnapshot();
+
   maker = Maker.create('test', {
     accounts: {
       owner: { type: 'privateKey', key: ganacheCoinbase.privateKey },
@@ -27,11 +29,7 @@ beforeAll(async () => {
     .reduce((acc, cur) => ({ ...acc, [cur.name]: cur.address }), {});
 });
 
-beforeEach(async () => {
-  snapshotId = await takeSnapshot();
-});
-
-afterEach(async () => {
+afterAll(async () => {
   await restoreSnapshot(snapshotId);
 });
 
@@ -40,7 +38,7 @@ test('can create Polling Service', async () => {
   expect(polling).toBeInstanceOf(PollingService);
 });
 
-test.skip('can create a poll', async () => {
+test('can create a poll', async () => {
   const polling = maker.service('polling');
 
   // owner created the polling contract &
