@@ -8,7 +8,6 @@ import {
   import VoteProxyService from '../src/VoteProxyService';
   import VoteProxy from '../src/VoteProxy';
   import Maker, { MKR } from '@makerdao/dai';
-  import { stringToBytes32 } from '@makerdao/dai/src/utils/conversion';
   
   let snapshotId,
     maker, 
@@ -90,9 +89,9 @@ import {
 
     const { voteProxy } = await voteProxyService.getVoteProxy(addresses.ali);
   
-    const vpAddress = voteProxy._proxyAddress;
-    const hotAddress = voteProxy._hotAddress;
-    const coldAddress = voteProxy._coldAddress;
+    const vpAddress = voteProxy.getProxyAddress();
+    const hotAddress = voteProxy.getHotAddress();
+    const coldAddress = voteProxy.getColdAddress();
 
     await mkr.approveUnlimited(vpAddress);
   
@@ -138,7 +137,7 @@ import {
 
   test('can free all MKR', async () => {
     const { voteProxy } = await voteProxyService.getVoteProxy(addresses.ali);
-    const vpAddress = voteProxy._proxyAddress;
+    const vpAddress = voteProxy.getProxyAddress();
   
     const preFreeDeposits = await chiefService.getNumDeposits(vpAddress);
     expect(preFreeDeposits.toNumber()).toBeGreaterThan(0);
