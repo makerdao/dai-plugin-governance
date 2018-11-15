@@ -1,4 +1,6 @@
 import fetch from 'node-fetch';
+import Maker from '@makerdao/dai';
+import GovService from '../../src/index';
 
 function ganacheAddress() {
   const port = process.env.GOV_TESTNET_PORT || 2000;
@@ -83,3 +85,19 @@ export const ganacheCoinbase = {
 // ^ our default coinbase BUT we should probably avoid using it for
 // tests (besides sending mkr) since it's the address the contracts are deployed
 // from on ganache, so it has special privledges that could affect test results
+
+export const setupTestMakerInstance = async () => {
+  const maker = Maker.create('test', {
+    accounts: {
+      owner: { type: 'privateKey', key: ganacheCoinbase.privateKey },
+      ali: { type: 'privateKey', key: ganacheAccounts[0].privateKey },
+      sam: { type: 'privateKey', key: ganacheAccounts[1].privateKey },
+      ava: { type: 'privateKey', key: ganacheAccounts[2].privateKey }
+    },
+    provider: { type: 'TEST' },
+    plugins: [GovService]
+  });
+
+  await maker.authenticate();
+  return maker;
+};

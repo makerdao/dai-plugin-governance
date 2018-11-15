@@ -1,4 +1,4 @@
-import { takeSnapshot, restoreSnapshot, ganacheAccounts, ganacheCoinbase } from './helpers';
+import { takeSnapshot, restoreSnapshot, ganacheAccounts, ganacheCoinbase, setupTestMakerInstance } from './helpers';
 import { PROXY_FACTORY, ZERO_ADDRESS } from '../src/utils/constants';
 import GovService from '../src/index';
 import VoteProxyFactoryService from '../src/VoteProxyFactoryService';
@@ -9,17 +9,8 @@ let snapshotId, maker, addresses, voteProxyFactory, voteProxyService;
 beforeAll(async () => {
   snapshotId = await takeSnapshot();
 
-  maker = Maker.create('test', {
-    accounts: {
-      owner: { type: 'privateKey', key: ganacheCoinbase.privateKey },
-      ali: { type: 'privateKey', key: ganacheAccounts[0].privateKey },
-      sam: { type: 'privateKey', key: ganacheAccounts[1].privateKey },
-      ava: { type: 'privateKey', key: ganacheAccounts[2].privateKey }
-    },
-    provider: { type: 'TEST' },
-    plugins: [GovService]
-  });
-  await maker.authenticate();
+  maker = await setupTestMakerInstance();
+  
   addresses = maker
     .listAccounts()
     .reduce((acc, cur) => ({ ...acc, [cur.name]: cur.address }), {});

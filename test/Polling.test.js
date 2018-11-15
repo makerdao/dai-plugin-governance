@@ -2,7 +2,8 @@ import {
   takeSnapshot,
   restoreSnapshot,
   ganacheAccounts,
-  ganacheCoinbase
+  ganacheCoinbase,
+  setupTestMakerInstance
 } from './helpers';
 import GovService from '../src/index';
 import Maker from '@makerdao/dai';
@@ -12,18 +13,9 @@ let snapshotId, maker, addresses;
 
 beforeAll(async () => {
   snapshotId = await takeSnapshot();
+  
+  maker = await setupTestMakerInstance();
 
-  maker = Maker.create('test', {
-    accounts: {
-      owner: { type: 'privateKey', key: ganacheCoinbase.privateKey },
-      ali: { type: 'privateKey', key: ganacheAccounts[0].privateKey },
-      sam: { type: 'privateKey', key: ganacheAccounts[1].privateKey },
-      ava: { type: 'privateKey', key: ganacheAccounts[2].privateKey }
-    },
-    provider: { type: 'TEST' },
-    plugins: [GovService]
-  });
-  await maker.authenticate();
   addresses = maker
     .listAccounts()
     .reduce((acc, cur) => ({ ...acc, [cur.name]: cur.address }), {});

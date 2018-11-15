@@ -2,7 +2,8 @@ import {
   takeSnapshot,
   restoreSnapshot,
   ganacheAccounts,
-  ganacheCoinbase
+  ganacheCoinbase,
+  setupTestMakerInstance
 } from './helpers';
 import { ZERO_ADDRESS } from '../src/utils/constants';
 import GovService from '../src/index';
@@ -27,17 +28,7 @@ const mkrToLock = 3;
 beforeAll(async () => {
   snapshotId = await takeSnapshot();
 
-  maker = Maker.create('test', {
-    accounts: {
-      owner: { type: 'privateKey', key: ganacheCoinbase.privateKey },
-      ali: { type: 'privateKey', key: ganacheAccounts[0].privateKey },
-      sam: { type: 'privateKey', key: ganacheAccounts[1].privateKey },
-      ava: { type: 'privateKey', key: ganacheAccounts[2].privateKey }
-    },
-    provider: { type: 'TEST' },
-    plugins: [GovService]
-  });
-  await maker.authenticate();
+  maker = await setupTestMakerInstance();
 
   voteProxyService = maker.service('voteProxy');
   voteProxyFactory = maker.service('voteProxyFactory');
