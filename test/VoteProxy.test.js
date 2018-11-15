@@ -1,21 +1,15 @@
 import {
     takeSnapshot,
     restoreSnapshot,
-    ganacheAccounts,
-    ganacheCoinbase,
     setupTestMakerInstance,
     linkAccounts
   } from './helpers';
-  import GovService from '../src/index';
-  import VoteProxyService from '../src/VoteProxyService';
   import VoteProxy from '../src/VoteProxy';
-  import Maker from '@makerdao/dai';
   
   let snapshotId,
     maker, 
     addresses, 
-    voteProxyService, 
-    voteProxyFactory;
+    voteProxyService;
   
   beforeAll(async () => {
     snapshotId = await takeSnapshot();

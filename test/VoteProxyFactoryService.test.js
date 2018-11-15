@@ -1,8 +1,6 @@
 import {
   takeSnapshot,
   restoreSnapshot,
-  ganacheAccounts,
-  ganacheCoinbase,
   setupTestMakerInstance,
   linkAccounts
 } from './helpers';

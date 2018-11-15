@@ -1,12 +1,8 @@
 import {
   takeSnapshot,
   restoreSnapshot,
-  ganacheAccounts,
-  ganacheCoinbase,
   setupTestMakerInstance
 } from './helpers';
-import GovService from '../src/index';
-import Maker from '@makerdao/dai';
 import PollingService from '../src/PollingService';
 
 let snapshotId, maker, addresses;

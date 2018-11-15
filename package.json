@@ -14,7 +14,9 @@
     "babel-preset-stage-2": "^6.24.1",
     "copyfiles": "^2.1.0",
     "ganache-cli": "^6.1.8",
+    "husky": "^1.1.4",
     "jest": "^23.5.0",
+    "lint-staged": "^8.0.4",
     "prettier": "^1.14.2",
     "sane": "^4.0.1"
   },
@@ -22,8 +24,15 @@
     "test": "jest --runInBand",
     "testnet": "./gov-testchain/deploy-gov",
     "ci": "./gov-testchain/deploy-gov --ci jest --coverage",
-    "build": "./scripts/build-backend.sh",
-    "build:backend:watch": "sane ./scripts/build-backend.sh src --wait=10"
+    "build": "./scripts/build.sh",
+    "precommit": "lint-staged",
+    "build:watch": "sane ./scripts/build.sh src --wait=10"
+  },
+  "lint-staged": {
+    "*.{js,json}": [
+      "prettier --write --single-quote",
+      "git add"
+    ]
   },
   "module": "src/index.js",
   "main": "src/index.js"
