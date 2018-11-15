@@ -24,9 +24,9 @@
     "test": "jest",
     "testnet": "./gov-testchain/deploy-gov",
     "ci": "./gov-testchain/deploy-gov --ci jest --coverage",
-    "build": "./scripts/build-backend.sh",
+    "build": "./scripts/build.sh",
     "precommit": "lint-staged",
-    "build:backend:watch": "sane ./scripts/build-backend.sh src --wait=10"
+    "build:watch": "sane ./scripts/build.sh src --wait=10"
   },
   "lint-staged": {
     "*.{js,json}": [

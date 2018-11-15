@@ -4,7 +4,7 @@ Dai Governance Plugin
 
 [![NPM](https://img.shields.io/npm/v/@makerdao/dai-plugin-governance.svg?style=flat)](https://www.npmjs.com/package/@makerdao/dai-plugin-governance)
 
-A [dai.js](https://github.com/makerdao/dai.js) plugin for interacting with the MKR governance system. This plugin makes it easy to integrate dai governance into frontend applications such as the [maker governace dashboard](https://vote.makerdao.com/). You can use it to vote, etch proposals, query the voting contract, create a vote proxy, and much more.
+A [dai.js](https://github.com/makerdao/dai.js) plugin for interacting with the MKR governance system. This plugin makes it easy to integrate dai governance into frontend applications such as the [maker governace dashboard](https://vote.makerdao.com/). You can use it to vote, cast proposals, query the voting contract, create a vote proxy, and much more.
 
 ## Installation
 
