@@ -3,7 +3,8 @@ import {
   restoreSnapshot,
   ganacheAccounts,
   ganacheCoinbase,
-  setupTestMakerInstance
+  setupTestMakerInstance,
+  linkAccounts
 } from './helpers';
 import { ZERO_ADDRESS } from '../src/utils/constants';
 import GovService from '../src/index';
@@ -41,7 +42,8 @@ beforeAll(async () => {
   
   mkr = await maker.getToken(MKR);
 
-  await linkAccounts('ali', 'ava');
+  await linkAccounts(addresses.ali, addresses.ava);
+
   maker.useAccount('ali');
   await setup();
 });
@@ -49,21 +51,6 @@ beforeAll(async () => {
 afterAll(async () => {
   await restoreSnapshot(snapshotId);
 });
-
-export const linkAccounts = async (initiator, approver) => {
-  const lad = maker.currentAccount().name;
-
-  // initiator wants to create a link with approver
-  maker.useAccount(initiator);
-  await voteProxyFactory.initiateLink(addresses[approver]);
-
-  // approver confirms it
-  maker.useAccount(approver);
-  await voteProxyFactory.approveLink(addresses[initiator]);
-
-  // no other side effects
-  maker.useAccount(lad);
-};
 
 const setup = async () => {
   const sendAmount = 5;

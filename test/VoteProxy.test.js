@@ -3,7 +3,8 @@ import {
     restoreSnapshot,
     ganacheAccounts,
     ganacheCoinbase,
-    setupTestMakerInstance
+    setupTestMakerInstance,
+    linkAccounts
   } from './helpers';
   import GovService from '../src/index';
   import VoteProxyService from '../src/VoteProxyService';
@@ -28,27 +29,12 @@ import {
       .listAccounts()
       .reduce((acc, cur) => ({ ...acc, [cur.name]: cur.address }), {});
 
-    await linkAccounts('ali', 'ava');
+    await linkAccounts(addresses.ali, addresses.ava);
   });
 
   afterAll(async () => {
     await restoreSnapshot(snapshotId);
   });
-
-  export const linkAccounts = async (initiator, approver) => {
-    const lad = maker.currentAccount().name;
-  
-    // initiator wants to create a link with approver
-    maker.useAccount(initiator);
-    await voteProxyFactory.initiateLink(addresses[approver]);
-  
-    // approver confirms it
-    maker.useAccount(approver);
-    await voteProxyFactory.approveLink(addresses[initiator]);
-  
-    // no other side effects
-    maker.useAccount(lad);
-  };
 
   test('Vote proxy instance returns correct information about itself', async () => {
     const { voteProxy } = await voteProxyService.getVoteProxy(addresses.ali);

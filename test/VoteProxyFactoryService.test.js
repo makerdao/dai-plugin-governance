@@ -1,4 +1,11 @@
-import { takeSnapshot, restoreSnapshot, ganacheAccounts, ganacheCoinbase, setupTestMakerInstance } from './helpers';
+import {
+  takeSnapshot,
+  restoreSnapshot,
+  ganacheAccounts,
+  ganacheCoinbase,
+  setupTestMakerInstance,
+  linkAccounts
+} from './helpers';
 import { PROXY_FACTORY, ZERO_ADDRESS } from '../src/utils/constants';
 import GovService from '../src/index';
 import VoteProxyFactoryService from '../src/VoteProxyFactoryService';
@@ -23,28 +30,13 @@ afterAll(async () => {
   await restoreSnapshot(snapshotId);
 });
 
-export const linkAccounts = async (initiator, approver) => {
-  const lad = maker.currentAccount().name;
-
-  // initiator wants to create a link with approver
-  maker.useAccount(initiator);
-  await voteProxyFactory.initiateLink(addresses[approver]);
-
-  // approver confirms it
-  maker.useAccount(approver);
-  await voteProxyFactory.approveLink(addresses[initiator]);
-
-  // no other side effects
-  maker.useAccount(lad);
-};
-
 test('can create VPFS Service', async () => {
   const vpfs = maker.service('voteProxyFactory');
   expect(vpfs).toBeInstanceOf(VoteProxyFactoryService);
 });
 
 test('can create a vote proxy linking two addressses', async () => {
-  await linkAccounts('ali', 'ava');
+  await linkAccounts(addresses.ali, addresses.ava);
 
   const { hasProxy } = await voteProxyService.getVoteProxy(addresses.ali);
   expect(hasProxy).toBeTruthy();

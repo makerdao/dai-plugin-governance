@@ -86,8 +86,9 @@ export const ganacheCoinbase = {
 // tests (besides sending mkr) since it's the address the contracts are deployed
 // from on ganache, so it has special privledges that could affect test results
 
+let maker;
 export const setupTestMakerInstance = async () => {
-  const maker = Maker.create('test', {
+  maker = Maker.create('test', {
     accounts: {
       owner: { type: 'privateKey', key: ganacheCoinbase.privateKey },
       ali: { type: 'privateKey', key: ganacheAccounts[0].privateKey },
@@ -100,4 +101,20 @@ export const setupTestMakerInstance = async () => {
 
   await maker.authenticate();
   return maker;
+};
+
+
+export const linkAccounts = async (initiator, approver) => {
+  const lad = maker.currentAccount().name;
+
+  // initiator wants to create a link with approver
+  maker.useAccountWithAddress(initiator);
+  await maker.service('voteProxyFactory').initiateLink(approver);
+
+  // approver confirms it
+  maker.useAccountWithAddress(approver);
+  await maker.service('voteProxyFactory').approveLink(initiator);
+
+  // no other side effects
+  maker.useAccount(lad);
 };

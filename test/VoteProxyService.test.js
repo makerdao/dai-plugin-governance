@@ -3,7 +3,8 @@ import {
     restoreSnapshot,
     ganacheAccounts,
     ganacheCoinbase,
-    setupTestMakerInstance
+    setupTestMakerInstance,
+    linkAccounts
   } from './helpers';
   // import GovService from '../src/index';
   import VoteProxyService from '../src/VoteProxyService';
@@ -35,27 +36,12 @@ import {
     
     mkr = await maker.getToken(MKR);
 
-    await linkAccounts('ali', 'ava');
+    await linkAccounts(addresses.ali, addresses.ava);
   });
 
   afterAll(async () => {
     await restoreSnapshot(snapshotId);
   });
-
-  export const linkAccounts = async (initiator, approver) => {
-    const lad = maker.currentAccount().name;
-  
-    // initiator wants to create a link with approver
-    maker.useAccount(initiator);
-    await voteProxyFactory.initiateLink(addresses[approver]);
-  
-    // approver confirms it
-    maker.useAccount(approver);
-    await voteProxyFactory.approveLink(addresses[initiator]);
-  
-    // no other side effects
-    maker.useAccount(lad);
-  };
 
   export const sendMkrToAddress = async (accountToUse, receiver, amount) => {
     const lad = maker.currentAccount().name;
