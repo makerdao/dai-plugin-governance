@@ -1,24 +1,19 @@
 import {
   takeSnapshot,
   restoreSnapshot,
-  ganacheAccounts,
-  ganacheCoinbase,
   setupTestMakerInstance,
-  linkAccounts
+  linkAccounts,
+  sendMkrToAddress,
+  setUpAllowance
 } from './helpers';
 import { ZERO_ADDRESS } from '../src/utils/constants';
-import GovService from '../src/index';
-import Maker, { MKR }  from '@makerdao/dai';
 import ChiefService from '../src/ChiefService';
 
 let snapshotId,
     maker, 
     addresses, 
-    voteProxyService, 
-    voteProxyFactory, 
-    chiefService, 
-    pollingService,
-    mkr;
+    voteProxyService,
+    chiefService;
 
 const picks = [
   '0x26EC003c72ebA27749083d588cdF7EBA665c0A1D',
@@ -32,53 +27,32 @@ beforeAll(async () => {
   maker = await setupTestMakerInstance();
 
   voteProxyService = maker.service('voteProxy');
-  voteProxyFactory = maker.service('voteProxyFactory');
   chiefService = maker.service('chief');
-  pollingService = maker.service('polling');
 
   addresses = maker
     .listAccounts()
     .reduce((acc, cur) => ({ ...acc, [cur.name]: cur.address }), {});
-  
-  mkr = await maker.getToken(MKR);
 
-  await linkAccounts(addresses.ali, addresses.ava);
-
-  maker.useAccount('ali');
-  await setup();
+  await setupVoteProxy();
 });
 
 afterAll(async () => {
   await restoreSnapshot(snapshotId);
 });
 
-const setup = async () => {
+const setupVoteProxy = async () => {
   const sendAmount = 5;
+
+  await linkAccounts(addresses.ali, addresses.ava);
   await sendMkrToAddress('owner', addresses.ali, sendAmount);
+
   maker.useAccount('ali');
   const { voteProxy } = await voteProxyService.getVoteProxy(addresses.ali);
   const vpAddress = voteProxy.getProxyAddress();
-  
-  await mkr.approveUnlimited(vpAddress);
-  await mkr.allowance(voteProxy.getColdAddress(), vpAddress);
 
-  await maker.service('voteProxy').lock(vpAddress, mkrToLock);
-  await castVoteViaProxy();
-}
+  await setUpAllowance(vpAddress, voteProxy.getColdAddress());
 
-export const sendMkrToAddress = async (accountToUse, receiver, amount) => {
-  const lad = maker.currentAccount().name;
-
-  maker.useAccount(accountToUse);
-  await mkr.transfer(receiver, amount);
-
-  maker.useAccount(lad);
-}
-
-export const castVoteViaProxy = async () => {
-  const { voteProxy } = await voteProxyService.getVoteProxy(addresses.ali);
-  const vpAddress = voteProxy.getProxyAddress();
-
+  await voteProxyService.lock(vpAddress, mkrToLock);
   await voteProxyService.voteExec(vpAddress, picks);
 }
 

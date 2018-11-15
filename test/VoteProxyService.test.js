@@ -1,24 +1,20 @@
 import {
     takeSnapshot,
     restoreSnapshot,
-    ganacheAccounts,
-    ganacheCoinbase,
     setupTestMakerInstance,
-    linkAccounts
+    linkAccounts,
+    sendMkrToAddress,
+    setUpAllowance
   } from './helpers';
-  // import GovService from '../src/index';
   import VoteProxyService from '../src/VoteProxyService';
   import VoteProxy from '../src/VoteProxy';
-  import Maker, { MKR } from '@makerdao/dai';
   
   let snapshotId,
     maker, 
     addresses, 
     voteProxyService, 
     voteProxyFactory, 
-    chiefService, 
-    pollingService,
-    mkr;
+    chiefService;
   
   beforeAll(async () => {
     snapshotId = await takeSnapshot();
@@ -28,13 +24,10 @@ import {
     voteProxyService = maker.service('voteProxy');
     voteProxyFactory = maker.service('voteProxyFactory');
     chiefService = maker.service('chief');
-    pollingService = maker.service('polling');
 
     addresses = maker
       .listAccounts()
       .reduce((acc, cur) => ({ ...acc, [cur.name]: cur.address }), {});
-    
-    mkr = await maker.getToken(MKR);
 
     await linkAccounts(addresses.ali, addresses.ava);
   });
@@ -42,15 +35,6 @@ import {
   afterAll(async () => {
     await restoreSnapshot(snapshotId);
   });
-
-  export const sendMkrToAddress = async (accountToUse, receiver, amount) => {
-    const lad = maker.currentAccount().name;
-  
-    maker.useAccount(accountToUse);
-    await mkr.transfer(receiver, amount);
-
-    maker.useAccount(lad);
-  }
 
   test('can create VP Service', async () => {
     const vps = maker.service('voteProxy');
@@ -67,19 +51,14 @@ import {
     const { voteProxy } = await voteProxyService.getVoteProxy(addresses.ali);
   
     const vpAddress = voteProxy.getProxyAddress();
-    const hotAddress = voteProxy.getHotAddress();
-    const coldAddress = voteProxy.getColdAddress();
 
-    await mkr.approveUnlimited(vpAddress);
-  
-    // give allowance to vote proxy from cold address
-    await mkr.allowance(coldAddress, vpAddress);
+    await setUpAllowance(vpAddress, voteProxy.getColdAddress());
   
     // No deposits prior to locking maker
     const preLockDeposits = await chiefService.getNumDeposits(vpAddress);
     expect(preLockDeposits.toNumber()).toBe(0);
 
-    await maker.service('voteProxy').lock(vpAddress, amountToLock);
+    await voteProxyService.lock(vpAddress, amountToLock);
     
     const postLockDeposits = await chiefService.getNumDeposits(vpAddress);
     expect(postLockDeposits.toNumber()).toBe(amountToLock);
@@ -106,7 +85,7 @@ import {
     const vpAddress = voteProxy.getProxyAddress();
 
     const preFreeDeposits = await chiefService.getNumDeposits(vpAddress);
-    await maker.service('voteProxy').free(vpAddress, amountToFree);
+    await voteProxyService.free(vpAddress, amountToFree);
 
     const postFreeDeposits = await chiefService.getNumDeposits(vpAddress);
     expect(postFreeDeposits.toNumber()).toBe(preFreeDeposits.toNumber() - amountToFree)
@@ -119,7 +98,7 @@ import {
     const preFreeDeposits = await chiefService.getNumDeposits(vpAddress);
     expect(preFreeDeposits.toNumber()).toBeGreaterThan(0);
 
-    await maker.service('voteProxy').freeAll(vpAddress);
+    await voteProxyService.freeAll(vpAddress);
 
     const postFreeDeposits = await chiefService.getNumDeposits(vpAddress);
     expect(postFreeDeposits.toNumber()).toBe(0);

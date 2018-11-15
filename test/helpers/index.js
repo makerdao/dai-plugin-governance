@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import Maker from '@makerdao/dai';
+import Maker, { MKR } from '@makerdao/dai';
 import GovService from '../../src/index';
 
 function ganacheAddress() {
@@ -8,6 +8,8 @@ function ganacheAddress() {
 }
 
 let requestCount = 0;
+let maker;
+let mkr;
 
 export async function takeSnapshot() {
   const id = requestCount;
@@ -86,7 +88,6 @@ export const ganacheCoinbase = {
 // tests (besides sending mkr) since it's the address the contracts are deployed
 // from on ganache, so it has special privledges that could affect test results
 
-let maker;
 export const setupTestMakerInstance = async () => {
   maker = Maker.create('test', {
     accounts: {
@@ -118,3 +119,23 @@ export const linkAccounts = async (initiator, approver) => {
   // no other side effects
   maker.useAccount(lad);
 };
+
+export const sendMkrToAddress = async (accountToUse, receiver, amount) => {
+  const lad = maker.currentAccount().name;
+  mkr = await maker.getToken(MKR);
+
+  maker.useAccount(accountToUse);
+  await mkr.transfer(receiver, amount);
+
+  maker.useAccount(lad);
+}
+
+export const setUpAllowance = async (proxyAddress, sender) => {
+  const lad = maker.currentAccount().name;
+  mkr = await maker.getToken(MKR);
+  
+  await mkr.approveUnlimited(proxyAddress);
+  await mkr.allowance(sender, proxyAddress);
+  
+  maker.useAccount(lad);
+}

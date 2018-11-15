@@ -6,10 +6,7 @@ import {
   setupTestMakerInstance,
   linkAccounts
 } from './helpers';
-import { PROXY_FACTORY, ZERO_ADDRESS } from '../src/utils/constants';
-import GovService from '../src/index';
 import VoteProxyFactoryService from '../src/VoteProxyFactoryService';
-import Maker from '@makerdao/dai';
 
 let snapshotId, maker, addresses, voteProxyFactory, voteProxyService;
 
