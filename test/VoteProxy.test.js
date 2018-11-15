@@ -17,7 +17,6 @@ import {
     maker = await setupTestMakerInstance();
 
     voteProxyService = maker.service('voteProxy');
-    voteProxyFactory = maker.service('voteProxyFactory');
 
     addresses = maker
       .listAccounts()
