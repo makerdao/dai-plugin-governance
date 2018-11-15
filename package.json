@@ -19,7 +19,7 @@
     "sane": "^4.0.1"
   },
   "scripts": {
-    "test": "jest",
+    "test": "jest --runInBand",
     "testnet": "./gov-testchain/deploy-gov",
     "ci": "./gov-testchain/deploy-gov --ci jest --coverage",
     "build": "./scripts/build-backend.sh",
