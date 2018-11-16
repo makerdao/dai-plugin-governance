@@ -8,8 +8,6 @@ function ganacheAddress() {
 }
 
 let requestCount = 0;
-let maker;
-let mkr;
 
 export async function takeSnapshot() {
   const id = requestCount;
@@ -89,7 +87,7 @@ export const ganacheCoinbase = {
 // from on ganache, so it has special privledges that could affect test results
 
 export const setupTestMakerInstance = async () => {
-  maker = Maker.create('test', {
+  const maker = Maker.create('test', {
     accounts: {
       owner: { type: 'privateKey', key: ganacheCoinbase.privateKey },
       ali: { type: 'privateKey', key: ganacheAccounts[0].privateKey },
@@ -104,8 +102,7 @@ export const setupTestMakerInstance = async () => {
   return maker;
 };
 
-
-export const linkAccounts = async (initiator, approver) => {
+export const linkAccounts = async (maker, initiator, approver) => {
   const lad = maker.currentAccount().name;
 
   // initiator wants to create a link with approver
@@ -120,22 +117,26 @@ export const linkAccounts = async (initiator, approver) => {
   maker.useAccount(lad);
 };
 
-export const sendMkrToAddress = async (accountToUse, receiver, amount) => {
+export const sendMkrToAddress = async (
+  maker,
+  accountToUse,
+  receiver,
+  amount
+) => {
   const lad = maker.currentAccount().name;
-  mkr = await maker.getToken(MKR);
+  const mkr = await maker.getToken(MKR);
 
-  maker.useAccount(accountToUse);
+  maker.useAccountWithAddress(accountToUse);
   await mkr.transfer(receiver, amount);
 
   maker.useAccount(lad);
-}
+};
 
-export const setUpAllowance = async (proxyAddress, sender) => {
+export const setUpAllowance = async (maker, proxyAddress) => {
   const lad = maker.currentAccount().name;
-  mkr = await maker.getToken(MKR);
-  
+  const mkr = await maker.getToken(MKR);
+
   await mkr.approveUnlimited(proxyAddress);
-  await mkr.allowance(sender, proxyAddress);
-  
+
   maker.useAccount(lad);
-}
+};

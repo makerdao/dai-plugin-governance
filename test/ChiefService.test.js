@@ -9,11 +9,7 @@ import {
 import { ZERO_ADDRESS } from '../src/utils/constants';
 import ChiefService from '../src/ChiefService';
 
-let snapshotId,
-    maker, 
-    addresses, 
-    voteProxyService,
-    chiefService;
+let snapshotId, maker, addresses, voteProxyService, chiefService;
 
 const picks = [
   '0x26EC003c72ebA27749083d588cdF7EBA665c0A1D',
@@ -43,18 +39,18 @@ afterAll(async () => {
 const setupVoteProxy = async () => {
   const sendAmount = 5;
 
-  await linkAccounts(addresses.ali, addresses.ava);
-  await sendMkrToAddress('owner', addresses.ali, sendAmount);
+  await linkAccounts(maker, addresses.ali, addresses.ava);
+  await sendMkrToAddress(maker, addresses.owner, addresses.ali, sendAmount);
 
   maker.useAccount('ali');
   const { voteProxy } = await voteProxyService.getVoteProxy(addresses.ali);
   const vpAddress = voteProxy.getProxyAddress();
 
-  await setUpAllowance(vpAddress, voteProxy.getColdAddress());
+  await setUpAllowance(maker, vpAddress, voteProxy.getColdAddress());
 
   await voteProxyService.lock(vpAddress, mkrToLock);
   await voteProxyService.voteExec(vpAddress, picks);
-}
+};
 
 test('can create Chief Service', async () => {
   const chief = maker.service('chief');
@@ -63,7 +59,9 @@ test('can create Chief Service', async () => {
 
 test('number of deposits for a proxy contract address should equal locked MKR amount', async () => {
   const { voteProxy } = await voteProxyService.getVoteProxy(addresses.ali);
-  const numDeposits = await chiefService.getNumDeposits(voteProxy.getProxyAddress());
+  const numDeposits = await chiefService.getNumDeposits(
+    voteProxy.getProxyAddress()
+  );
   expect(numDeposits.toNumber()).toBe(mkrToLock);
 });
 
@@ -75,7 +73,7 @@ test('approval count for voted on address should equal locked MKR amount', async
 test('can get voted slate, and convert to address', async () => {
   const { voteProxy } = await voteProxyService.getVoteProxy(addresses.ali);
   const vpAddress = voteProxy.getProxyAddress();
-  
+
   const slate = await chiefService.getVotedSlate(vpAddress);
   const addr = await chiefService.getSlateAddresses(slate);
 
@@ -85,7 +83,7 @@ test('can get voted slate, and convert to address', async () => {
 
 test('get hat should return lifted address', async () => {
   const addressToLift = picks[0];
-  
+
   const oldHat = await chiefService.getHat();
   expect(oldHat).toBe(ZERO_ADDRESS);
 

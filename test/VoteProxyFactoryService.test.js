@@ -12,13 +12,13 @@ beforeAll(async () => {
   snapshotId = await takeSnapshot();
 
   maker = await setupTestMakerInstance();
-  
+
   addresses = maker
     .listAccounts()
     .reduce((acc, cur) => ({ ...acc, [cur.name]: cur.address }), {});
 
-    voteProxyFactory = maker.service('voteProxyFactory');
-    voteProxyService = maker.service('voteProxy');
+  voteProxyFactory = maker.service('voteProxyFactory');
+  voteProxyService = maker.service('voteProxy');
 });
 
 afterAll(async () => {
@@ -31,7 +31,7 @@ test('can create VPFS Service', async () => {
 });
 
 test('can create a vote proxy linking two addressses', async () => {
-  await linkAccounts(addresses.ali, addresses.ava);
+  await linkAccounts(maker, addresses.ali, addresses.ava);
 
   const { hasProxy } = await voteProxyService.getVoteProxy(addresses.ali);
   expect(hasProxy).toBeTruthy();
