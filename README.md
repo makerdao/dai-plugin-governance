@@ -2,7 +2,9 @@
 Dai Governance Plugin
 </h1>
 
-[![NPM](https://img.shields.io/npm/v/@makerdao/dai-plugin-governance.svg?style=flat)](https://www.npmjs.com/package/@makerdao/dai-plugin-governance)
+[![GitHub License][license]][license-url]
+[![NPM][npm]][npm-url]
+[![Build Status][build]][build-url]
 
 A [dai.js](https://github.com/makerdao/dai.js) plugin for interacting with the MKR governance system. This plugin makes it easy to integrate dai governance into frontend applications such as the [maker governace dashboard](https://vote.makerdao.com/). You can use it to vote, cast proposals, query the voting contract, create a vote proxy, and much more.
 
@@ -37,11 +39,19 @@ import Maker from '@makerdao/dai';
 })();
 ```
 
-This example will lock 10 MKR into the maker voting system.
+This example will initiate a MetaMask transaction to lock 10 MKR into the maker voting system.
 
 ### Development
 
 ## Getting started
+
+_Note: this project utilizes the [yarn](https://yarnpkg.com/en/) package manager_
+
+Clone this repo & fetch submodules
+
+```
+$ git clone --recurse-submodules -j8 https://github.com/makerdao/dai-plugin-governance.git
+```
 
 Install project dependencies
 
@@ -49,17 +59,10 @@ Install project dependencies
 $ yarn
 ```
 
-or
-
-```
-$ npm install
-```
-
 ## Running Tests
 
 1.  Install [dapptools](https://dapp.tools/)
-1.  `yarn testnet`
-1.  `yarn test`
+1.  `yarn testnet --ci yarn test`
 
 ## Code Style
 
@@ -67,4 +70,11 @@ We run Prettier on-commit, which means you can write code in whatever style you 
 
 ### License
 
-The Dai governance plugin is [MIT licensed](./LICENSE).
+The dai governance plugin is [MIT licensed](./LICENSE).
+
+[npm]: https://img.shields.io/npm/v/@makerdao/dai-plugin-governance.svg?style=flat
+[npm-url]: https://www.npmjs.com/package/@makerdao/dai-plugin-governance
+[license]: https://img.shields.io/badge/license-MIT-blue.svg
+[license-url]: https://github.com/makerdao/dai-plugin-governance/blob/master/LICENSE
+[build]: https://travis-ci.com/makerdao/dai-plugin-governance.svg?token=7qKLu97qQDDMKfaxt318&branch=master
+[build-url]: https://travis-ci.com/makerdao/dai-plugin-governance
