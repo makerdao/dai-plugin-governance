@@ -19,7 +19,6 @@ export default class ChiefService extends PrivateService {
   }
 
   vote(picks) {
-    console.log('voting with array?', Array.isArray(picks));
     if (Array.isArray(picks))
       return this._chiefContract()['vote(address[])'](picks);
     return this._chiefContract()['vote(bytes32)'](picks);
@@ -62,9 +61,7 @@ export default class ChiefService extends PrivateService {
       return [await this._chiefContract().slates(slateHash, i)].concat(
         await this.getSlateAddresses(slateHash, i + 1)
       );
-      // temporary to view the error:
-    } catch (err) {
-      // console.log(err);
+    } catch (_) {
       return [];
     }
   }

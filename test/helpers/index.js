@@ -132,11 +132,11 @@ export const sendMkrToAddress = async (
   maker.useAccount(lad);
 };
 
-export const setUpAllowance = async (maker, proxyAddress) => {
+export const setUpAllowance = async (maker, address) => {
   const lad = maker.currentAccount().name;
   const mkr = await maker.getToken(MKR);
 
-  await mkr.approveUnlimited(proxyAddress);
+  await mkr.approveUnlimited(address);
 
   maker.useAccount(lad);
 };
