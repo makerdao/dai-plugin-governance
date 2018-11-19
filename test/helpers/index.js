@@ -126,17 +126,17 @@ export const sendMkrToAddress = async (
   const lad = maker.currentAccount().name;
   const mkr = await maker.getToken(MKR);
 
-  maker.useAccountWithAddress(accountToUse);
+  await maker.useAccountWithAddress(accountToUse);
   await mkr.transfer(receiver, amount);
 
   maker.useAccount(lad);
 };
 
-export const setUpAllowance = async (maker, proxyAddress) => {
+export const setUpAllowance = async (maker, address) => {
   const lad = maker.currentAccount().name;
   const mkr = await maker.getToken(MKR);
 
-  await mkr.approveUnlimited(proxyAddress);
+  await mkr.approveUnlimited(address);
 
   maker.useAccount(lad);
 };
