@@ -126,7 +126,7 @@ export const sendMkrToAddress = async (
   const lad = maker.currentAccount().name;
   const mkr = await maker.getToken(MKR);
 
-  maker.useAccountWithAddress(accountToUse);
+  await maker.useAccountWithAddress(accountToUse);
   await mkr.transfer(receiver, amount);
 
   maker.useAccount(lad);
