@@ -1,4 +1,6 @@
 import fetch from 'node-fetch';
+import Maker, { MKR } from '@makerdao/dai';
+import GovService from '../../src/index';
 
 function ganacheAddress() {
   const port = process.env.GOV_TESTNET_PORT || 2000;
@@ -83,3 +85,58 @@ export const ganacheCoinbase = {
 // ^ our default coinbase BUT we should probably avoid using it for
 // tests (besides sending mkr) since it's the address the contracts are deployed
 // from on ganache, so it has special privledges that could affect test results
+
+export const setupTestMakerInstance = async () => {
+  const maker = Maker.create('test', {
+    accounts: {
+      owner: { type: 'privateKey', key: ganacheCoinbase.privateKey },
+      ali: { type: 'privateKey', key: ganacheAccounts[0].privateKey },
+      sam: { type: 'privateKey', key: ganacheAccounts[1].privateKey },
+      ava: { type: 'privateKey', key: ganacheAccounts[2].privateKey }
+    },
+    provider: { type: 'TEST' },
+    plugins: [GovService]
+  });
+
+  await maker.authenticate();
+  return maker;
+};
+
+export const linkAccounts = async (maker, initiator, approver) => {
+  const lad = maker.currentAccount().name;
+
+  // initiator wants to create a link with approver
+  maker.useAccountWithAddress(initiator);
+  await maker.service('voteProxyFactory').initiateLink(approver);
+
+  // approver confirms it
+  maker.useAccountWithAddress(approver);
+  await maker.service('voteProxyFactory').approveLink(initiator);
+
+  // no other side effects
+  maker.useAccount(lad);
+};
+
+export const sendMkrToAddress = async (
+  maker,
+  accountToUse,
+  receiver,
+  amount
+) => {
+  const lad = maker.currentAccount().name;
+  const mkr = await maker.getToken(MKR);
+
+  await maker.useAccountWithAddress(accountToUse);
+  await mkr.transfer(receiver, amount);
+
+  maker.useAccount(lad);
+};
+
+export const setUpAllowance = async (maker, address) => {
+  const lad = maker.currentAccount().name;
+  const mkr = await maker.getToken(MKR);
+
+  await mkr.approveUnlimited(address);
+
+  maker.useAccount(lad);
+};

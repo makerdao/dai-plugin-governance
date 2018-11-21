@@ -35,6 +35,8 @@ test -z $GOV && GOV=$(seth receipt $GOVtx contractAddress)
 test -z $IOU && IOU=$(seth receipt $IOUtx contractAddress)
 MAX_YAYS=5
 CHIEF=$(dapp create DSChief $GOV $IOU $MAX_YAYS)
+# Chief mints and burns IOUs, so it must be the owner of the token contract 
+seth send $IOU 'setOwner(address)' $CHIEF
 # Seed our coinbase account with some Gov
 seth send $GOV 'mint(uint256)' $(seth --to-uint256 $(seth --to-wei 100 eth))
 cd -
@@ -60,6 +62,14 @@ cat > $CWD/../contracts/addresses/testnet.json <<- EOM
   "chief": "$CHIEF",
   "polling": "$POLLING",
   "proxy_factory": "$PROXY_FACTORY"
+}
+EOM
+
+# Amend the sdk's mkr token testnet address so that we can interact with the mkr token we've deployed in this script
+# NOTE: this likely can be better handled if the greater 'testchain' repo is updated to accommodate the gov contracts
+cat > $CWD/../node_modules/@makerdao/dai/contracts/addresses/testnet.json <<- EOM
+{
+  "GOV": "$GOV"
 }
 EOM
 
