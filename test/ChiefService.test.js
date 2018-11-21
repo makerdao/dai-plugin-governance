@@ -2,11 +2,13 @@ import {
   takeSnapshot,
   restoreSnapshot,
   setupTestMakerInstance,
-  setUpAllowance
+  setUpAllowance,
+  sendMkrToAddress
 } from './helpers';
 import { ZERO_ADDRESS } from '../src/utils/constants';
 import ChiefService from '../src/ChiefService';
 import * as web3utils from 'web3-utils';
+// import web3 from 'web3';
 
 let snapshotId, maker, chiefService;
 
@@ -80,6 +82,13 @@ test('number of deposits for a proxy contract address should equal locked MKR am
 test('approval count for a voted-on address should equal locked MKR amount', async () => {
   const approvalCount = await chiefService.getApprovalCount(picks[0]);
   expect(approvalCount.toNumber()).toBe(mkrToLock);
+});
+
+test('getVoteTally returns the vote tally', async () => {
+  const voteTally = await chiefService.getVoteTally();
+
+  expect.assertions(picks.length);
+  picks.map(pick => expect(Object.keys(voteTally).includes(pick)).toBe(true));
 });
 
 test('get hat should return lifted address', async () => {
