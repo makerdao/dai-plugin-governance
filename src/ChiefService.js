@@ -52,7 +52,7 @@ export default class ChiefService extends PrivateService {
       '0xdd46706400000000000000000000000000000000000000000000000000000000';
     // const network = await getNetworkName(); //can get from web3
     // const chief = await getChief(network); //chief contract address
-    const locks = await this.get('web3').getPastLogs({
+    const locks = await this.get('web3').eth.getPastLogs({
       fromBlock: 0,
       toBlock: 'latest',
       address: chiefAddress,
