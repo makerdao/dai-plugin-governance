@@ -3,9 +3,12 @@ import { CHIEF } from './utils/constants';
 // maybe a "dai.js developer utils" package is useful?
 import { getCurrency } from '@makerdao/dai/src/eth/Currency';
 
+// imports from 'reads'
+import { memoizeWith, uniq, nth, takeLast, identity } from 'ramda';
+
 export default class ChiefService extends PrivateService {
   constructor(name = 'chief') {
-    super(name, ['smartContract']);
+    super(name, ['smartContract', 'web3']);
   }
 
   // Writes -----------------------------------------------
@@ -35,6 +38,95 @@ export default class ChiefService extends PrivateService {
   }
 
   // Reads ------------------------------------------------
+
+  paddedBytes32ToAddress = hex =>
+    hex.length > 42 ? '0x' + takeLast(40, hex) : hex;
+
+  // helper for when we might call getSlateAddresses with the same slate several times
+  memoizedGetSlateAddresses = memoizeWith(identity, this.getSlateAddresses);
+
+  getLockLogs = async () => {
+    const chiefAddress = this._chiefContract().address;
+    //TODO: get topic & chiefCreation block from a constants file like before
+    const topic =
+      '0xdd46706400000000000000000000000000000000000000000000000000000000';
+    const locks = await this.get('web3').eth.getPastLogs({
+      fromBlock: 'earliest',
+      toBlock: 'latest',
+      address: chiefAddress,
+      topics: [topic]
+    });
+
+    return uniq(
+      locks
+        .map(logObj => nth(1, logObj.topics))
+        .map(this.paddedBytes32ToAddress)
+    );
+  };
+
+  async getVoteTally() {
+    const voters = await this.getLockLogs();
+
+    const withDeposits = await Promise.all(
+      voters.map(voter =>
+        this.getNumDeposits(voter).then(deposits => ({
+          address: voter,
+          deposits: parseFloat(deposits)
+        }))
+      )
+    );
+
+    const withSlates = await Promise.all(
+      withDeposits.map(addressDeposit =>
+        this.getVotedSlate(addressDeposit.address).then(slate => ({
+          ...addressDeposit,
+          slate
+        }))
+      )
+    );
+
+    const withVotes = await Promise.all(
+      withSlates.map(withSlate =>
+        this.memoizedGetSlateAddresses(withSlate.slate).then(addresses => ({
+          ...withSlate,
+          votes: addresses
+        }))
+      )
+    );
+
+    const voteTally = {};
+    for (const voteObj of withVotes) {
+      for (let vote of voteObj.votes) {
+        vote = vote.toLowerCase();
+        if (voteTally[vote] === undefined) {
+          voteTally[vote] = {
+            approvals: voteObj.deposits,
+            addresses: [
+              { address: voteObj.address, deposits: voteObj.deposits }
+            ]
+          };
+        } else {
+          voteTally[vote].approvals += voteObj.deposits;
+          voteTally[vote].addresses.push({
+            address: voteObj.address,
+            deposits: voteObj.deposits
+          });
+        }
+      }
+    }
+    for (const [key, value] of Object.entries(voteTally)) {
+      const sortedAddresses = value.addresses.sort(
+        (a, b) => b.deposits - a.deposits
+      );
+      const approvals = voteTally[key].approvals;
+      const withPercentages = sortedAddresses.map(shapedVoteObj => ({
+        ...shapedVoteObj,
+        percent: ((shapedVoteObj.deposits * 100) / approvals).toFixed(2)
+      }));
+      voteTally[key] = withPercentages;
+    }
+    return voteTally;
+  }
 
   getVotedSlate(address) {
     return this._chiefContract().votes(address);

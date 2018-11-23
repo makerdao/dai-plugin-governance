@@ -90,10 +90,10 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
-"@makerdao/dai@^0.9.6":
-  version "0.9.6"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai/-/dai-0.9.6.tgz#78aba9558b11a1710f06b1e659b3f7518aace3c8"
-  integrity sha512-H6x++98d24nE9pR1FwsFRkb9d/VX2weUVfXUK4wgMmz1fgr94+5a4pVTNUiRFimRINPlxvD/T2mBFzwxd33h/A==
+"@makerdao/dai@^0.9.8":
+  version "0.9.8"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai/-/dai-0.9.8.tgz#58668a5b587ce0e36b29bc66a1d003d1c6137ee3"
+  integrity sha512-KcN2FKFE9OyuH93NxWoYh3/3yAMn3Rw2Ebd1tGhsQR9+BMXhB2LxmIOivPZin/hXW+lLl0GCNTSfIdvSSFH8HA==
   dependencies:
     babel-plugin-transform-decorators-legacy "^1.3.5"
     babel-runtime "^6.26.0"

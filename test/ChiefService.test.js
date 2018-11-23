@@ -82,6 +82,15 @@ test('approval count for a voted-on address should equal locked MKR amount', asy
   expect(approvalCount.toNumber()).toBe(mkrToLock);
 });
 
+test('getVoteTally returns the vote tally', async () => {
+  const voteTally = await chiefService.getVoteTally();
+
+  expect.assertions(picks.length);
+  picks.map(pick =>
+    expect(Object.keys(voteTally).includes(pick.toLowerCase())).toBe(true)
+  );
+});
+
 test('get hat should return lifted address', async () => {
   const addressToLift = picks[0];
 
