@@ -90,7 +90,7 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
-"@makerdao/dai@^0.9.6":
+"@makerdao/dai@^0.9.7":
   version "0.9.7"
   resolved "https://registry.yarnpkg.com/@makerdao/dai/-/dai-0.9.7.tgz#220ba78701c415b6dc68b89cc166fa14205e3dc0"
   integrity sha512-FuYDSEBeQEObmgpueLwF7dqfoDc3pvMxO8iYx8w3sgy41xkbx7Hrc1BWDjOipc4nRJFkHHIuUs6F9MTU2CB2lw==
