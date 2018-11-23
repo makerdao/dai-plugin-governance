@@ -39,7 +39,6 @@ export default class ChiefService extends PrivateService {
 
   // Reads ------------------------------------------------
 
-  // TODO: move these helper functions:
   paddedBytes32ToAddress = hex =>
     hex.length > 42 ? '0x' + takeLast(40, hex) : hex;
 
@@ -68,8 +67,6 @@ export default class ChiefService extends PrivateService {
   async getVoteTally() {
     const voters = await this.getLockLogs();
 
-    console.log('voters', voters);
-
     const withDeposits = await Promise.all(
       voters.map(voter =>
         this.getNumDeposits(voter).then(deposits => ({
@@ -79,8 +76,6 @@ export default class ChiefService extends PrivateService {
       )
     );
 
-    console.log('withDeposits', withDeposits);
-
     const withSlates = await Promise.all(
       withDeposits.map(addressDeposit =>
         this.getVotedSlate(addressDeposit.address).then(slate => ({
@@ -89,7 +84,7 @@ export default class ChiefService extends PrivateService {
         }))
       )
     );
-    console.log('withSlates', withSlates);
+
     const withVotes = await Promise.all(
       withSlates.map(withSlate =>
         this.memoizedGetSlateAddresses(withSlate.slate).then(addresses => ({
@@ -98,8 +93,6 @@ export default class ChiefService extends PrivateService {
         }))
       )
     );
-
-    console.log('withVotes', withVotes);
 
     const voteTally = {};
     for (const voteObj of withVotes) {
@@ -132,7 +125,6 @@ export default class ChiefService extends PrivateService {
       }));
       voteTally[key] = withPercentages;
     }
-    console.log('Vote tally to return:', voteTally);
     return voteTally;
   }
 

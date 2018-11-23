@@ -2,13 +2,11 @@ import {
   takeSnapshot,
   restoreSnapshot,
   setupTestMakerInstance,
-  setUpAllowance,
-  sendMkrToAddress
+  setUpAllowance
 } from './helpers';
 import { ZERO_ADDRESS } from '../src/utils/constants';
 import ChiefService from '../src/ChiefService';
 import * as web3utils from 'web3-utils';
-// import web3 from 'web3';
 
 let snapshotId, maker, chiefService;
 
