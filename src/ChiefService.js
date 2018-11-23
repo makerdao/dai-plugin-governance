@@ -48,7 +48,7 @@ export default class ChiefService extends PrivateService {
 
   getLockLogs = async () => {
     const chiefAddress = this._chiefContract().address;
-    //TODO: get topic from a constants file like before
+    //TODO: get topic & chiefCreation block from a constants file like before
     const topic =
       '0xdd46706400000000000000000000000000000000000000000000000000000000';
     const locks = await this.get('web3').eth.getPastLogs({
@@ -103,7 +103,8 @@ export default class ChiefService extends PrivateService {
 
     const voteTally = {};
     for (const voteObj of withVotes) {
-      for (const vote of voteObj.votes) {
+      for (let vote of voteObj.votes) {
+        vote = vote.toLowerCase();
         if (voteTally[vote] === undefined) {
           voteTally[vote] = {
             approvals: voteObj.deposits,

@@ -88,7 +88,9 @@ test('getVoteTally returns the vote tally', async () => {
   const voteTally = await chiefService.getVoteTally();
 
   expect.assertions(picks.length);
-  picks.map(pick => expect(Object.keys(voteTally).includes(pick)).toBe(true));
+  picks.map(pick =>
+    expect(Object.keys(voteTally).includes(pick.toLowerCase())).toBe(true)
+  );
 });
 
 test('get hat should return lifted address', async () => {
