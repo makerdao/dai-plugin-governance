@@ -39,7 +39,7 @@ export default class ChiefService extends PrivateService {
 
   // Reads ------------------------------------------------
 
-  // move these helper functions:
+  // TODO: move these helper functions:
   paddedBytes32ToAddress = hex =>
     hex.length > 42 ? '0x' + takeLast(40, hex) : hex;
 
@@ -48,17 +48,16 @@ export default class ChiefService extends PrivateService {
 
   getLockLogs = async () => {
     const chiefAddress = this._chiefContract().address;
+    //TODO: get topic from a constants file like before
     const topic =
       '0xdd46706400000000000000000000000000000000000000000000000000000000';
-    // const network = await getNetworkName(); //can get from web3
-    // const chief = await getChief(network); //chief contract address
     const locks = await this.get('web3').eth.getPastLogs({
-      fromBlock: 0,
+      fromBlock: 'earliest',
       toBlock: 'latest',
       address: chiefAddress,
       topics: [topic]
     });
-    // return locks;
+
     return uniq(
       locks
         .map(logObj => nth(1, logObj.topics))
@@ -69,6 +68,8 @@ export default class ChiefService extends PrivateService {
   async getVoteTally() {
     const voters = await this.getLockLogs();
 
+    console.log('voters', voters);
+
     const withDeposits = await Promise.all(
       voters.map(voter =>
         this.getNumDeposits(voter).then(deposits => ({
@@ -78,6 +79,8 @@ export default class ChiefService extends PrivateService {
       )
     );
 
+    console.log('withDeposits', withDeposits);
+
     const withSlates = await Promise.all(
       withDeposits.map(addressDeposit =>
         this.getVotedSlate(addressDeposit.address).then(slate => ({
@@ -86,7 +89,7 @@ export default class ChiefService extends PrivateService {
         }))
       )
     );
-
+    console.log('withSlates', withSlates);
     const withVotes = await Promise.all(
       withSlates.map(withSlate =>
         this.memoizedGetSlateAddresses(withSlate.slate).then(addresses => ({
@@ -95,6 +98,8 @@ export default class ChiefService extends PrivateService {
         }))
       )
     );
+
+    console.log('withVotes', withVotes);
 
     const voteTally = {};
     for (const voteObj of withVotes) {
@@ -126,6 +131,7 @@ export default class ChiefService extends PrivateService {
       }));
       voteTally[key] = withPercentages;
     }
+    console.log('Vote tally to return:', voteTally);
     return voteTally;
   }
 
@@ -187,98 +193,4 @@ export default class ChiefService extends PrivateService {
     if (web3js) return this.get('smartContract').getWeb3ContractByName(CHIEF);
     return this.get('smartContract').getContractByName(CHIEF);
   }
-
-  // TEMP ----------------------------
-
-  //   /**
-  //  * @desc convert a padded bytes32 string to an ethereum address
-  //  * @param  {String} hex
-  //  * @return {String}
-  //  */
-  // export const paddedBytes32ToAddress = hex =>
-  // hex.length > 42 ? '0x' + takeLast(40, hex) : hex;
-
-  //   /**
-  //  * @async @desc use event logs to get all addresses that've locked
-  //  * @return {String[]} addresses
-  //  */
-  // export const getLockLogs = async () => {
-  //   const network = await getNetworkName(); //can get from web3
-  //   const chief = await getChief(network); //chief contract address
-  //   const locks = await getEthLogs({ //also in web3
-  //     fromBlock: chiefInfo.inception_block[network],
-  //     toBlock: 'latest',
-  //     address: chief,
-  //     topics: [chiefInfo.events.lock]
-  //   });
-  //   return uniq(
-  //     locks.map(logObj => nth(1, logObj.topics)).map(paddedBytes32ToAddress)
-  //   );
-  // };
-
-  // /**
-  //  * @async @desc get the voter approvals and address for each proposal
-  //  * @return {Object}
-  //  */
-  // export const getVoteTally = async () => {
-  //   const voters = await getLockLogs();
-  //   // we could use web3's "batch" feature here, but it doesn't seem that it would be any faster
-  //   // https://ethereum.stackexchange.com/questions/47918/how-to-make-batch-transaction-in-ethereum
-  //   const withDeposits = await Promise.all(
-  //     voters.map(voter =>
-  //       getNumDeposits(voter).then(deposits => ({
-  //         address: voter,
-  //         deposits: parseFloat(deposits)
-  //       }))
-  //     )
-  //   );
-
-  //   const withSlates = await Promise.all(
-  //     withDeposits.map(addressDeposit =>
-  //       getVotedSlate(addressDeposit.address).then(slate => ({
-  //         ...addressDeposit,
-  //         slate
-  //       }))
-  //     )
-  //   );
-
-  //   const withVotes = await Promise.all(
-  //     withSlates.map(withSlate =>
-  //       memoizedGetSlateAddresses(withSlate.slate).then(addresses => ({
-  //         ...withSlate,
-  //         votes: addresses
-  //       }))
-  //     )
-  //   );
-
-  //   const voteTally = {};
-  //   for (const voteObj of withVotes) {
-  //     for (const vote of voteObj.votes) {
-  //       if (voteTally[vote] === undefined) {
-  //         voteTally[vote] = {
-  //           approvals: voteObj.deposits,
-  //           addresses: [{ address: voteObj.address, deposits: voteObj.deposits }]
-  //         };
-  //       } else {
-  //         voteTally[vote].approvals += voteObj.deposits;
-  //         voteTally[vote].addresses.push({
-  //           address: voteObj.address,
-  //           deposits: voteObj.deposits
-  //         });
-  //       }
-  //     }
-  //   }
-  //   for (const [key, value] of Object.entries(voteTally)) {
-  //     const sortedAddresses = value.addresses.sort(
-  //       (a, b) => b.deposits - a.deposits
-  //     );
-  //     const approvals = voteTally[key].approvals;
-  //     const withPercentages = sortedAddresses.map(shapedVoteObj => ({
-  //       ...shapedVoteObj,
-  //       percent: ((shapedVoteObj.deposits * 100) / approvals).toFixed(2)
-  //     }));
-  //     voteTally[key] = withPercentages;
-  //   }
-  //   return voteTally;
-  // };
 }
