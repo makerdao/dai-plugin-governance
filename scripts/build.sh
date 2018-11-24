@@ -16,7 +16,5 @@ copyfiles \
   LICENSE \
   package.json \
   contracts/abis/* \
-  src/contract-info.json \
-  src/testnet-addresses.json \
   contracts/addresses/* \
   dist

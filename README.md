@@ -57,12 +57,21 @@ Install project dependencies
 
 ```
 $ yarn
+$ yarn install --cwd "gov-testchain"
 ```
 
 ## Running Tests
 
 1.  Install [dapptools](https://dapp.tools/)
 1.  `yarn testnet --ci yarn test`
+
+## Publishing
+
+Publish to NPM
+
+```
+$ yarn deploy
+```
 
 ## Code Style
 
