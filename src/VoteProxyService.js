@@ -14,6 +14,7 @@ export default class VoteProxyService extends PrivateService {
 
   lock(proxyAddress, amt, unit = MKR) {
     const mkrAmt = getCurrency(amt, unit).toEthersBigNumber('wei');
+    console.log('address, amnt, mkramt:', proxyAddress, amt, mkrAmt);
     return this._proxyContract(proxyAddress).lock(mkrAmt);
   }
 
