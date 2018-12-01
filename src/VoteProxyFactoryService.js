@@ -1,9 +1,10 @@
 import { PrivateService } from '@makerdao/dai';
 import { PROXY_FACTORY } from './utils/constants';
+import ApproveLinkTransaction from './ApproveLinkTransaction';
 
 export default class VoteProxyFactoryService extends PrivateService {
   constructor(name = 'voteProxyFactory') {
-    super(name, ['smartContract', 'voteProxy']);
+    super(name, ['smartContract', 'voteProxy', 'transactionManager']);
   }
 
   initiateLink(hotAddress) {
@@ -11,7 +12,13 @@ export default class VoteProxyFactoryService extends PrivateService {
   }
 
   approveLink(coldAddress) {
-    return this._proxyFactoryContract().approveLink(coldAddress);
+    const tx = new ApproveLinkTransaction();
+    return tx.build(
+      this._proxyFactoryContract(),
+      'approveLink',
+      [coldAddress],
+      this.get('transactionManager')
+    );
   }
 
   breakLink() {
