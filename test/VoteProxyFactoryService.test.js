@@ -44,3 +44,28 @@ test('can break a link between linked accounts', async () => {
   const { hasProxy } = await voteProxyService.getVoteProxy(addresses.ali);
   expect(hasProxy).toBe(false);
 });
+
+test('approveLink txObject gets correct proxyAddress', async () => {
+  const initiator = addresses.ali;
+  const approver = addresses.ava;
+  const lad = maker.currentAccount().name;
+
+  // initiator wants to create a link with approver
+  maker.useAccountWithAddress(initiator);
+  await maker.service('voteProxyFactory').initiateLink(approver);
+
+  // approver confirms it
+  maker.useAccountWithAddress(approver);
+  const approveTx = await maker
+    .service('voteProxyFactory')
+    .approveLink(initiator);
+
+  // no other side effects
+  maker.useAccount(lad);
+
+  const { voteProxy } = await voteProxyService.getVoteProxy(addresses.ali);
+  expect(voteProxy.getProxyAddress()).toEqual(approveTx.proxyAddress);
+  expect(approveTx.fees.toNumber()).toBeGreaterThan(0);
+  expect(approveTx.timeStampSubmitted).toBeTruthy();
+  expect(approveTx.timeStamp).toBeTruthy();
+});
