@@ -1,24 +1,27 @@
 import { utils } from 'ethers';
 
 export default class ApproveLinkTransaction {
-  proxyAddress() {
-    return this._proxyAddress;
+  constructor(contract, transactionManager) {
+    this._contract = contract;
+    this._txMgr = transactionManager;
   }
 
-  fees() {
+  get fees() {
     return this._txMgr.getTransaction(this.promise).fees();
   }
 
-  timeStamp() {
+  get timeStamp() {
     return this._txMgr.getTransaction(this.promise).timeStamp();
   }
 
-  build(contract, method, args, transactionManager) {
-    this._contract = contract;
-    this._txMgr = transactionManager;
+  get timeStampSubmitted() {
+    return this._txMgr.getTransaction(this.promise).timeStampSubmitted();
+  }
+
+  build(method, args) {
     const promise = (async () => {
       await 0;
-      const txo = await contract[method](...[...args, { promise }]);
+      const txo = await this._contract[method](...[...args, { promise }]);
       this._parseLogs(txo.receipt.logs);
       return this;
     })();
@@ -38,6 +41,6 @@ export default class ApproveLinkTransaction {
       receiptEvent[0].topics,
       receiptEvent[0].data
     );
-    this._proxyAddress = parsedLog['voteProxy'];
+    this.proxyAddress = parsedLog['voteProxy'];
   }
 }

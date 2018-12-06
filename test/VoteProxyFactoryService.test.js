@@ -64,7 +64,8 @@ test('approveLink txObject gets correct proxyAddress', async () => {
   maker.useAccount(lad);
 
   const { voteProxy } = await voteProxyService.getVoteProxy(addresses.ali);
-  expect(voteProxy.getProxyAddress()).toEqual(approveTx.proxyAddress());
-  expect(approveTx.fees().toNumber()).toBeGreaterThan(0);
-  expect(approveTx.timeStamp()).toBeTruthy();
+  expect(voteProxy.getProxyAddress()).toEqual(approveTx.proxyAddress);
+  expect(approveTx.fees.toNumber()).toBeGreaterThan(0);
+  expect(approveTx.timeStampSubmitted).toBeTruthy();
+  expect(approveTx.timeStamp).toBeTruthy();
 });

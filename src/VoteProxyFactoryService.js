@@ -12,13 +12,11 @@ export default class VoteProxyFactoryService extends PrivateService {
   }
 
   approveLink(coldAddress) {
-    const tx = new ApproveLinkTransaction();
-    return tx.build(
+    const tx = new ApproveLinkTransaction(
       this._proxyFactoryContract(),
-      'approveLink',
-      [coldAddress],
       this.get('transactionManager')
     );
+    return tx.build('approveLink', [coldAddress]);
   }
 
   breakLink() {
