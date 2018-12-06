@@ -15,6 +15,7 @@ copyfiles \
   README.md \
   LICENSE \
   package.json \
+  contracts/* \
   contracts/abis/* \
   contracts/addresses/* \
   dist

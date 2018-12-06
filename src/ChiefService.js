@@ -1,10 +1,13 @@
 import { PrivateService, MKR } from '@makerdao/dai';
-import { CHIEF } from './utils/constants';
 // maybe a "dai.js developer utils" package is useful?
+import { CHIEF } from './utils/constants';
+import { netIdToName } from './utils/helpers';
 import { getCurrency } from '@makerdao/dai/src/eth/Currency';
 
 // imports from 'reads'
 import { memoizeWith, uniq, nth, takeLast, identity } from 'ramda';
+import contractInfo from '../contracts/contract-info.json';
+const chiefInfo = contractInfo.chief;
 
 export default class ChiefService extends PrivateService {
   constructor(name = 'chief') {
@@ -47,14 +50,14 @@ export default class ChiefService extends PrivateService {
 
   getLockLogs = async () => {
     const chiefAddress = this._chiefContract().address;
-    //TODO: get topic & chiefCreation block from a constants file like before
-    const topic =
-      '0xdd46706400000000000000000000000000000000000000000000000000000000';
-    const locks = await this.get('web3').eth.getPastLogs({
-      fromBlock: 'earliest',
+    const web3Service = this.get('web3');
+    const netId = web3Service.getNetwork();
+    const networkName = netIdToName(netId);
+    const locks = await web3Service.eth.getPastLogs({
+      fromBlock: chiefInfo.inception_block[networkName],
       toBlock: 'latest',
       address: chiefAddress,
-      topics: [topic]
+      topics: [chiefInfo.events.lock]
     });
 
     return uniq(
