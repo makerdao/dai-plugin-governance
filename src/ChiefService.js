@@ -1,4 +1,4 @@
-import { PrivateService, MKR } from '@makerdao/dai';
+import Maker from '@makerdao/dai';
 // maybe a "dai.js developer utils" package is useful?
 import { CHIEF } from './utils/constants';
 import { netIdToName } from './utils/helpers';
@@ -9,7 +9,9 @@ import { memoizeWith, uniq, nth, takeLast, identity } from 'ramda';
 import contractInfo from '../contracts/contract-info.json';
 const chiefInfo = contractInfo.chief;
 
-export default class ChiefService extends PrivateService {
+const { MKR } = Maker;
+
+export default class ChiefService extends Maker.LocalService {
   constructor(name = 'chief') {
     super(name, ['smartContract', 'web3']);
   }
