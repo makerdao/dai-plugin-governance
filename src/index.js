@@ -11,12 +11,12 @@ const contractAddresses = {
   mainnet: require('../contracts/addresses/mainnet.json')
 };
 
-try {
-  const testnetAddresses = require('../contracts/addresses/testnet.json');
-  contractAddresses.testnet = testnetAddresses;
-} catch (err) {
-  // do nothing here; throw an error only if we later attempt to use ganache
-}
+// try {
+//   const testnetAddresses = require('../contracts/addresses/testnet.json');
+//   contractAddresses.testnet = testnetAddresses;
+// } catch (err) {
+//   // do nothing here; throw an error only if we later attempt to use ganache
+// }
 
 const addContracts = {
   [CHIEF]: {
