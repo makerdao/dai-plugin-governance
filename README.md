@@ -31,7 +31,7 @@ import governancePlugin from '@makerdao/dai-plugin-governance';
 import Maker from '@makerdao/dai';
 
 (async () => {
-  const maker = Maker.create('browser', {
+  const maker = await Maker.create('browser', {
     plugins: [governancePlugin]
   });
   await maker.authenticate();

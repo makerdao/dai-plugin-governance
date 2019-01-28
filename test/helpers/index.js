@@ -87,7 +87,7 @@ export const ganacheCoinbase = {
 // from on ganache, so it has special privledges that could affect test results
 
 export const setupTestMakerInstance = async () => {
-  const maker = Maker.create('test', {
+  const maker = await Maker.create('http', {
     accounts: {
       owner: { type: 'privateKey', key: ganacheCoinbase.privateKey },
       ali: { type: 'privateKey', key: ganacheAccounts[0].privateKey },

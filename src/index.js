@@ -11,6 +11,7 @@ const contractAddresses = {
   mainnet: require('../contracts/addresses/mainnet.json')
 };
 
+/**Testnet address are handled by testchain-client */
 // try {
 //   const testnetAddresses = require('../contracts/addresses/testnet.json');
 //   contractAddresses.testnet = testnetAddresses;
