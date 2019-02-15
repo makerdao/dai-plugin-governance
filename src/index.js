@@ -1,6 +1,12 @@
 import { map, prop } from 'ramda';
 
-import { PROXY_FACTORY, CHIEF, POLLING } from './utils/constants';
+import {
+  VOTE_PROXY_FACTORY,
+  PROXY_FACTORY,
+  CHIEF,
+  GOV_POLL_GEN,
+  MCD_ADM
+} from './utils/constants';
 import ChiefService from './ChiefService';
 import PollingService from './PollingService';
 import VoteProxyService from './VoteProxyService';
@@ -11,31 +17,23 @@ const contractAddresses = {
   mainnet: require('../contracts/addresses/mainnet.json')
 };
 
-/**Testnet address are handled by testchain-client */
-// try {
-//   const testnetAddresses = require('../contracts/addresses/testnet.json');
-//   contractAddresses.testnet = testnetAddresses;
-// } catch (err) {
-//   // do nothing here; throw an error only if we later attempt to use ganache
-// }
-
 const addContracts = {
-  [CHIEF]: {
+  [MCD_ADM]: {
     address: map(prop('chief'), contractAddresses),
     abi: require('../contracts/abis/DSChief.json')
   },
-  [PROXY_FACTORY]: {
+  [VOTE_PROXY_FACTORY]: {
     address: map(prop('proxy_factory'), contractAddresses),
     abi: require('../contracts/abis/VoteProxyFactory.json')
   },
-  [POLLING]: {
+  [GOV_POLL_GEN]: {
     address: map(prop('polling'), contractAddresses),
     abi: require('../contracts/abis/Polling.json')
   }
 };
 export default {
-  addConfig: function(config) {
-    return {
+  addConfig: function(config, { bypassContracts }) {
+    const options = {
       ...config,
       additionalServices: ['chief', 'polling', 'voteProxy', 'voteProxyFactory'],
       chief: [ChiefService],
@@ -44,5 +42,9 @@ export default {
       voteProxyFactory: [VoteProxyFactoryService],
       smartContract: { addContracts }
     };
+
+    if (bypassContracts === true) delete options.smartContract;
+
+    return options;
   }
 };
