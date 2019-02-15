@@ -1,6 +1,12 @@
 import fetch from 'node-fetch';
 import Maker, { MKR } from '@makerdao/dai';
 import GovService from '../../src/index';
+import {
+  MCD_ADM,
+  GOV_POLL_GEN,
+  VOTE_PROXY_FACTORY
+} from '../../src/utils/constants';
+import { map, prop } from 'ramda';
 
 function ganacheAddress() {
   const port = process.env.GOV_TESTNET_PORT || 2000;
@@ -86,6 +92,26 @@ export const ganacheCoinbase = {
 // tests (besides sending mkr) since it's the address the contracts are deployed
 // from on ganache, so it has special privledges that could affect test results
 
+/**TODO: use testchain-client for testing */
+const contractAddresses = {};
+
+const testnetAddresses = require('../../contracts/addresses/testnet.json');
+contractAddresses.testnet = testnetAddresses;
+const addContracts = {
+  [MCD_ADM]: {
+    address: map(prop('chief'), contractAddresses),
+    abi: require('../../contracts/abis/DSChief.json')
+  },
+  [VOTE_PROXY_FACTORY]: {
+    address: map(prop('proxy_factory'), contractAddresses),
+    abi: require('../../contracts/abis/VoteProxyFactory.json')
+  },
+  [GOV_POLL_GEN]: {
+    address: map(prop('polling'), contractAddresses),
+    abi: require('../../contracts/abis/Polling.json')
+  }
+};
+
 export const setupTestMakerInstance = async () => {
   const maker = await Maker.create('http', {
     accounts: {
@@ -94,8 +120,11 @@ export const setupTestMakerInstance = async () => {
       sam: { type: 'privateKey', key: ganacheAccounts[1].privateKey },
       ava: { type: 'privateKey', key: ganacheAccounts[2].privateKey }
     },
-    provider: { type: 'TEST' },
-    plugins: [GovService]
+    provider: { type: 'HTTP', url: 'http://localhost:2000' },
+    plugins: [[GovService, { bypassContracts: true }]],
+    smartContract: {
+      addContracts
+    }
   });
 
   await maker.authenticate();

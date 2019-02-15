@@ -1,5 +1,5 @@
 import Maker from '@makerdao/dai';
-import { POLLING } from './utils/constants';
+import { GOV_POLL_GEN } from './utils/constants';
 
 export default class PollingService extends Maker.LocalService {
   constructor(name = 'polling') {
@@ -27,6 +27,6 @@ export default class PollingService extends Maker.LocalService {
   // Internal --------------------------------------------
 
   _pollingContract() {
-    return this.get('smartContract').getContractByName(POLLING);
+    return this.get('smartContract').getContractByName(GOV_POLL_GEN);
   }
 }
