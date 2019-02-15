@@ -32,7 +32,7 @@ const addContracts = {
   }
 };
 export default {
-  addConfig: function(config, { bypassContracts }) {
+  addConfig: function(config, { bypassContracts = false }) {
     const options = {
       ...config,
       additionalServices: ['chief', 'polling', 'voteProxy', 'voteProxyFactory'],
