@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@makerdao/dai": "^0.11.1",
+    "@makerdao/services-core": "^0.9.4",
     "babel-runtime": "^6.26.0",
     "ramda": "^0.25.0",
     "web3-utils": "^1.0.0-beta.36"

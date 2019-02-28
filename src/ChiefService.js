@@ -3,6 +3,7 @@ import Maker from '@makerdao/dai';
 import { CHIEF, MCD_ADM } from './utils/constants';
 import { netIdToName } from './utils/helpers';
 import { getCurrency } from '@makerdao/dai/src/eth/Currency';
+import { LocalService } from '@makerdao/services-core';
 
 // imports from 'reads'
 import { memoizeWith, uniq, nth, takeLast, identity } from 'ramda';
