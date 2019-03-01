@@ -87,9 +87,10 @@
     babel-runtime "^6.26.0"
     ramda "^0.26.1"
 
-"@makerdao/dai@^0.11.1":
-  version "0.11.1"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai/-/dai-0.11.1.tgz#9dac1eecb0a0d1f973a79c9d0c69b8d866b3de73"
+"@makerdao/dai@^0.11.2":
+  version "0.11.2"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai/-/dai-0.11.2.tgz#16ebe444dc52b3392da7b79e8e168359c367d3f1"
+  integrity sha512-ZxixO/UAe63PuEBPjV8dTcz4qqdM50S1OAIzX/IwsiKCDdoRoIpvcrRuUBav6NAy5ZC4B19wQ8liyqgWSZLVWg==
   dependencies:
     "@makerdao/services-core" "^0.9.4"
     babel-plugin-module-resolver "^3.1.1"
@@ -117,6 +118,7 @@
 "@makerdao/services-core@^0.9.4":
   version "0.9.4"
   resolved "https://registry.yarnpkg.com/@makerdao/services-core/-/services-core-0.9.4.tgz#b89c43c31a8fb435e09f6cc4e8acf92b9ffc06c4"
+  integrity sha512-goo9Bt362Yrn/FWOTkcBpVK+3/SOroPYzQ+dbLYkt2Lpho+gERooJk20r6DreeClheh2FSDB1ULo/gJ9LNljWQ==
   dependencies:
     babel-runtime "^6.26.0"
     lodash.values "^4.3.0"
