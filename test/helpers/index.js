@@ -124,7 +124,8 @@ export const setupTestMakerInstance = async () => {
     plugins: [[GovService, { bypassContracts: true }]],
     smartContract: {
       addContracts
-    }
+    },
+    log: false
   });
 
   await maker.authenticate();

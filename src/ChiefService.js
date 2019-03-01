@@ -12,7 +12,7 @@ const chiefInfo = contractInfo.chief;
 
 const { MKR } = Maker;
 
-export default class ChiefService extends Maker.LocalService {
+export default class ChiefService extends LocalService {
   constructor(name = 'chief') {
     super(name, ['smartContract', 'web3']);
   }
