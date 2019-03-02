@@ -87,10 +87,9 @@
     babel-runtime "^6.26.0"
     ramda "^0.26.1"
 
-"@makerdao/dai@^0.11.2":
-  version "0.11.2"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai/-/dai-0.11.2.tgz#16ebe444dc52b3392da7b79e8e168359c367d3f1"
-  integrity sha512-ZxixO/UAe63PuEBPjV8dTcz4qqdM50S1OAIzX/IwsiKCDdoRoIpvcrRuUBav6NAy5ZC4B19wQ8liyqgWSZLVWg==
+"@makerdao/dai@^0.11.3":
+  version "0.11.3"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai/-/dai-0.11.3.tgz#e6900c83eb3338542507bbf13687d07018835e6b"
   dependencies:
     "@makerdao/services-core" "^0.9.4"
     babel-plugin-module-resolver "^3.1.1"
@@ -118,7 +117,6 @@
 "@makerdao/services-core@^0.9.4":
   version "0.9.4"
   resolved "https://registry.yarnpkg.com/@makerdao/services-core/-/services-core-0.9.4.tgz#b89c43c31a8fb435e09f6cc4e8acf92b9ffc06c4"
-  integrity sha512-goo9Bt362Yrn/FWOTkcBpVK+3/SOroPYzQ+dbLYkt2Lpho+gERooJk20r6DreeClheh2FSDB1ULo/gJ9LNljWQ==
   dependencies:
     babel-runtime "^6.26.0"
     lodash.values "^4.3.0"
@@ -6622,7 +6620,7 @@ web3-provider-engine@^13.3.2:
     xhr "^2.2.0"
     xtend "^4.0.1"
 
-web3-provider-engine@makerdao/provider-engine#kovan-fix-dist:
+"web3-provider-engine@github:makerdao/provider-engine#kovan-fix-dist":
   version "14.0.4"
   resolved "https://codeload.github.com/makerdao/provider-engine/tar.gz/7c4b187809f156409473246de15dc595e1fe3356"
   dependencies:
