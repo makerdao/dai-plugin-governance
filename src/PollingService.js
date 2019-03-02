@@ -2,7 +2,7 @@ import Maker from '@makerdao/dai';
 import { GOV_POLL_GEN } from './utils/constants';
 import { LocalService } from '@makerdao/services-core';
 
-export default class PollingService extends Maker.LocalService {
+export default class PollingService extends LocalService {
   constructor(name = 'polling') {
     super(name, ['smartContract']);
   }
