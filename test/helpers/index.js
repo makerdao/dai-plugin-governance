@@ -105,10 +105,6 @@ const addContracts = {
   [VOTE_PROXY_FACTORY]: {
     address: map(prop('proxy_factory'), contractAddresses),
     abi: require('../../contracts/abis/VoteProxyFactory.json')
-  },
-  [GOV_POLL_GEN]: {
-    address: map(prop('polling'), contractAddresses),
-    abi: require('../../contracts/abis/Polling.json')
   }
 };
 
