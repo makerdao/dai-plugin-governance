@@ -1,8 +1,7 @@
 import { map, prop } from 'ramda';
 import { createCurrency } from '@makerdao/currency';
-import { VOTE_PROXY_FACTORY, MCD_ADM, POLLING } from './utils/constants';
+import { VOTE_PROXY_FACTORY, MCD_ADM } from './utils/constants';
 import ChiefService from './ChiefService';
-import PollingService from './PollingService';
 import VoteProxyService from './VoteProxyService';
 import VoteProxyFactoryService from './VoteProxyFactoryService';
 
@@ -26,10 +25,6 @@ const addContracts = {
   [VOTE_PROXY_FACTORY]: {
     address: map(prop('VOTE_PROXY_FACTORY'), contractAddresses),
     abi: require('../contracts/abis/VoteProxyFactory.json')
-  },
-  [POLLING]: {
-    address: map(prop('POLLING'), contractAddresses),
-    abi: require('../contracts/abis/Polling.json')
   }
 };
 
@@ -37,9 +32,8 @@ export default {
   addConfig: function(config, { network = 'mainnet' }) {
     let makerConfig = {
       ...config,
-      additionalServices: ['chief', 'polling', 'voteProxy', 'voteProxyFactory'],
+      additionalServices: ['chief', 'voteProxy', 'voteProxyFactory'],
       chief: [ChiefService],
-      polling: [PollingService],
       voteProxy: [VoteProxyService],
       voteProxyFactory: [VoteProxyFactoryService],
       smartContract: { addContracts }
