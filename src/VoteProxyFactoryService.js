@@ -1,8 +1,9 @@
 import Maker from '@makerdao/dai';
 import { VOTE_PROXY_FACTORY, PROXY_FACTORY } from './utils/constants';
 import ApproveLinkTransaction from './ApproveLinkTransaction';
+import { LocalService } from '@makerdao/services-core';
 
-export default class VoteProxyFactoryService extends Maker.LocalService {
+export default class VoteProxyFactoryService extends LocalService {
   constructor(name = 'voteProxyFactory') {
     super(name, ['smartContract', 'voteProxy', 'transactionManager']);
   }

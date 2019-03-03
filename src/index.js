@@ -4,11 +4,9 @@ import {
   VOTE_PROXY_FACTORY,
   PROXY_FACTORY,
   CHIEF,
-  GOV_POLL_GEN,
   MCD_ADM
 } from './utils/constants';
 import ChiefService from './ChiefService';
-import PollingService from './PollingService';
 import VoteProxyService from './VoteProxyService';
 import VoteProxyFactoryService from './VoteProxyFactoryService';
 
@@ -25,19 +23,14 @@ const addContracts = {
   [VOTE_PROXY_FACTORY]: {
     address: map(prop('proxy_factory'), contractAddresses),
     abi: require('../contracts/abis/VoteProxyFactory.json')
-  },
-  [GOV_POLL_GEN]: {
-    address: map(prop('polling'), contractAddresses),
-    abi: require('../contracts/abis/Polling.json')
   }
 };
 export default {
   addConfig: function(config, { bypassContracts = false }) {
     const options = {
       ...config,
-      additionalServices: ['chief', 'polling', 'voteProxy', 'voteProxyFactory'],
+      additionalServices: ['chief', 'voteProxy', 'voteProxyFactory'],
       chief: [ChiefService],
-      polling: [PollingService],
       voteProxy: [VoteProxyService],
       voteProxyFactory: [VoteProxyFactoryService],
       smartContract: { addContracts }

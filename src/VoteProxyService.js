@@ -8,10 +8,10 @@ import {
 // maybe a "dai.js developer utils" package is useful?
 import { getCurrency } from '@makerdao/dai/src/eth/Currency';
 import voteProxyAbi from '../contracts/abis/VoteProxy.json';
-
+import { LocalService } from '@makerdao/services-core';
 const { MKR } = Maker;
 
-export default class VoteProxyService extends Maker.LocalService {
+export default class VoteProxyService extends LocalService {
   constructor(name = 'voteProxy') {
     super(name, ['smartContract', 'chief']);
   }
