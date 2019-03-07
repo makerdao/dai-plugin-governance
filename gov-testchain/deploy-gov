@@ -28,40 +28,40 @@ cd $CWD/src/ds-chief
 dapp update 2>/dev/null
 dapp build 2>/dev/null
 export SETH_ASYNC=yes
-test -z $GOV && GOVtx=$(dapp create DSToken $(seth --to-bytes32 $(seth --from-ascii 'GOV')))
+test -z $MCD_GOV && GOVtx=$(dapp create DSToken $(seth --to-bytes32 $(seth --from-ascii 'MCD_GOV')))
 test -z $IOU && IOUtx=$(dapp create DSToken $(seth --to-bytes32 $(seth --from-ascii 'IOU')))
 export SETH_ASYNC=no
-test -z $GOV && GOV=$(seth receipt $GOVtx contractAddress)
+test -z $MCD_GOV && MCD_GOV=$(seth receipt $GOVtx contractAddress)
 test -z $IOU && IOU=$(seth receipt $IOUtx contractAddress)
 MAX_YAYS=5
-CHIEF=$(dapp create DSChief $GOV $IOU $MAX_YAYS)
-# Chief mints and burns IOUs, so it must be the owner of the token contract 
-seth send $IOU 'setOwner(address)' $CHIEF
+MCD_ADM=$(dapp create DSChief $MCD_GOV $IOU $MAX_YAYS)
+# MCD_ADM mints and burns IOUs, so it must be the owner of the token contract 
+seth send $IOU 'setOwner(address)' $MCD_ADM
 # Seed our coinbase account with some Gov
-seth send $GOV 'mint(uint256)' $(seth --to-uint256 $(seth --to-wei 100 eth))
+seth send $MCD_GOV 'mint(uint256)' $(seth --to-uint256 $(seth --to-wei 100 eth))
 cd -
 
 cd  $CWD/src/vote-proxy
 dapp update 2>/dev/null
 dapp build 2>/dev/null
-PROXY_FACTORY=$(dapp create VoteProxyFactory $CHIEF)
+VOTE_PROXY_FACTORY=$(dapp create VoteProxyFactory $MCD_ADM)
 cd -
 
 cd  $CWD/src/symbolic-voting
 dapp update 2>/dev/null
 dapp build 2>/dev/null
-VOTE_PROXY_RESOLVER=$(dapp create VoteProxyResolver $PROXY_FACTORY)
-POLLING=$(dapp create Polling $GOV $IOU $VOTE_PROXY_RESOLVER '')
+VOTE_PROXY_RESOLVER=$(dapp create VoteProxyResolver $VOTE_PROXY_FACTORY)
+POLLING=$(dapp create Polling $MCD_GOV $IOU $VOTE_PROXY_RESOLVER '')
 cd -
 
 # Save the contract addresses to a JSON file
 cat > $CWD/../contracts/addresses/testnet.json <<- EOM
 {
-  "mkr": "$GOV",
-  "iou": "$IOU",
-  "chief": "$CHIEF",
-  "polling": "$POLLING",
-  "proxy_factory": "$PROXY_FACTORY"
+  "MCD_GOV": "$MCD_GOV",
+  "IOU": "$IOU",
+  "MCD_ADM": "$MCD_ADM",
+  "POLLING": "$POLLING",
+  "VOTE_PROXY_FACTORY": "$VOTE_PROXY_FACTORY"
 }
 EOM
 
@@ -69,7 +69,7 @@ EOM
 # NOTE: this likely can be better handled if the greater 'testchain' repo is updated to accommodate the gov contracts
 cat > $CWD/../node_modules/@makerdao/dai/contracts/addresses/testnet.json <<- EOM
 {
-  "GOV": "$GOV"
+  "GOV": "$MCD_GOV"
 }
 EOM
 

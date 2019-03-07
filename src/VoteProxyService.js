@@ -1,6 +1,6 @@
 import VoteProxy from './VoteProxy';
 import Maker from '@makerdao/dai';
-import { PROXY_FACTORY, ZERO_ADDRESS } from './utils/constants';
+import { VOTE_PROXY_FACTORY, ZERO_ADDRESS } from './utils/constants';
 // maybe a "dai.js developer utils" package is useful?
 import { getCurrency } from '@makerdao/dai/src/eth/Currency';
 import voteProxyAbi from '../contracts/abis/VoteProxy.json';
@@ -71,7 +71,7 @@ export default class VoteProxyService extends Maker.LocalService {
   }
 
   _proxyFactoryContract() {
-    return this.get('smartContract').getContractByName(PROXY_FACTORY);
+    return this.get('smartContract').getContractByName(VOTE_PROXY_FACTORY);
   }
 
   async _getProxyStatus(address) {

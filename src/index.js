@@ -1,6 +1,6 @@
 import { map, prop } from 'ramda';
 
-import { PROXY_FACTORY, CHIEF, POLLING } from './utils/constants';
+import { VOTE_PROXY_FACTORY, MCD_ADM, POLLING } from './utils/constants';
 import ChiefService from './ChiefService';
 import PollingService from './PollingService';
 import VoteProxyService from './VoteProxyService';
@@ -19,16 +19,16 @@ try {
 }
 
 const addContracts = {
-  [CHIEF]: {
-    address: map(prop('chief'), contractAddresses),
+  [MCD_ADM]: {
+    address: map(prop('MCD_ADM'), contractAddresses),
     abi: require('../contracts/abis/DSChief.json')
   },
-  [PROXY_FACTORY]: {
-    address: map(prop('proxy_factory'), contractAddresses),
+  [VOTE_PROXY_FACTORY]: {
+    address: map(prop('VOTE_PROXY_FACTORY'), contractAddresses),
     abi: require('../contracts/abis/VoteProxyFactory.json')
   },
   [POLLING]: {
-    address: map(prop('polling'), contractAddresses),
+    address: map(prop('POLLING'), contractAddresses),
     abi: require('../contracts/abis/Polling.json')
   }
 };

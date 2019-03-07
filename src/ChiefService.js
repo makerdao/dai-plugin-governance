@@ -1,6 +1,6 @@
 import Maker from '@makerdao/dai';
 // maybe a "dai.js developer utils" package is useful?
-import { CHIEF } from './utils/constants';
+import { MCD_ADM } from './utils/constants';
 import { netIdToName } from './utils/helpers';
 import { getCurrency } from '@makerdao/dai/src/eth/Currency';
 
@@ -188,7 +188,7 @@ export default class ChiefService extends Maker.LocalService {
   // Internal --------------------------------------------
 
   _chiefContract({ web3js = false } = {}) {
-    if (web3js) return this.get('smartContract').getWeb3ContractByName(CHIEF);
-    return this.get('smartContract').getContractByName(CHIEF);
+    if (web3js) return this.get('smartContract').getWeb3ContractByName(MCD_ADM);
+    return this.get('smartContract').getContractByName(MCD_ADM);
   }
 }

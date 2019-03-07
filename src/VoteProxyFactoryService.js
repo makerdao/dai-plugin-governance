@@ -1,5 +1,5 @@
 import Maker from '@makerdao/dai';
-import { PROXY_FACTORY } from './utils/constants';
+import { VOTE_PROXY_FACTORY } from './utils/constants';
 import ApproveLinkTransaction from './ApproveLinkTransaction';
 
 export default class VoteProxyFactoryService extends Maker.LocalService {
@@ -28,6 +28,6 @@ export default class VoteProxyFactoryService extends Maker.LocalService {
   }
 
   _proxyFactoryContract() {
-    return this.get('smartContract').getContractByName(PROXY_FACTORY);
+    return this.get('smartContract').getContractByName(VOTE_PROXY_FACTORY);
   }
 }
