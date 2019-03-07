@@ -1,6 +1,11 @@
 import { map, prop } from 'ramda';
 
-import { VOTE_PROXY_FACTORY, MCD_ADM, POLLING } from './utils/constants';
+import {
+  VOTE_PROXY_FACTORY,
+  MCD_ADM,
+  POLLING,
+  MCD_GOV
+} from './utils/constants';
 import ChiefService from './ChiefService';
 import PollingService from './PollingService';
 import VoteProxyService from './VoteProxyService';
@@ -30,6 +35,10 @@ const addContracts = {
   [POLLING]: {
     address: map(prop('POLLING'), contractAddresses),
     abi: require('../contracts/abis/Polling.json')
+  },
+  [MCD_GOV]: {
+    address: map(prop('MCD_GOV'), contractAddresses),
+    abi: require('../contracts/abis/ERC20.json')
   }
 };
 export default {
