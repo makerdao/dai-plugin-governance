@@ -56,11 +56,11 @@ cd -
 # Save the contract addresses to a JSON file
 cat > $CWD/../contracts/addresses/testnet.json <<- EOM
 {
-  "mkr": "$GOV",
-  "iou": "$IOU",
-  "chief": "$CHIEF",
-  "polling": "$POLLING",
-  "proxy_factory": "$PROXY_FACTORY"
+  "MCD_GOV": "$GOV",
+  "IOU": "$IOU",
+  "MCD_ADM": "$CHIEF",
+  "POLLING": "$POLLING",
+  "VOTE_PROXY_FACTORY": "$PROXY_FACTORY"
 }
 EOM
 

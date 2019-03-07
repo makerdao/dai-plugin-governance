@@ -87,9 +87,10 @@
     babel-runtime "^6.26.0"
     ramda "^0.26.1"
 
-"@makerdao/dai@^0.11.3":
-  version "0.11.3"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai/-/dai-0.11.3.tgz#e6900c83eb3338542507bbf13687d07018835e6b"
+"@makerdao/dai@^0.11.4":
+  version "0.11.4"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai/-/dai-0.11.4.tgz#de3fa21000b5d1b3a2e16a528d3bc0149b07465f"
+  integrity sha512-WGFazNonTofVJked6RvNvz8MhwI3q+JWe6mViz28r/RHfwjMdeKLJM9QEIn1AIpjJY1iMT4b4GC8gU5klZ0ooQ==
   dependencies:
     "@makerdao/services-core" "^0.9.4"
     babel-plugin-module-resolver "^3.1.1"
@@ -102,6 +103,7 @@
     ethers-web3-bridge "0.0.1"
     eventemitter2 "^5.0.1"
     invariant "^2.2.2"
+    isomorphic-fetch "^2.2.1"
     lodash "^4.17.10"
     lodash.intersection "^4.4.0"
     lodash.isequal "^4.5.0"
@@ -3504,6 +3506,14 @@ isobject@^3.0.0, isobject@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
 
+isomorphic-fetch@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/isomorphic-fetch/-/isomorphic-fetch-2.2.1.tgz#611ae1acf14f5e81f729507472819fe9733558a9"
+  integrity sha1-YRrhrPFPXoH3KVB0coGf6XM1WKk=
+  dependencies:
+    node-fetch "^1.0.1"
+    whatwg-fetch ">=0.10.0"
+
 isstream@~0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/isstream/-/isstream-0.1.2.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
@@ -4599,7 +4609,7 @@ node-fetch@2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.1.2.tgz#ab884e8e7e57e38a944753cec706f788d1768bb5"
 
-node-fetch@~1.7.1:
+node-fetch@^1.0.1, node-fetch@~1.7.1:
   version "1.7.3"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-1.7.3.tgz#980f6f72d85211a5347c6b2bc18c5b84c3eb47ef"
   dependencies:
@@ -6737,7 +6747,7 @@ whatwg-fetch@2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-2.0.4.tgz#dde6a5df315f9d39991aa17621853d720b85566f"
 
-whatwg-fetch@^3.0.0:
+whatwg-fetch@>=0.10.0, whatwg-fetch@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-3.0.0.tgz#fc804e458cc460009b1a2b966bc8817d2578aefb"
 

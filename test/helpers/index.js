@@ -99,11 +99,11 @@ const testnetAddresses = require('../../contracts/addresses/testnet.json');
 contractAddresses.testnet = testnetAddresses;
 const addContracts = {
   [MCD_ADM]: {
-    address: map(prop('chief'), contractAddresses),
+    address: map(prop('MCD_ADM'), contractAddresses),
     abi: require('../../contracts/abis/DSChief.json')
   },
   [VOTE_PROXY_FACTORY]: {
-    address: map(prop('proxy_factory'), contractAddresses),
+    address: map(prop('VOTE_PROXY_FACTORY'), contractAddresses),
     abi: require('../../contracts/abis/VoteProxyFactory.json')
   }
 };
@@ -150,6 +150,7 @@ export const sendMkrToAddress = async (
   amount
 ) => {
   const lad = maker.currentAccount().name;
+  //TODO update this when MCD_GOV is exported from the SDK
   const mkr = await maker.getToken(MKR);
 
   await maker.useAccountWithAddress(accountToUse);
