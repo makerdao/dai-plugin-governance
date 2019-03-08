@@ -1,13 +1,11 @@
+import { LocalService } from '@makerdao/services-core';
 import VoteProxy from './VoteProxy';
-import Maker from '@makerdao/dai';
-import { VOTE_PROXY_FACTORY, ZERO_ADDRESS } from './utils/constants';
+import { MKR, VOTE_PROXY_FACTORY, ZERO_ADDRESS } from './utils/constants';
 // maybe a "dai.js developer utils" package is useful?
-import { getCurrency } from '@makerdao/dai/src/eth/Currency';
+import { getCurrency } from './utils/helpers';
 import voteProxyAbi from '../contracts/abis/VoteProxy.json';
 
-const { MKR } = Maker;
-
-export default class VoteProxyService extends Maker.LocalService {
+export default class VoteProxyService extends LocalService {
   constructor(name = 'voteProxy') {
     super(name, ['smartContract', 'chief']);
   }
@@ -15,12 +13,12 @@ export default class VoteProxyService extends Maker.LocalService {
   // Writes -----------------------------------------------
 
   lock(proxyAddress, amt, unit = MKR) {
-    const mkrAmt = getCurrency(amt, unit).toEthersBigNumber('wei');
+    const mkrAmt = getCurrency(amt, unit).toFixed('wei');
     return this._proxyContract(proxyAddress).lock(mkrAmt);
   }
 
   free(proxyAddress, amt, unit = MKR) {
-    const mkrAmt = getCurrency(amt, unit).toEthersBigNumber('wei');
+    const mkrAmt = getCurrency(amt, unit).toFixed('wei');
     return this._proxyContract(proxyAddress).free(mkrAmt);
   }
 

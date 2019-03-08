@@ -1,5 +1,5 @@
 import { map, prop } from 'ramda';
-
+import { createCurrency } from '@makerdao/currency';
 import { VOTE_PROXY_FACTORY, MCD_ADM, POLLING } from './utils/constants';
 import ChiefService from './ChiefService';
 import PollingService from './PollingService';
@@ -32,9 +32,10 @@ const addContracts = {
     abi: require('../contracts/abis/Polling.json')
   }
 };
+
 export default {
-  addConfig: function(config) {
-    return {
+  addConfig: function(config, { network = 'mainnet' }) {
+    let makerConfig = {
       ...config,
       additionalServices: ['chief', 'polling', 'voteProxy', 'voteProxyFactory'],
       chief: [ChiefService],
@@ -43,5 +44,20 @@ export default {
       voteProxyFactory: [VoteProxyFactoryService],
       smartContract: { addContracts }
     };
+
+    if (network === 'kovan') {
+      const MKR = createCurrency('MKR');
+      makerConfig.token = {
+        erc20: [
+          {
+            currency: MKR,
+            symbol: MKR.symbol,
+            address: contractAddresses.kovan.MCD_GOV
+          }
+        ]
+      };
+    }
+
+    return makerConfig;
   }
 };

@@ -1,7 +1,7 @@
-import Maker from '@makerdao/dai';
+import { LocalService } from '@makerdao/services-core';
 import { POLLING } from './utils/constants';
 
-export default class PollingService extends Maker.LocalService {
+export default class PollingService extends LocalService {
   constructor(name = 'polling') {
     super(name, ['smartContract']);
   }

@@ -1,3 +1,6 @@
+import { createGetCurrency } from '@makerdao/currency';
+import { MKR } from './constants';
+
 /**
  * @desc get network name
  * @param  {Number|String} id
@@ -15,3 +18,5 @@ export const netIdToName = id => {
       return '';
   }
 };
+
+export const getCurrency = createGetCurrency({ MKR });

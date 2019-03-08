@@ -1,6 +1,7 @@
 import fetch from 'node-fetch';
-import Maker, { MKR } from '@makerdao/dai';
+import Maker from '@makerdao/dai';
 import GovService from '../../src/index';
+import { MKR } from '../../src/utils/constants';
 
 function ganacheAddress() {
   const port = process.env.GOV_TESTNET_PORT || 2000;
@@ -87,17 +88,16 @@ export const ganacheCoinbase = {
 // from on ganache, so it has special privledges that could affect test results
 
 export const setupTestMakerInstance = async () => {
-  const maker = Maker.create('test', {
+  const maker = await Maker.create('test', {
     accounts: {
       owner: { type: 'privateKey', key: ganacheCoinbase.privateKey },
       ali: { type: 'privateKey', key: ganacheAccounts[0].privateKey },
       sam: { type: 'privateKey', key: ganacheAccounts[1].privateKey },
       ava: { type: 'privateKey', key: ganacheAccounts[2].privateKey }
     },
-    provider: { type: 'TEST' },
-    plugins: [GovService]
+    plugins: [GovService],
+    log: false
   });
-
   await maker.authenticate();
   return maker;
 };
