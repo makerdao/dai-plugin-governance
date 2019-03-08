@@ -1,19 +1,21 @@
 {
   "name": "@makerdao/dai-plugin-governance",
   "description": "A dai.js plugin for adding MKR governance support to dapps.",
-  "version": "0.3.10+mcd-0.2.1",
+  "version": "0.4.0-rc.2",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/makerdao/dai-plugin-governance.git"
   },
   "dependencies": {
-    "@makerdao/dai": "0.9.10",
+    "@makerdao/currency": "^0.9.3",
+    "@makerdao/services-core": "^0.9.4",
     "babel-runtime": "^6.26.0",
     "ramda": "^0.25.0",
     "web3-utils": "^1.0.0-beta.36"
   },
   "devDependencies": {
+    "@makerdao/dai": "^0.11.4",
     "babel-cli": "^6.26.0",
     "babel-eslint": "^10.0.1",
     "babel-plugin-transform-runtime": "^6.23.0",

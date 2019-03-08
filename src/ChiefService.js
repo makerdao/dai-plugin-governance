@@ -1,17 +1,14 @@
-import Maker from '@makerdao/dai';
+import { LocalService } from '@makerdao/services-core';
 // maybe a "dai.js developer utils" package is useful?
-import { MCD_ADM } from './utils/constants';
-import { netIdToName } from './utils/helpers';
-import { getCurrency } from '@makerdao/dai/src/eth/Currency';
+import { MKR, MCD_ADM } from './utils/constants';
+import { getCurrency, netIdToName } from './utils/helpers';
 
 // imports from 'reads'
 import { memoizeWith, uniq, nth, takeLast, identity } from 'ramda';
 import contractInfo from '../contracts/contract-info.json';
 const chiefInfo = contractInfo.chief;
 
-const { MKR } = Maker;
-
-export default class ChiefService extends Maker.LocalService {
+export default class ChiefService extends LocalService {
   constructor(name = 'chief') {
     super(name, ['smartContract', 'web3']);
   }
@@ -33,12 +30,12 @@ export default class ChiefService extends Maker.LocalService {
   }
 
   lock(amt, unit = MKR) {
-    const mkrAmt = getCurrency(amt, unit).toEthersBigNumber('wei');
+    const mkrAmt = getCurrency(amt, unit).toFixed('wei');
     return this._chiefContract().lock(mkrAmt);
   }
 
   free(amt, unit = MKR) {
-    const mkrAmt = getCurrency(amt, unit).toEthersBigNumber('wei');
+    const mkrAmt = getCurrency(amt, unit).toFixed('wei');
     return this._chiefContract().free(mkrAmt);
   }
 

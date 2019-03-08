@@ -25,8 +25,8 @@ export SETH_STATUS=yes
 export ETH_RPC_ACCOUNTS=yes # Don't use ethsign
 
 cd $CWD/src/ds-chief
-dapp update 2>/dev/null
-dapp build 2>/dev/null
+dapp update
+dapp --use solc:0.4.25 build
 export SETH_ASYNC=yes
 test -z $MCD_GOV && GOVtx=$(dapp create DSToken $(seth --to-bytes32 $(seth --from-ascii 'MCD_GOV')))
 test -z $IOU && IOUtx=$(dapp create DSToken $(seth --to-bytes32 $(seth --from-ascii 'IOU')))
@@ -35,21 +35,21 @@ test -z $MCD_GOV && MCD_GOV=$(seth receipt $GOVtx contractAddress)
 test -z $IOU && IOU=$(seth receipt $IOUtx contractAddress)
 MAX_YAYS=5
 MCD_ADM=$(dapp create DSChief $MCD_GOV $IOU $MAX_YAYS)
-# MCD_ADM mints and burns IOUs, so it must be the owner of the token contract 
+# MCD_ADM mints and burns IOUs, so it must be the owner of the token contract
 seth send $IOU 'setOwner(address)' $MCD_ADM
 # Seed our coinbase account with some Gov
 seth send $MCD_GOV 'mint(uint256)' $(seth --to-uint256 $(seth --to-wei 100 eth))
 cd -
 
 cd  $CWD/src/vote-proxy
-dapp update 2>/dev/null
-dapp build 2>/dev/null
+dapp update
+dapp --use solc:0.4.25 build
 VOTE_PROXY_FACTORY=$(dapp create VoteProxyFactory $MCD_ADM)
 cd -
 
 cd  $CWD/src/symbolic-voting
-dapp update 2>/dev/null
-dapp build 2>/dev/null
+dapp update
+dapp --use solc:0.4.25 build
 VOTE_PROXY_RESOLVER=$(dapp create VoteProxyResolver $VOTE_PROXY_FACTORY)
 POLLING=$(dapp create Polling $MCD_GOV $IOU $VOTE_PROXY_RESOLVER '')
 cd -
