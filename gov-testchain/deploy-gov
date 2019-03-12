@@ -65,14 +65,6 @@ cat > $CWD/../contracts/addresses/testnet.json <<- EOM
 }
 EOM
 
-# Amend the sdk's mkr token testnet address so that we can interact with the mkr token we've deployed in this script
-# NOTE: this likely can be better handled if the greater 'testchain' repo is updated to accommodate the gov contracts
-cat > $CWD/../node_modules/@makerdao/dai/contracts/addresses/testnet.json <<- EOM
-{
-  "GOV": "$MCD_GOV"
-}
-EOM
-
 END_TIME=`date +%s`
 ELAPSED=`echo $END_TIME - $START_TIME | bc`
 echo "Created testnet in" $ELAPSED "seconds."
