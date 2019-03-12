@@ -47,13 +47,6 @@ dapp --use solc:0.4.25 build
 VOTE_PROXY_FACTORY=$(dapp create VoteProxyFactory $MCD_ADM)
 cd -
 
-cd  $CWD/src/symbolic-voting
-dapp update
-dapp --use solc:0.4.25 build
-VOTE_PROXY_RESOLVER=$(dapp create VoteProxyResolver $VOTE_PROXY_FACTORY)
-POLLING=$(dapp create Polling $MCD_GOV $IOU $VOTE_PROXY_RESOLVER '')
-cd -
-
 # Save the contract addresses to a JSON file
 cat > $CWD/../contracts/addresses/testnet.json <<- EOM
 {

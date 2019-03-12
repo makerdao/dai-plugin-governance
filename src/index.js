@@ -1,7 +1,6 @@
 import { map, prop } from 'ramda';
-import { VOTE_PROXY_FACTORY, MCD_ADM, MKR, POLLING } from './utils/constants';
+import { VOTE_PROXY_FACTORY, MCD_ADM, MKR } from './utils/constants';
 import ChiefService from './ChiefService';
-import PollingService from './PollingService';
 import VoteProxyService from './VoteProxyService';
 import VoteProxyFactoryService from './VoteProxyFactoryService';
 
@@ -29,18 +28,13 @@ export default {
       [VOTE_PROXY_FACTORY]: {
         address: map(prop('VOTE_PROXY_FACTORY'), contractAddresses),
         abi: require('../contracts/abis/VoteProxyFactory.json')
-      },
-      [POLLING]: {
-        address: map(prop('POLLING'), contractAddresses),
-        abi: require('../contracts/abis/Polling.json')
       }
     };
 
     let makerConfig = {
       ...config,
-      additionalServices: ['chief', 'polling', 'voteProxy', 'voteProxyFactory'],
+      additionalServices: ['chief', 'voteProxy', 'voteProxyFactory'],
       chief: [ChiefService],
-      polling: [PollingService],
       voteProxy: [VoteProxyService],
       voteProxyFactory: [VoteProxyFactoryService],
       smartContract: { addContracts },
