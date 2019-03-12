@@ -1,5 +1,5 @@
 import { map, prop } from 'ramda';
-import { VOTE_PROXY_FACTORY, MCD_ADM, MKR } from './utils/constants';
+import { VOTE_PROXY_FACTORY, CHIEF, MKR } from './utils/constants';
 import ChiefService from './ChiefService';
 import VoteProxyService from './VoteProxyService';
 import VoteProxyFactoryService from './VoteProxyFactoryService';
@@ -20,8 +20,8 @@ export default {
     }
 
     const addContracts = {
-      [MCD_ADM]: {
-        address: map(prop('MCD_ADM'), contractAddresses),
+      [CHIEF]: {
+        address: map(prop('CHIEF'), contractAddresses),
         // TODO check for MCD-specific version of DSChief
         abi: require('../contracts/abis/DSChief.json')
       },
@@ -43,7 +43,7 @@ export default {
           {
             currency: MKR,
             symbol: MKR.symbol,
-            address: contractAddresses[network].MCD_GOV
+            address: contractAddresses[network].GOV
           }
         ]
       }
