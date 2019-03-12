@@ -52,7 +52,7 @@ export default class ChiefService extends LocalService {
     const web3Service = this.get('web3');
     const netId = web3Service.getNetwork();
     const networkName = netIdToName(netId);
-    const locks = await web3Service.eth.getPastLogs({
+    const locks = await web3Service.getPastLogs({
       fromBlock: chiefInfo.inception_block[networkName],
       toBlock: 'latest',
       address: chiefAddress,
