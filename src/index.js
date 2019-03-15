@@ -1,5 +1,6 @@
 import { map, prop } from 'ramda';
-import { VOTE_PROXY_FACTORY, CHIEF, MKR } from './utils/constants';
+import { VOTE_PROXY_FACTORY, CHIEF, MKR, IOU } from './utils/constants';
+
 import ChiefService from './ChiefService';
 import VoteProxyService from './VoteProxyService';
 import VoteProxyFactoryService from './VoteProxyFactoryService';
@@ -44,6 +45,11 @@ export default {
             currency: MKR,
             symbol: MKR.symbol,
             address: contractAddresses[network].GOV
+          },
+          {
+            currency: IOU,
+            symbol: IOU.symbol,
+            address: contractAddresses[network].IOU
           }
         ]
       }

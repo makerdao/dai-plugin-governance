@@ -1,6 +1,7 @@
 import { createCurrency } from '@makerdao/currency';
 
 export const MKR = createCurrency('MKR');
+export const IOU = createCurrency('IOU');
 
 /* Contracts */
 export const VOTE_PROXY_FACTORY = 'VOTE_PROXY_FACTORY';
