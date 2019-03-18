@@ -1,6 +1,6 @@
 import { LocalService } from '@makerdao/services-core';
 // maybe a "dai.js developer utils" package is useful?
-import { MKR, MCD_ADM } from './utils/constants';
+import { MKR, CHIEF } from './utils/constants';
 import { getCurrency, netIdToName } from './utils/helpers';
 
 // imports from 'reads'
@@ -52,7 +52,7 @@ export default class ChiefService extends LocalService {
     const web3Service = this.get('web3');
     const netId = web3Service.getNetwork();
     const networkName = netIdToName(netId);
-    const locks = await web3Service.eth.getPastLogs({
+    const locks = await web3Service.getPastLogs({
       fromBlock: chiefInfo.inception_block[networkName],
       toBlock: 'latest',
       address: chiefAddress,
@@ -185,7 +185,7 @@ export default class ChiefService extends LocalService {
   // Internal --------------------------------------------
 
   _chiefContract({ web3js = false } = {}) {
-    if (web3js) return this.get('smartContract').getWeb3ContractByName(MCD_ADM);
-    return this.get('smartContract').getContractByName(MCD_ADM);
+    if (web3js) return this.get('smartContract').getWeb3ContractByName(CHIEF);
+    return this.get('smartContract').getContractByName(CHIEF);
   }
 }

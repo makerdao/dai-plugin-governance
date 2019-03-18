@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 import Maker from '@makerdao/dai';
-import GovService from '../../src/index';
+import GovPlugin from '../../src/index';
 import { MKR } from '../../src/utils/constants';
 
 function ganacheAddress() {
@@ -95,7 +95,7 @@ export const setupTestMakerInstance = async () => {
       sam: { type: 'privateKey', key: ganacheAccounts[1].privateKey },
       ava: { type: 'privateKey', key: ganacheAccounts[2].privateKey }
     },
-    plugins: [GovService],
+    plugins: [[GovPlugin, { network: 'testnet' }]],
     log: false
   });
   await maker.authenticate();
