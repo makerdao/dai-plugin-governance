@@ -6,10 +6,10 @@ import VoteProxyService from './VoteProxyService';
 import VoteProxyFactoryService from './VoteProxyFactoryService';
 
 export default {
-  addConfig: function(config, { network = 'mainnet', mcd }) {
+  addConfig: function(config, { network = 'mainnet', addressOverrides }) {
     const contractAddresses = {
-      kovan: mcd
-        ? require('../contracts/addresses/kovan-mcd.json')
+      kovan: addressOverrides
+        ? addressOverrides
         : require('../contracts/addresses/kovan.json'),
       mainnet: require('../contracts/addresses/mainnet.json')
     };
@@ -32,27 +32,33 @@ export default {
       }
     };
 
-    let makerConfig = {
+    let contractData;
+    if (network !== 'ganache')
+      contractData = {
+        smartContract: { addContracts },
+        token: {
+          erc20: [
+            {
+              currency: MKR,
+              symbol: MKR.symbol,
+              address: contractAddresses[network].GOV
+            },
+            {
+              currency: IOU,
+              symbol: IOU.symbol,
+              address: contractAddresses[network].IOU
+            }
+          ]
+        }
+      };
+
+    const makerConfig = {
       ...config,
       additionalServices: ['chief', 'voteProxy', 'voteProxyFactory'],
       chief: [ChiefService],
       voteProxy: [VoteProxyService],
       voteProxyFactory: [VoteProxyFactoryService],
-      smartContract: { addContracts },
-      token: {
-        erc20: [
-          {
-            currency: MKR,
-            symbol: MKR.symbol,
-            address: contractAddresses[network].GOV
-          },
-          {
-            currency: IOU,
-            symbol: IOU.symbol,
-            address: contractAddresses[network].IOU
-          }
-        ]
-      }
+      ...contractData
     };
 
     return makerConfig;
