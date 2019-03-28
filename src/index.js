@@ -20,6 +20,9 @@ export default {
       // do nothing here; throw an error only if we later attempt to use ganache
     }
 
+    const addressKey = network == 'ganache' ? 'testnet' : network;
+    contractAddresses[addressKey];
+
     const addContracts = {
       [CHIEF]: {
         address: map(prop('CHIEF'), contractAddresses),
@@ -32,33 +35,27 @@ export default {
       }
     };
 
-    let contractData;
-    if (network !== 'ganache')
-      contractData = {
-        smartContract: { addContracts },
-        token: {
-          erc20: [
-            {
-              currency: MKR,
-              symbol: MKR.symbol,
-              address: contractAddresses[network].GOV
-            },
-            {
-              currency: IOU,
-              symbol: IOU.symbol,
-              address: contractAddresses[network].IOU
-            }
-          ]
-        }
-      };
-
     const makerConfig = {
       ...config,
       additionalServices: ['chief', 'voteProxy', 'voteProxyFactory'],
       chief: [ChiefService],
       voteProxy: [VoteProxyService],
       voteProxyFactory: [VoteProxyFactoryService],
-      ...contractData
+      smartContract: { addContracts },
+      token: {
+        erc20: [
+          {
+            currency: MKR,
+            symbol: MKR.symbol,
+            address: contractAddresses[addressKey].GOV
+          },
+          {
+            currency: IOU,
+            symbol: IOU.symbol,
+            address: contractAddresses[addressKey].IOU
+          }
+        ]
+      }
     };
 
     return makerConfig;
