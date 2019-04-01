@@ -6,11 +6,9 @@ import VoteProxyService from './VoteProxyService';
 import VoteProxyFactoryService from './VoteProxyFactoryService';
 
 export default {
-  addConfig: function(config, { network = 'mainnet', addressOverrides }) {
+  addConfig: function(config, { network = 'mainnet' }) {
     const contractAddresses = {
-      kovan: addressOverrides
-        ? addressOverrides
-        : require('../contracts/addresses/kovan.json'),
+      kovan: require('../contracts/addresses/kovan.json'),
       mainnet: require('../contracts/addresses/mainnet.json')
     };
 
@@ -21,7 +19,6 @@ export default {
     }
 
     const addressKey = network == 'ganache' ? 'testnet' : network;
-    contractAddresses[addressKey];
 
     const addContracts = {
       [CHIEF]: {
