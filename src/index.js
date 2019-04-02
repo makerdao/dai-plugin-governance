@@ -20,6 +20,8 @@ export default {
       // do nothing here; throw an error only if we later attempt to use ganache
     }
 
+    const addressKey = network == 'ganache' ? 'testnet' : network;
+
     const addContracts = {
       [CHIEF]: {
         address: map(prop('CHIEF'), contractAddresses),
@@ -32,7 +34,7 @@ export default {
       }
     };
 
-    let makerConfig = {
+    const makerConfig = {
       ...config,
       additionalServices: ['chief', 'voteProxy', 'voteProxyFactory'],
       chief: [ChiefService],
@@ -44,12 +46,12 @@ export default {
           {
             currency: MKR,
             symbol: MKR.symbol,
-            address: contractAddresses[network].GOV
+            address: contractAddresses[addressKey].GOV
           },
           {
             currency: IOU,
             symbol: IOU.symbol,
-            address: contractAddresses[network].IOU
+            address: contractAddresses[addressKey].IOU
           }
         ]
       }
