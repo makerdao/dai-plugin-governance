@@ -6,9 +6,11 @@ import VoteProxyService from './VoteProxyService';
 import VoteProxyFactoryService from './VoteProxyFactoryService';
 
 export default {
-  addConfig: function(config, { network = 'mainnet' }) {
+  addConfig: function(config, { network = 'mainnet', mcd }) {
     const contractAddresses = {
-      kovan: require('../contracts/addresses/kovan.json'),
+      kovan: mcd
+        ? require('../contracts/addresses/kovan-mcd.json')
+        : require('../contracts/addresses/kovan.json'),
       mainnet: require('../contracts/addresses/mainnet.json')
     };
 
