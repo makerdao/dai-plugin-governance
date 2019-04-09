@@ -50,7 +50,7 @@ export default class ChiefService extends LocalService {
   getLockLogs = async () => {
     const chiefAddress = this._chiefContract().address;
     const web3Service = this.get('web3');
-    const netId = web3Service.getNetwork();
+    const netId = web3Service.network;
     const networkName = netIdToName(netId);
     const locks = await web3Service.getPastLogs({
       fromBlock: chiefInfo.inception_block[networkName],

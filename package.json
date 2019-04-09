@@ -9,13 +9,13 @@
   },
   "dependencies": {
     "@makerdao/currency": "^0.9.3",
-    "@makerdao/services-core": "^0.9.4",
+    "@makerdao/services-core": "^0.9.5",
     "babel-runtime": "^6.26.0",
     "ramda": "^0.25.0",
     "web3-utils": "^1.0.0-beta.36"
   },
   "devDependencies": {
-    "@makerdao/dai": "^0.11.4",
+    "@makerdao/dai": "^0.15.1",
     "babel-cli": "^6.26.0",
     "babel-eslint": "^10.0.1",
     "babel-plugin-transform-runtime": "^6.23.0",
