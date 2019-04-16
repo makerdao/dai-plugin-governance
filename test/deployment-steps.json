@@ -1,0 +1,137 @@
+{
+  "status": 0,
+  "message": "",
+  "errors": [],
+  "data": {
+    "updatedAt": "2019-04-12T16:38:49.7109614Z",
+    "tagHash": "3c7bcb9961f987a924e5b79253d786249b58f700",
+    "steps": [
+      {
+        "roles": ["CREATOR"],
+        "oracles": null,
+        "omniaFromAddr": "0xdc9A20F5a46AFE0802b361076BeFC51f787B2e58",
+        "ilks": {
+          "REP": {
+            "pip": { "type": "value", "price": "15", "osmDelay": "0" },
+            "mat": "180"
+          },
+          "ETH": {
+            "pip": { "type": "value", "price": "150", "osmDelay": "0" },
+            "mat": "150"
+          }
+        },
+        "id": 7,
+        "description": "Step 4 - Market Crash & CDP Bite",
+        "defaults": { "osmDelay": "0" }
+      },
+      {
+        "roles": ["CREATOR"],
+        "oracles": null,
+        "omniaFromAddr": "0xdc9A20F5a46AFE0802b361076BeFC51f787B2e58",
+        "ilks": {
+          "REP": {
+            "pip": {
+              "type": "median",
+              "signers": [
+                "0x005B903dAdfD96229CBa5EB0e5Aa75C578e8F968",
+                "0x25310bC78B9347F97DC664b46E5D4602a6De5f2C",
+                "0x74B12Eeb596831796Beb1B36FC96DCCa815523B8",
+                "0xe709290634dE56a55d9826d35A9e677Fea5422EC"
+              ],
+              "osmDelay": "0"
+            },
+            "mat": "180"
+          },
+          "ETH": {
+            "pip": {
+              "type": "median",
+              "signers": [
+                "0x005B903dAdfD96229CBa5EB0e5Aa75C578e8F968",
+                "0x25310bC78B9347F97DC664b46E5D4602a6De5f2C",
+                "0x74B12Eeb596831796Beb1B36FC96DCCa815523B8",
+                "0xe709290634dE56a55d9826d35A9e677Fea5422EC"
+              ],
+              "osmDelay": "0"
+            },
+            "mat": "150"
+          }
+        },
+        "id": 1,
+        "description": "Step 1 - General deployment",
+        "defaults": {}
+      },
+      {
+        "roles": ["CREATOR"],
+        "oracles": null,
+        "omniaFromAddr": "0xdc9A20F5a46AFE0802b361076BeFC51f787B2e58",
+        "ilks": {
+          "REP": {
+            "pip": {
+              "type": "median",
+              "signers": [
+                "0x005B903dAdfD96229CBa5EB0e5Aa75C578e8F968",
+                "0x25310bC78B9347F97DC664b46E5D4602a6De5f2C",
+                "0x74B12Eeb596831796Beb1B36FC96DCCa815523B8",
+                "0xe709290634dE56a55d9826d35A9e677Fea5422EC"
+              ],
+              "osmDelay": "0"
+            },
+            "mat": "180"
+          },
+          "ETH": {
+            "pip": {
+              "type": "median",
+              "signers": [
+                "0x005B903dAdfD96229CBa5EB0e5Aa75C578e8F968",
+                "0x25310bC78B9347F97DC664b46E5D4602a6De5f2C",
+                "0x74B12Eeb596831796Beb1B36FC96DCCa815523B8",
+                "0xe709290634dE56a55d9826d35A9e677Fea5422EC"
+              ],
+              "osmDelay": "0"
+            },
+            "mat": "150"
+          }
+        },
+        "id": 2,
+        "description": "Step 2 - Governance Vote",
+        "defaults": {}
+      },
+      {
+        "roles": ["CREATOR"],
+        "oracles": null,
+        "omniaFromAddr": "0xdc9A20F5a46AFE0802b361076BeFC51f787B2e58",
+        "ilks": {
+          "REP": {
+            "pip": {
+              "type": "median",
+              "signers": [
+                "0x005B903dAdfD96229CBa5EB0e5Aa75C578e8F968",
+                "0x25310bC78B9347F97DC664b46E5D4602a6De5f2C",
+                "0x74B12Eeb596831796Beb1B36FC96DCCa815523B8",
+                "0xe709290634dE56a55d9826d35A9e677Fea5422EC"
+              ],
+              "osmDelay": "0"
+            },
+            "mat": "180"
+          },
+          "ETH": {
+            "pip": {
+              "type": "median",
+              "signers": [
+                "0x005B903dAdfD96229CBa5EB0e5Aa75C578e8F968",
+                "0x25310bC78B9347F97DC664b46E5D4602a6De5f2C",
+                "0x74B12Eeb596831796Beb1B36FC96DCCa815523B8",
+                "0xe709290634dE56a55d9826d35A9e677Fea5422EC"
+              ],
+              "osmDelay": "0"
+            },
+            "mat": "150"
+          }
+        },
+        "id": 4,
+        "description": "Step 4 - CDP Management",
+        "defaults": { "osmDelay": "0" }
+      }
+    ]
+  }
+}

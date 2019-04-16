@@ -40,11 +40,18 @@ export default class VoteProxyService extends LocalService {
   }
 
   async getVoteProxy(addressToCheck) {
+    console.log('address to check', addressToCheck);
     const {
       hasProxy,
       role,
       address: proxyAddress
     } = await this._getProxyStatus(addressToCheck);
+    console.log(
+      'hasProxy, role, proxyAddressstuff',
+      hasProxy,
+      role,
+      proxyAddress
+    );
     if (!hasProxy) return { hasProxy, voteProxy: null };
     const otherRole = role === 'hot' ? 'cold' : 'hot';
     const otherAddress = await this._getAddressOfRole(proxyAddress, otherRole);

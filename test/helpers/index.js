@@ -1,58 +1,65 @@
 import fetch from 'node-fetch';
 import Maker from '@makerdao/dai';
+// import GovPlugin from '@makerdao/dai-plugin-governance';
 import GovPlugin from '../../src/index';
-import { MKR } from '../../src/utils/constants';
+import ConfigPlugin from '@makerdao/dai-plugin-config';
+// import Client from '@makerdao/testchain-client';
+// import { MKR } from '../../src/utils/constants';
+import { createCurrency } from '@makerdao/currency';
 
-function ganacheAddress() {
-  const port = process.env.GOV_TESTNET_PORT || 2000;
-  return `http://localhost:${port}`;
-}
+// Set some account names for easy reference
+const accountNames = ['owner', 'ali', 'sam', 'ava'];
 
-let requestCount = 0;
+// function ganacheAddress() {
+//   const port = process.env.GOV_TESTNET_PORT || 2000;
+//   return `http://localhost:${port}`;
+// }
 
-export async function takeSnapshot() {
-  const id = requestCount;
-  requestCount += 1;
+// let requestCount = 0;
 
-  const res = await fetch(ganacheAddress(), {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      jsonrpc: '2.0',
-      method: 'evm_snapshot',
-      params: [],
-      id: id
-    })
-  });
+// export async function takeSnapshot() {
+//   const id = requestCount;
+//   requestCount += 1;
 
-  const json = await res.json();
-  return parseInt(json['result'], 16);
-}
+//   const res = await fetch(ganacheAddress(), {
+//     method: 'POST',
+//     headers: {
+//       Accept: 'application/json',
+//       'Content-Type': 'application/json'
+//     },
+//     body: JSON.stringify({
+//       jsonrpc: '2.0',
+//       method: 'evm_snapshot',
+//       params: [],
+//       id: id
+//     })
+//   });
 
-export async function restoreSnapshot(snapId) {
-  const id = requestCount;
-  requestCount += 1;
+//   const json = await res.json();
+//   return parseInt(json['result'], 16);
+// }
 
-  const res = await fetch(ganacheAddress(), {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      jsonrpc: '2.0',
-      method: 'evm_revert',
-      params: [snapId],
-      id: id
-    })
-  });
+// export async function restoreSnapshot(snapId) {
+//   const id = requestCount;
+//   requestCount += 1;
 
-  const json = await res.json();
-  return json['result'];
-}
+//   const res = await fetch(ganacheAddress(), {
+//     method: 'POST',
+//     headers: {
+//       Accept: 'application/json',
+//       'Content-Type': 'application/json'
+//     },
+//     body: JSON.stringify({
+//       jsonrpc: '2.0',
+//       method: 'evm_revert',
+//       params: [snapId],
+//       id: id
+//     })
+//   });
+
+//   const json = await res.json();
+//   return json['result'];
+// }
 
 export const fakeAddresses = ['0xbeefed1bedded2dabbed3defaced4decade5dead'];
 
@@ -87,31 +94,113 @@ export const ganacheCoinbase = {
 // tests (besides sending mkr) since it's the address the contracts are deployed
 // from on ganache, so it has special privledges that could affect test results
 
+const MKR = createCurrency('MKR');
+const IOU = createCurrency('IOU');
+
+const fetchAccounts = async () => {
+  // const rpcUrl = 'http://ex-testchain.local:8569';
+  // const wsUrl = 'ws://ex-testchain.local:8569';
+  const { Client, Event } = require('@makerdao/testchain-client');
+
+  const client = new Client();
+  const { details: chainData } = await client.api.getChain(testchainId);
+
+  console.log('chainData', chainData);
+  const deployedAccounts = chainData.chain_details.accounts;
+  // console.log('json', JSON.parse(chainData));
+  console.log('deployedAccounts', deployedAccounts);
+
+  const accounts = deployedAccounts.reduce((result, value, index) => {
+    if (index < 4) {
+      const name = accountNames[index];
+      console.log('name', name);
+
+      result[name] = {
+        type: 'privateKey',
+        key: value.priv_key
+      };
+    }
+    console.log('results', result);
+    return result;
+    // return;
+  }, {});
+
+  console.log('testAccounts', accounts);
+  return accounts;
+};
+
+// accounts: {
+//   owner: { type: 'privateKey', key: ganacheCoinbase.privateKey },
+//   ali: { type: 'privateKey', key: ganacheAccounts[0].privateKey },
+//   sam: { type: 'privateKey', key: ganacheAccounts[1].privateKey },
+//   ava: { type: 'privateKey', key: ganacheAccounts[2].privateKey }
+// },
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+const testchainId = '17453460837341857085';
+// const thisSnapshotName = 'PretestSnapshot1927';
+
+export const takeSnapshot = async name => {
+  const { Client, Event } = require('@makerdao/testchain-client');
+  const client = new Client();
+  await client.init();
+  client.takeSnapshot(testchainId, name);
+  await sleep(7000);
+
+  const snapshots = await client.api.listAllSnapshots('ganache');
+  const mySnap = snapshots.data.filter(x => x.description === name);
+  // console.log('snapshots', snapshots);
+  // console.log('mySnap', mySnap);
+
+  return mySnap[0].id;
+};
+
+export const restoreSnapshot = async snapshotId => {
+  const { Client, Event } = require('@makerdao/testchain-client');
+  const client = new Client();
+  await client.init();
+  client.restoreSnapshot(testchainId, snapshotId);
+  await sleep(7000);
+  console.log('restored snapshot id', snapshotId);
+  return true;
+};
+
 export const setupTestMakerInstance = async () => {
-  const maker = await Maker.create('test', {
-    accounts: {
-      owner: { type: 'privateKey', key: ganacheCoinbase.privateKey },
-      ali: { type: 'privateKey', key: ganacheAccounts[0].privateKey },
-      sam: { type: 'privateKey', key: ganacheAccounts[1].privateKey },
-      ava: { type: 'privateKey', key: ganacheAccounts[2].privateKey }
-    },
-    plugins: [[GovPlugin, { network: 'testnet' }]],
-    log: false
+  const accounts = await fetchAccounts();
+  const maker = await Maker.create('http', {
+    plugins: [
+      [GovPlugin, { network: 'ganache' }],
+      [ConfigPlugin, { testchainId }]
+    ],
+    url: 'http://localhost:8568',
+    accounts
   });
+
+  console.log('maker create done');
+
   await maker.authenticate();
+  console.log('maker authenticate done');
+
   return maker;
 };
 
 export const linkAccounts = async (maker, initiator, approver) => {
   const lad = maker.currentAccount().name;
+  console.log('lad', lad);
 
+  console.log('about to use account with this address', initiator);
   // initiator wants to create a link with approver
   maker.useAccountWithAddress(initiator);
-  await maker.service('voteProxyFactory').initiateLink(approver);
+  console.log('finished use account');
+  const vpsFactory = maker.service('voteProxyFactory');
+  console.log('vpsfactor', vpsFactory);
+  const a = await vpsFactory.initiateLink(approver);
+  console.log('initiateLink finished', a);
 
   // approver confirms it
   maker.useAccountWithAddress(approver);
-  await maker.service('voteProxyFactory').approveLink(initiator);
+  const b = await maker.service('voteProxyFactory').approveLink(initiator);
+  console.log('approveLink finished', b);
 
   // no other side effects
   maker.useAccount(lad);
@@ -124,12 +213,17 @@ export const sendMkrToAddress = async (
   amount
 ) => {
   const lad = maker.currentAccount().name;
+  console.log('lad', lad);
   const mkr = await maker.getToken(MKR);
+  console.log('MKR', MKR);
+  console.log('mkr', mkr);
 
   await maker.useAccountWithAddress(accountToUse);
   await mkr.transfer(receiver, amount);
 
+  console.log('sent almost finished');
   maker.useAccount(lad);
+  console.log('finished');
 };
 
 export const setUpAllowance = async (maker, address) => {

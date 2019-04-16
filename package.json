@@ -16,6 +16,9 @@
   },
   "devDependencies": {
     "@makerdao/dai": "^0.15.1",
+    "@makerdao/dai-plugin-config": "^0.2.3-rc.3",
+    "@makerdao/dai-plugin-governance": "^0.5.4",
+    "@makerdao/testchain-client": "^0.2.1-rc.1",
     "babel-cli": "^6.26.0",
     "babel-eslint": "^10.0.1",
     "babel-plugin-transform-runtime": "^6.23.0",
@@ -33,6 +36,7 @@
   "scripts": {
     "deploy": "yarn build && yarn publish dist",
     "test": "jest --runInBand",
+    "test:extestchain": "HOST=http://ex-testchain.local jest --runInBand",
     "testnet": "./gov-testchain/deploy-gov",
     "ci": "./gov-testchain/deploy-gov --ci jest --coverage",
     "build": "./scripts/build.sh",

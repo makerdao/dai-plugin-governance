@@ -4,10 +4,12 @@ import ApproveLinkTransaction from './ApproveLinkTransaction';
 
 export default class VoteProxyFactoryService extends LocalService {
   constructor(name = 'voteProxyFactory') {
+    console.log('vps constructor');
     super(name, ['smartContract', 'voteProxy', 'transactionManager']);
   }
 
   initiateLink(hotAddress) {
+    console.log('initiateLink with', hotAddress);
     return this._proxyFactoryContract().initiateLink(hotAddress);
   }
 
