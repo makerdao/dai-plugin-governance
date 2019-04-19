@@ -135,44 +135,47 @@ const fetchAccounts = async () => {
 //   sam: { type: 'privateKey', key: ganacheAccounts[1].privateKey },
 //   ava: { type: 'privateKey', key: ganacheAccounts[2].privateKey }
 // },
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-const testchainId = '17453460837341857085';
-// const thisSnapshotName = 'PretestSnapshot1927';
-
-export const takeSnapshot = async name => {
+export const setupTestchainClient = async () => {
   const { Client, Event } = require('@makerdao/testchain-client');
   const client = new Client();
   await client.init();
-  client.takeSnapshot(testchainId, name);
+  return client;
+};
+
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+console.log('do we have access to global here?', global.testchainId);
+// const testchainId = global.testchainId;
+
+export const takeSnapshot = async (testchainId, client, name) => {
+  const res = await client.takeSnapshot(testchainId, name);
+  console.log('return in');
   await sleep(7000);
 
   const snapshots = await client.api.listAllSnapshots('ganache');
   const mySnap = snapshots.data.filter(x => x.description === name);
   // console.log('snapshots', snapshots);
-  // console.log('mySnap', mySnap);
+  console.log('mySnap', mySnap);
 
   return mySnap[0].id;
 };
 
-export const restoreSnapshot = async snapshotId => {
-  const { Client, Event } = require('@makerdao/testchain-client');
-  const client = new Client();
-  await client.init();
+export const restoreSnapshot = async (testchainId, client, snapshotId) => {
   client.restoreSnapshot(testchainId, snapshotId);
-  await sleep(7000);
+  await sleep(15000);
   console.log('restored snapshot id', snapshotId);
   return true;
 };
 
-export const setupTestMakerInstance = async () => {
+export const setupTestMakerInstance = async (testchainId, port) => {
   const accounts = await fetchAccounts();
   const maker = await Maker.create('http', {
     plugins: [
       [GovPlugin, { network: 'ganache' }],
       [ConfigPlugin, { testchainId }]
     ],
-    url: 'http://localhost:8568',
+    url: `http://localhost:${port}`,
     accounts
   });
 

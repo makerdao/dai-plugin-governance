@@ -2,14 +2,18 @@ import {
   takeSnapshot,
   restoreSnapshot,
   setupTestMakerInstance,
-  linkAccounts
+  linkAccounts,
+  setupTestchainClient
 } from './helpers';
 import VoteProxy from '../src/VoteProxy';
 
-let snapshotId, maker, addresses, voteProxyService;
+let snapshotId, maker, addresses, voteProxyService, client;
+
+jest.setTimeout(60000);
 
 beforeAll(async () => {
-  snapshotId = await takeSnapshot();
+  client = await setupTestchainClient();
+  snapshotId = await takeSnapshot(client, 'thur2');
 
   maker = await setupTestMakerInstance();
 
@@ -23,7 +27,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await restoreSnapshot(snapshotId);
+  await restoreSnapshot(client, snapshotId);
 });
 
 test('Vote proxy instance returns correct information about itself', async () => {
