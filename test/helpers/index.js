@@ -145,18 +145,15 @@ export const setupTestchainClient = async () => {
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-console.log('do we have access to global here?', global.testchainId);
-// const testchainId = global.testchainId;
-
 export const takeSnapshot = async (testchainId, client, name) => {
   const res = await client.takeSnapshot(testchainId, name);
-  console.log('return in');
+
   await sleep(7000);
 
   const snapshots = await client.api.listAllSnapshots('ganache');
   const mySnap = snapshots.data.filter(x => x.description === name);
-  // console.log('snapshots', snapshots);
-  console.log('mySnap', mySnap);
+
+  console.log('mySnap', mySnap[0]);
 
   return mySnap[0].id;
 };
@@ -165,6 +162,13 @@ export const restoreSnapshot = async (testchainId, client, snapshotId) => {
   client.restoreSnapshot(testchainId, snapshotId);
   await sleep(15000);
   console.log('restored snapshot id', snapshotId);
+  return true;
+};
+
+export const deleteSnapshot = async (client, snapshotId) => {
+  await client.api.deleteSnapshot(snapshotId);
+  await sleep(10000);
+  console.log('deleted snapshot id', snapshotId);
   return true;
 };
 

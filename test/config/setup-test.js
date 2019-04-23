@@ -1,51 +1,52 @@
 // Until events from the server are set up, we'll have to fake it with sleep
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
+const defaultSnapshot = '1373323262812202725';
+
 const testchainConfig = {
   accounts: 4,
   block_mine_time: 0,
   clean_on_stop: true,
-  description: 'DaiPluginDefault',
-  step_id: 2,
-  type: 'ganache'
+  description: 'DaiPluginDefault2',
+  type: 'ganache',
+  snapshot_id: defaultSnapshot
 };
 const startTestchain = async () => {
   console.log('start testchain');
   const { Client, Event } = require('@makerdao/testchain-client');
   const client = new Client();
-  await client.init();
-  client.create(testchainConfig);
+  global.client = client;
+  await global.client.init();
+  global.client.create(testchainConfig);
   const {
     payload: {
       response: { id }
     }
-  } = await client.once('api', Event.OK);
+  } = await global.client.once('api', Event.OK);
   // console.log('response', response);
   return id;
 };
 
 const getTestchainDetails = async id => {
-  console.log('get tc url');
-  const { Client, Event } = require('@makerdao/testchain-client');
-  const client = new Client();
-  await client.init();
-  return client.api.getChain(id);
+  return global.client.api.getChain(id);
 };
 
 beforeAll(async () => {
-  console.log('beforeall foreal testchain');
+  console.log('beforeall testchain');
   const id = await startTestchain();
-  await sleep(30000);
+  // sleep for 10 seconds while we wait for the snapshot to restore
+  await sleep(10000);
   const {
     details: {
       chain_details: { rpc_url }
     }
   } = await getTestchainDetails(id);
-  console.log('CHAIN DATA', rpc_url);
-  global.testchainPort = rpc_url.substr(id.length - 5);
+  console.log('rpc_url', rpc_url);
+  global.testchainPort = rpc_url.substr(rpc_url.length - 4);
   global.testchainId = id;
 
-  console.log('GLOBAL ID', id);
+  console.log('GLOBAL ID', global.testchainId);
+  console.log('GLOBAL PORT', global.testchainPort);
   // snapshotId = await takeSnapshot();
 });
 

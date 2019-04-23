@@ -3,7 +3,8 @@ import {
   restoreSnapshot,
   setupTestMakerInstance,
   setUpAllowance,
-  setupTestchainClient
+  setupTestchainClient,
+  deleteSnapshot
 } from './helpers';
 import { ZERO_ADDRESS } from '../src/utils/constants';
 import ChiefService from '../src/ChiefService';
@@ -11,8 +12,8 @@ import * as web3utils from 'web3-utils';
 
 let snapshotId, maker, chiefService, client;
 
-const testchainId = global.testchainId;
-const port = global.port;
+let testchainId;
+let port;
 
 const picks = [
   '0x26EC003c72ebA27749083d588cdF7EBA665c0A1D',
@@ -23,8 +24,13 @@ const mkrToLock = 3;
 jest.setTimeout(60000);
 
 beforeAll(async () => {
-  client = await setupTestchainClient();
-  snapshotId = await takeSnapshot(testchainId, client, 'thur2');
+  // client = await setupTestchainClient();
+  client = global.client;
+
+  testchainId = global.testchainId;
+  port = global.testchainPort;
+
+  snapshotId = await takeSnapshot(testchainId, client, 'chiefTest1');
 
   maker = await setupTestMakerInstance(testchainId, port);
   // console.log('maker in test', maker);
@@ -33,6 +39,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await restoreSnapshot(testchainId, client, snapshotId);
+  await deleteSnapshot(client, snapshotId);
 });
 
 test('can create Chief Service', async () => {
