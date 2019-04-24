@@ -1,32 +1,18 @@
-import {
-  takeSnapshot,
-  restoreSnapshot,
-  setupTestMakerInstance,
-  linkAccounts,
-  setupTestchainClient
-} from './helpers';
+import { setupTestMakerInstance, linkAccounts } from './helpers';
 import VoteProxyFactoryService from '../src/VoteProxyFactoryService';
 
-let snapshotId, maker, addresses, voteProxyFactory, voteProxyService, client;
+let maker, addresses, voteProxyFactory, voteProxyService;
 jest.setTimeout(60000);
 
 beforeAll(async () => {
-  client = await setupTestchainClient();
-  snapshotId = await takeSnapshot(client, 'thur2');
-
   maker = await setupTestMakerInstance();
 
   addresses = maker
     .listAccounts()
     .reduce((acc, cur) => ({ ...acc, [cur.name]: cur.address }), {});
-  console.log('addresses in maker', addresses);
 
   voteProxyFactory = maker.service('voteProxyFactory');
   voteProxyService = maker.service('voteProxy');
-});
-
-afterAll(async () => {
-  await restoreSnapshot(client, snapshotId);
 });
 
 test('can create VPFS Service', async () => {
@@ -36,10 +22,8 @@ test('can create VPFS Service', async () => {
 
 test('can create a vote proxy linking two addressses', async () => {
   await linkAccounts(maker, addresses.ali, addresses.ava);
-  console.log('link accounts finished');
 
   const { hasProxy } = await voteProxyService.getVoteProxy(addresses.ali);
-  console.log('getVoteProxy finished', hasProxy);
   expect(hasProxy).toBeTruthy();
 });
 

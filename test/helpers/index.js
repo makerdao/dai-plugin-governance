@@ -100,10 +100,12 @@ const IOU = createCurrency('IOU');
 const fetchAccounts = async () => {
   // const rpcUrl = 'http://ex-testchain.local:8569';
   // const wsUrl = 'ws://ex-testchain.local:8569';
-  const { Client, Event } = require('@makerdao/testchain-client');
+  // const { Client, Event } = require('@makerdao/testchain-client');
 
-  const client = new Client();
-  const { details: chainData } = await client.api.getChain(testchainId);
+  // const client = new Client();
+  console.log('GLOBAL CLIENT', global.client);
+  const client = global.client;
+  const { details: chainData } = await client.api.getChain(global.testchainId);
 
   console.log('chainData', chainData);
   const deployedAccounts = chainData.chain_details.accounts;
@@ -172,21 +174,18 @@ export const deleteSnapshot = async (client, snapshotId) => {
   return true;
 };
 
-export const setupTestMakerInstance = async (testchainId, port) => {
+export const setupTestMakerInstance = async () => {
   const accounts = await fetchAccounts();
   const maker = await Maker.create('http', {
     plugins: [
       [GovPlugin, { network: 'ganache' }],
-      [ConfigPlugin, { testchainId }]
+      [ConfigPlugin, { testchainId: global.testchainId }]
     ],
-    url: `http://localhost:${port}`,
+    url: global.rpcUrl,
     accounts
   });
 
-  console.log('maker create done');
-
   await maker.authenticate();
-  console.log('maker authenticate done');
 
   return maker;
 };

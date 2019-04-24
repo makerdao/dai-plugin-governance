@@ -1,20 +1,25 @@
 // Until events from the server are set up, we'll have to fake it with sleep
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-const defaultSnapshot = '1373323262812202725';
+// const defaultSnapshotId = '18072813273764569849'; // default for remote
+const defaultSnapshotId = '5521167592574382503'; // my local one
+
+// const testchainUrl = 'http://18.185.172.121:4000';
+// const websocketUrl = 'ws://18.185.172.121:4000/socket';
+const testchainUrl = process.env.TESTCHAIN_URL || 'http://localhost:4000';
+const websocketUrl = process.env.WEBSOCKET_URL || 'ws://127.1:4000/socket';
 
 const testchainConfig = {
   accounts: 4,
   block_mine_time: 0,
   clean_on_stop: true,
-  description: 'DaiPluginDefault2',
+  description: 'DaiPluginDefault4',
   type: 'ganache',
-  snapshot_id: defaultSnapshot
+  snapshot_id: defaultSnapshotId
 };
 const startTestchain = async () => {
-  console.log('start testchain');
   const { Client, Event } = require('@makerdao/testchain-client');
-  const client = new Client();
+  const client = new Client(testchainUrl, websocketUrl);
   global.client = client;
   await global.client.init();
   global.client.create(testchainConfig);
@@ -23,45 +28,38 @@ const startTestchain = async () => {
       response: { id }
     }
   } = await global.client.once('api', Event.OK);
-  // console.log('response', response);
+
   return id;
 };
 
-const getTestchainDetails = async id => {
-  return global.client.api.getChain(id);
-};
-
-beforeAll(async () => {
-  console.log('beforeall testchain');
-  const id = await startTestchain();
-  // sleep for 10 seconds while we wait for the snapshot to restore
-  await sleep(10000);
+const setTestchainDetails = async id => {
   const {
     details: {
       chain_details: { rpc_url }
     }
-  } = await getTestchainDetails(id);
-  console.log('rpc_url', rpc_url);
+  } = await global.client.api.getChain(id);
+
+  global.defaultSnapshotId = defaultSnapshotId;
   global.testchainPort = rpc_url.substr(rpc_url.length - 4);
   global.testchainId = id;
+  global.rpcUrl = rpc_url.includes('.local')
+    ? `http://localhost:${global.testchainPort}`
+    : rpc_url;
+};
 
-  console.log('GLOBAL ID', global.testchainId);
-  console.log('GLOBAL PORT', global.testchainPort);
-  // snapshotId = await takeSnapshot();
+beforeAll(async () => {
+  const id = await startTestchain();
+  // sleep for 10 seconds while we wait for the chain to start up
+  await sleep(10000);
+  await setTestchainDetails(id);
 });
 
-// afterEach(() => {
-//   return Web3ServiceList.disconnectAll();
-// });
-
-// let snapshotId;
-
-// afterAll(async () => {
-//   await restoreSnapshot(snapshotId);
-// });
-
-//default snapshot
-// take new snapshot of default
-// test
-// restore new snapshot
-// delete new snapshot
+afterAll(async () => {
+  global.client.restoreSnapshot(global.testchainId, global.defaultSnapshotId);
+  await sleep(15000);
+  console.log('restored snapshot id', defaultSnapshotId);
+  await global.client.delete(global.testchainId);
+  await sleep(15000);
+  console.log('deleted chain id', global.testchainId);
+  return true;
+});

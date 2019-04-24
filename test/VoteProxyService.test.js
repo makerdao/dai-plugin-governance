@@ -1,30 +1,18 @@
 import {
-  takeSnapshot,
-  restoreSnapshot,
   setupTestMakerInstance,
   linkAccounts,
   sendMkrToAddress,
-  setUpAllowance,
-  setupTestchainClient
+  setUpAllowance
 } from './helpers';
 import VoteProxyService from '../src/VoteProxyService';
 import VoteProxy from '../src/VoteProxy';
 
-let snapshotId,
-  maker,
-  addresses,
-  voteProxyService,
-  voteProxyFactory,
-  chiefService,
-  client;
+let maker, addresses, voteProxyService, voteProxyFactory, chiefService;
 
 // TODO remove this & other jest.setTimeout when promise/resolve gets finished
 jest.setTimeout(60000);
 
 beforeAll(async () => {
-  client = await setupTestchainClient();
-  snapshotId = await takeSnapshot(client, 'thur2');
-
   maker = await setupTestMakerInstance();
 
   voteProxyService = maker.service('voteProxy');
@@ -40,10 +28,6 @@ beforeAll(async () => {
   await linkAccounts(maker, addresses.ali, addresses.ava);
 });
 
-afterAll(async () => {
-  await restoreSnapshot(client, snapshotId);
-});
-
 // TODO retest these create tests, or remove them
 // test('can create VP Service', async () => {
 //   const vps = maker.service('voteProxy');
@@ -57,11 +41,7 @@ test('can lock an amount of MKR', async () => {
 
   maker.useAccount('ali');
 
-  console.log('address to send addresses.ali', addresses.ali);
-
   const { voteProxy } = await voteProxyService.getVoteProxy(addresses.ali);
-
-  console.log('voteprox', voteProxy);
 
   const vpAddress = voteProxy.getProxyAddress();
 
@@ -90,7 +70,6 @@ test('can cast an executive vote and retrieve voted on addresses from slate', as
   const addressesVotedOn = await voteProxyService.getVotedProposalAddresses(
     vpAddress
   );
-  console.log('addressesVotedOn worked', addressesVotedOn);
   expect(addressesVotedOn).toEqual(picks);
 });
 
