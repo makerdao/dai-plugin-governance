@@ -54,12 +54,12 @@ beforeAll(async () => {
   await setTestchainDetails(id);
 });
 
-afterAll(async () => {
+afterAll(async done => {
   global.client.restoreSnapshot(global.testchainId, global.defaultSnapshotId);
   await sleep(15000);
   console.log('restored snapshot id', defaultSnapshotId);
   await global.client.delete(global.testchainId);
   await sleep(15000);
   console.log('deleted chain id', global.testchainId);
-  return true;
+  done();
 });
