@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.4.3",
-    "@makerdao/currency": "^0.9.3",
+    "@makerdao/currency": "^0.9.5",
     "@makerdao/services-core": "^0.9.5",
     "ramda": "^0.25.0",
     "web3-utils": "^1.0.0-beta.36"
@@ -21,8 +21,8 @@
     "@babel/plugin-proposal-class-properties": "^7.4.0",
     "@babel/plugin-transform-runtime": "^7.3.4",
     "@babel/preset-env": "^7.4.3",
-    "@makerdao/dai": "^0.15.1",
-    "@makerdao/dai-plugin-config": "^0.2.5-rc.1",
+    "@makerdao/dai": "^0.16.1",
+    "@makerdao/dai-plugin-config": "^0.2.7-rc.3",
     "@makerdao/dai-plugin-governance": "^0.5.4",
     "@makerdao/testchain-client": "^0.2.6-rc.1",
     "babel-eslint": "^10.0.1",

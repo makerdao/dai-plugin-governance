@@ -6,7 +6,7 @@ let maker, addresses, voteProxyService;
 jest.setTimeout(60000);
 
 beforeAll(async () => {
-  maker = await setupTestMakerInstance();
+  maker = await setupTestMakerInstance(true);
 
   voteProxyService = maker.service('voteProxy');
 

@@ -108,11 +108,36 @@ const fetchAccounts = async () => {
   const { details: chainData } = await client.api.getChain(global.testchainId);
 
   console.log('chainData', chainData);
+
   const deployedAccounts = chainData.chain_details.accounts;
   // console.log('json', JSON.parse(chainData));
-  console.log('deployedAccounts', deployedAccounts);
+  console.log('deployedAccounts before', deployedAccounts);
+
+  // const coinb = deployedAccounts.filter(
+  //   account => account.address === chainData.chain_details.coinbase
+  // );
+
+  // const [cb, ...other] = deployedAccounts
+
+  // console.log('coinb', coinb);
+
+  // delete deployedAccounts[coinb[0]];
+  // deployedAccounts.splice(index, 1);
+
+  deployedAccounts.sort(
+    acct => acct.address === chainData.chain_details.coinbase
+  );
+
+  console.log('deployedAccounts after', deployedAccounts);
 
   const accounts = deployedAccounts.reduce((result, value, index) => {
+    // if (value.address === chainData.chain_details.coinbase) {
+    //   result['owner'] = { type: 'privateKey', key: value.priv_key };
+    //   // delete deployedAccounts[index];
+    //   deployedAccounts.splice(index, 1);
+    // }
+    // else {
+    // let nameIndex = 0;
     if (index < 4) {
       const name = accountNames[index];
       console.log('name', name);
@@ -122,21 +147,22 @@ const fetchAccounts = async () => {
         key: value.priv_key
       };
     }
+    // if (nameIndex <= accountNames.length - 1) nameIndex++;
+    // }
     console.log('results', result);
     return result;
-    // return;
   }, {});
 
   console.log('testAccounts', accounts);
   return accounts;
 };
 
-// accounts: {
+// const oldAccounts = {
 //   owner: { type: 'privateKey', key: ganacheCoinbase.privateKey },
 //   ali: { type: 'privateKey', key: ganacheAccounts[0].privateKey },
 //   sam: { type: 'privateKey', key: ganacheAccounts[1].privateKey },
 //   ava: { type: 'privateKey', key: ganacheAccounts[2].privateKey }
-// },
+// };
 
 export const setupTestchainClient = async () => {
   const { Client, Event } = require('@makerdao/testchain-client');
@@ -174,12 +200,23 @@ export const deleteSnapshot = async (client, snapshotId) => {
   return true;
 };
 
-export const setupTestMakerInstance = async () => {
+export const setupMakerOld = async () => {
+  const maker = await Maker.create('http', {
+    plugins: [[GovPlugin, { network: 'ganache' }]],
+    url: 'http://localhost:2000',
+    accounts: oldAccounts
+  });
+  await maker.authenticate();
+  return maker;
+};
+
+export const setupTestMakerInstance = async useOldChain => {
+  // if (useOldChain) return setupMakerOld();
   const accounts = await fetchAccounts();
   const maker = await Maker.create('http', {
     plugins: [
       [GovPlugin, { network: 'ganache' }],
-      [ConfigPlugin, { testchainId: global.testchainId }]
+      [ConfigPlugin, { testchainId: global.testchainId, backendEnv: 'dev' }]
     ],
     url: global.rpcUrl,
     accounts
@@ -195,6 +232,7 @@ export const linkAccounts = async (maker, initiator, approver) => {
   console.log('lad', lad);
 
   console.log('about to use account with this address', initiator);
+  // const tokenService =
   // initiator wants to create a link with approver
   maker.useAccountWithAddress(initiator);
   console.log('finished use account');

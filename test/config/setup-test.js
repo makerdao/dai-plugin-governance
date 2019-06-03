@@ -1,8 +1,8 @@
 // Until events from the server are set up, we'll have to fake it with sleep
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-// const defaultSnapshotId = '18072813273764569849'; // default for remote
-const defaultSnapshotId = '5521167592574382503'; // my local one
+// const defaultSnapshotId = '14971159596125578068'; // default for remote
+const defaultSnapshotId = '10843983071983781187'; // my local one
 
 // const testchainUrl = 'http://18.185.172.121:4000';
 // const websocketUrl = 'ws://18.185.172.121:4000/socket';
@@ -10,11 +10,11 @@ const testchainUrl = process.env.TESTCHAIN_URL || 'http://localhost:4000';
 const websocketUrl = process.env.WEBSOCKET_URL || 'ws://127.1:4000/socket';
 
 const testchainConfig = {
-  accounts: 4,
+  accounts: 3,
   block_mine_time: 0,
   clean_on_stop: true,
-  description: 'DaiPluginDefault4',
-  type: 'ganache',
+  description: 'DaiPluginDefault5',
+  type: 'geth',
   snapshot_id: defaultSnapshotId
 };
 const startTestchain = async () => {
@@ -29,6 +29,7 @@ const startTestchain = async () => {
     }
   } = await global.client.once('api', Event.OK);
 
+  console.log('id and client ok', id, client);
   return id;
 };
 

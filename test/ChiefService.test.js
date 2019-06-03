@@ -14,7 +14,7 @@ const mkrToLock = 3;
 jest.setTimeout(60000);
 
 beforeAll(async () => {
-  maker = await setupTestMakerInstance();
+  maker = await setupTestMakerInstance(false);
   chiefService = maker.service('chief');
 });
 
