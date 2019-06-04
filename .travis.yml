@@ -1,6 +1,8 @@
 dist: trusty
 language: node_js
 sudo: required
+git:
+  submodules: false
 node_js:
   - '11.10'
 before_cache:
