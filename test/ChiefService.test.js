@@ -1,14 +1,14 @@
 import {
-  takeSnapshot,
-  restoreSnapshot,
   setupTestMakerInstance,
-  setUpAllowance
+  setUpAllowance,
+  restoreSnapshotOriginal,
+  sleep
 } from './helpers';
 import { ZERO_ADDRESS } from '../src/utils/constants';
 import ChiefService from '../src/ChiefService';
 import * as web3utils from 'web3-utils';
 
-let snapshotId, maker, chiefService;
+let maker, chiefService;
 
 const picks = [
   '0x26EC003c72ebA27749083d588cdF7EBA665c0A1D',
@@ -19,33 +19,39 @@ const mkrToLock = 3;
 jest.setTimeout(60000);
 
 beforeAll(async () => {
-  snapshotId = await takeSnapshot('ChiefTestSnap6');
-
   maker = await setupTestMakerInstance();
-  // console.log('maker in test', maker);
   chiefService = maker.service('chief');
+
+  maker.useAccount('owner');
 });
 
-afterAll(async () => {
-  await restoreSnapshot(snapshotId);
+afterAll(async done => {
+  if (global.useOldChain) {
+    await restoreSnapshotOriginal(global.snapshotId);
+    done();
+  } else {
+    global.client.restoreSnapshot(global.testchainId, global.defaultSnapshotId);
+    await sleep(15000);
+
+    await global.client.delete(global.testchainId);
+    await sleep(15000);
+
+    done();
+  }
 });
 
-test.skip('can create Chief Service', async () => {
-  // const chief = maker.service('chief');
+test('can create Chief Service', async () => {
   expect(chiefService).toBeInstanceOf(ChiefService);
 });
 
 test('can cast vote with an array of addresses', async () => {
-  // console.log('whoami?', maker.currentAccount());
   // owner casts vote with picks array
   await chiefService.vote(picks);
-
   const slate = await chiefService.getVotedSlate(
     maker.currentAccount().address
   );
-  console.log('slate voted by owner', slate);
+
   const addrs = await chiefService.getSlateAddresses(slate);
-  console.log('slate addresses', addrs);
 
   expect(addrs).toEqual(picks);
 });
@@ -89,8 +95,6 @@ test('approval count for a voted-on address should equal locked MKR amount', asy
 
 test('getVoteTally returns the vote tally', async () => {
   const voteTally = await chiefService.getVoteTally();
-
-  // console.log('voteTally', voteTally);
 
   expect.assertions(picks.length);
   picks.map(pick =>
