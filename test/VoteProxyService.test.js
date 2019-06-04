@@ -2,37 +2,49 @@ import {
   setupTestMakerInstance,
   linkAccounts,
   sendMkrToAddress,
-  setUpAllowance
+  setUpAllowance,
+  restoreSnapshotOriginal,
+  sleep
 } from './helpers';
 import VoteProxyService from '../src/VoteProxyService';
 import VoteProxy from '../src/VoteProxy';
 
-let maker, addresses, voteProxyService, voteProxyFactory, chiefService;
+let maker, addresses, voteProxyService, chiefService;
 
-// TODO remove this & other jest.setTimeout when promise/resolve gets finished
 jest.setTimeout(60000);
 
 beforeAll(async () => {
   maker = await setupTestMakerInstance();
 
   voteProxyService = maker.service('voteProxy');
-  voteProxyFactory = maker.service('voteProxyFactory');
   chiefService = maker.service('chief');
 
   addresses = maker
     .listAccounts()
     .reduce((acc, cur) => ({ ...acc, [cur.name]: cur.address }), {});
 
-  console.log('addresses', addresses);
-
   await linkAccounts(maker, addresses.ali, addresses.ava);
 });
 
-// TODO retest these create tests, or remove them
-// test('can create VP Service', async () => {
-//   const vps = maker.service('voteProxy');
-//   expect(vps).toBeInstanceOf(VoteProxyService);
-// });
+afterAll(async done => {
+  if (global.useOldChain) {
+    await restoreSnapshotOriginal(global.snapshotId);
+    done();
+  } else {
+    global.client.restoreSnapshot(global.testchainId, global.defaultSnapshotId);
+    await sleep(15000);
+
+    await global.client.delete(global.testchainId);
+    await sleep(15000);
+
+    done();
+  }
+});
+
+test('can create VP Service', async () => {
+  const vps = maker.service('voteProxy');
+  expect(vps).toBeInstanceOf(VoteProxyService);
+});
 
 test('can lock an amount of MKR', async () => {
   const sendAmount = 5;
@@ -73,42 +85,33 @@ test('can cast an executive vote and retrieve voted on addresses from slate', as
   expect(addressesVotedOn).toEqual(picks);
 });
 
-// test('can free an amount of MKR', async () => {
-//   const amountToFree = 1;
-//   const { voteProxy } = await voteProxyService.getVoteProxy(addresses.ali);
-//   console.log('voteProxy', voteProxy);
-//   const vpAddress = voteProxy.getProxyAddress();
-//   console.log('vpAddress', vpAddress);
+test('can free an amount of MKR', async () => {
+  const amountToFree = 1;
 
-//   const preFreeDeposits = await chiefService.getNumDeposits(vpAddress);
-//   console.log('preFreeDeposits', preFreeDeposits);
-//   await voteProxyService.free(vpAddress, amountToFree);
-//   console.log('free working');
+  const { voteProxy } = await voteProxyService.getVoteProxy(addresses.ali);
+  const vpAddress = voteProxy.getProxyAddress();
 
-//   const postFreeDeposits = await chiefService.getNumDeposits(vpAddress);
-//   console.log(
-//     'POST FREE DEOPOSITS',
-//     postFreeDeposits,
-//     preFreeDeposits.toNumber() - amountToFree
-//   );
-//   expect(postFreeDeposits.toNumber()).toBe(
-//     preFreeDeposits.toNumber() - amountToFree
-//   );
-//   console.log('test 4over');
-// });
+  const preFreeDeposits = await chiefService.getNumDeposits(vpAddress);
+  await voteProxyService.free(vpAddress, amountToFree);
 
-// test('can free all MKR', async () => {
-//   const { voteProxy } = await voteProxyService.getVoteProxy(addresses.ali);
-//   const vpAddress = voteProxy.getProxyAddress();
+  const postFreeDeposits = await chiefService.getNumDeposits(vpAddress);
+  expect(postFreeDeposits.toNumber()).toBe(
+    preFreeDeposits.toNumber() - amountToFree
+  );
+});
 
-//   const preFreeDeposits = await chiefService.getNumDeposits(vpAddress);
-//   expect(preFreeDeposits.toNumber()).toBeGreaterThan(0);
+test('can free all MKR', async () => {
+  const { voteProxy } = await voteProxyService.getVoteProxy(addresses.ali);
+  const vpAddress = voteProxy.getProxyAddress();
 
-//   await voteProxyService.freeAll(vpAddress);
+  const preFreeDeposits = await chiefService.getNumDeposits(vpAddress);
+  expect(preFreeDeposits.toNumber()).toBeGreaterThan(0);
 
-//   const postFreeDeposits = await chiefService.getNumDeposits(vpAddress);
-//   expect(postFreeDeposits.toNumber()).toBe(0);
-// });
+  await voteProxyService.freeAll(vpAddress);
+
+  const postFreeDeposits = await chiefService.getNumDeposits(vpAddress);
+  expect(postFreeDeposits.toNumber()).toBe(0);
+});
 
 test('getVoteProxy returns a VoteProxy if one exists for a given address', async () => {
   const address = addresses.ali;

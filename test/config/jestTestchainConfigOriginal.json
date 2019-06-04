@@ -1,0 +1,5 @@
+{
+  "rootDir": "../../",
+  "roots": ["lib", "src", "test"],
+  "setupFilesAfterEnv": ["<rootDir>/test/config/original-setup.js"]
+}

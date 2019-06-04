@@ -1,4 +1,9 @@
-import { setupTestMakerInstance, linkAccounts } from './helpers';
+import {
+  setupTestMakerInstance,
+  linkAccounts,
+  restoreSnapshotOriginal,
+  sleep
+} from './helpers';
 import VoteProxy from '../src/VoteProxy';
 
 let maker, addresses, voteProxyService;
@@ -6,7 +11,7 @@ let maker, addresses, voteProxyService;
 jest.setTimeout(60000);
 
 beforeAll(async () => {
-  maker = await setupTestMakerInstance(true);
+  maker = await setupTestMakerInstance();
 
   voteProxyService = maker.service('voteProxy');
 
@@ -15,6 +20,21 @@ beforeAll(async () => {
     .reduce((acc, cur) => ({ ...acc, [cur.name]: cur.address }), {});
 
   await linkAccounts(maker, addresses.ali, addresses.ava);
+});
+
+afterAll(async done => {
+  if (global.useOldChain) {
+    await restoreSnapshotOriginal(global.snapshotId);
+    done();
+  } else {
+    global.client.restoreSnapshot(global.testchainId, global.defaultSnapshotId);
+    await sleep(15000);
+
+    await global.client.delete(global.testchainId);
+    await sleep(15000);
+
+    done();
+  }
 });
 
 test('Vote proxy instance returns correct information about itself', async () => {

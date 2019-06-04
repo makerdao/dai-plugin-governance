@@ -1,4 +1,9 @@
-import { setupTestMakerInstance, linkAccounts } from './helpers';
+import {
+  setupTestMakerInstance,
+  linkAccounts,
+  restoreSnapshotOriginal,
+  sleep
+} from './helpers';
 import VoteProxyFactoryService from '../src/VoteProxyFactoryService';
 
 let maker, addresses, voteProxyFactory, voteProxyService;
@@ -13,6 +18,21 @@ beforeAll(async () => {
 
   voteProxyFactory = maker.service('voteProxyFactory');
   voteProxyService = maker.service('voteProxy');
+});
+
+afterAll(async done => {
+  if (global.useOldChain) {
+    await restoreSnapshotOriginal(global.snapshotId);
+    done();
+  } else {
+    global.client.restoreSnapshot(global.testchainId, global.defaultSnapshotId);
+    await sleep(15000);
+
+    await global.client.delete(global.testchainId);
+    await sleep(15000);
+
+    done();
+  }
 });
 
 test('can create VPFS Service', async () => {

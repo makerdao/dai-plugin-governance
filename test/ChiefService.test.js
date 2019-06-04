@@ -1,4 +1,9 @@
-import { setupTestMakerInstance, setUpAllowance } from './helpers';
+import {
+  setupTestMakerInstance,
+  setUpAllowance,
+  restoreSnapshotOriginal,
+  sleep
+} from './helpers';
 import { ZERO_ADDRESS } from '../src/utils/constants';
 import ChiefService from '../src/ChiefService';
 import * as web3utils from 'web3-utils';
@@ -14,8 +19,25 @@ const mkrToLock = 3;
 jest.setTimeout(60000);
 
 beforeAll(async () => {
-  maker = await setupTestMakerInstance(false);
+  maker = await setupTestMakerInstance();
   chiefService = maker.service('chief');
+
+  maker.useAccount('owner');
+});
+
+afterAll(async done => {
+  if (global.useOldChain) {
+    await restoreSnapshotOriginal(global.snapshotId);
+    done();
+  } else {
+    global.client.restoreSnapshot(global.testchainId, global.defaultSnapshotId);
+    await sleep(15000);
+
+    await global.client.delete(global.testchainId);
+    await sleep(15000);
+
+    done();
+  }
 });
 
 test('can create Chief Service', async () => {
@@ -25,7 +47,6 @@ test('can create Chief Service', async () => {
 test('can cast vote with an array of addresses', async () => {
   // owner casts vote with picks array
   await chiefService.vote(picks);
-
   const slate = await chiefService.getVotedSlate(
     maker.currentAccount().address
   );
