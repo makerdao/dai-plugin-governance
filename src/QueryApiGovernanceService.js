@@ -2,7 +2,9 @@ import { PublicService } from '@makerdao/services-core';
 
 const mockAllPollsData = [
   {
+    creator: '0xeda95d1bdb60f901986f43459151b6d1c734b8a2',
     pollId: 0,
+    blockCreated: 123456789,
     startTime: '2004-09-17T00:00:30.75',
     endTime: '2005-09-17T00:00:30.75',
     multiHash: 'QmaozNR7DZHQK1ZcU9p7QdrshMvXqWK6gpu5rmrkPdT3L4'
