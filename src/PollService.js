@@ -33,6 +33,11 @@ export default class PollService extends PrivateService {
     //call getAllWhitelistedPolls, and filter on pollId
   }
 
+  async getOptionVotingFor(pollId, address) {
+    //this.get('governance:queryApi').getOptionVotingFor(pollId, address);
+    return 1;
+  }
+
   async getAllWhitelistedPolls() {
     //return cached polls (if cached).  I think a cache works since poll data (id, start time, end time, multihash) is immutable (other than being withdrawn, which shouldn't happen much)
     //otherwise await this.get('governance:queryApi').getAllWhitelistedPolls();
@@ -52,13 +57,13 @@ export default class PollService extends PrivateService {
     //call this.get('governance:queryApi').getMkrSupport() with the current blockNumber or poll end time, whichever is first, and then return the option with the most MKR
   }
 
-  async getUniqueVoters(pollId) {
-    //this.get('governance:queryApi').getUniqueVotes(pollId);
+  async getNumUniqueVoters(pollId) {
+    //this.get('governance:queryApi').getNumUniqueVotes(pollId);
   }
 
-  async getMkrVoted(pollId) {
+  async getMkrAmtVoted(pollId) {
     //_getPoll(pollId) and grab end time
-    //call getMkrSupport with the current blockNumber or poll end time, whichever is first and then return the sum of all MKR
+    //call this.get('governance:queryApi').getMkrAmtVoted with the current blockNumber or poll end time, whichever is first and then return the sum of all MKR
   }
 
   async getPercentageMkrVoted(pollId) {

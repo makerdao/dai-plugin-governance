@@ -23,7 +23,12 @@ export default class QueryApi extends PublicService {
     super(name, []);
   }
 
-  async getMkrSupport(pollId, blockNumber) {
+  async getOptionVotingFor(pollId, address) {
+    //graphql query to get the option that an address is currently voting for, returns null if not voting
+    return [{ current_option: 1 }];
+  }
+
+  async getMkrAmtVoted(pollId, blockNumber) {
     //graphql query to get mkr support per option for a given poll id at a given block number
     return mockPollHistory;
   }
@@ -33,8 +38,8 @@ export default class QueryApi extends PublicService {
     return mockAllPollsData;
   }
 
-  async getUniqueVoters(pollId) {
+  async getNumUniqueVoters(pollId) {
     //graphql query to get number of unique addresses that have voted for a given poll
-    return 1234;
+    return [{ unique_voters: 100 }];
   }
 }
