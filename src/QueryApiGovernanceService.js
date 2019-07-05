@@ -5,8 +5,8 @@ const mockAllPollsData = [
     creator: '0xeda95d1bdb60f901986f43459151b6d1c734b8a2',
     pollId: 0,
     blockCreated: 123456789,
-    startTime: '2004-09-17T00:00:30.75',
-    endTime: '2005-09-17T00:00:30.75',
+    startTime: '2019-07-02T11:00:00Z',
+    endTime: '2019-07-03T16:00:00Z',
     multiHash: 'QmaozNR7DZHQK1ZcU9p7QdrshMvXqWK6gpu5rmrkPdT3L4'
   }
 ];
@@ -25,7 +25,14 @@ export default class QueryApi extends PublicService {
 
   async getOptionVotingFor(pollId, address) {
     //graphql query to get the option that an address is currently voting for, returns null if not voting
-    return [{ current_option: 1 }];
+    return [{ option_id: 1 }];
+  }
+
+  async getMkrWeight(address) {
+    //graphql query to get mkr weight for a given address
+    return [
+      { hot: '0xhot', cold: '0xcold', proxy: '0xproxy', total_weight: '5' }
+    ];
   }
 
   async getMkrAmtVoted(pollId, blockNumber) {

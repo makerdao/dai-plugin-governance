@@ -35,7 +35,7 @@ export default class PollService extends PrivateService {
 
   async getOptionVotingFor(pollId, address) {
     //this.get('governance:queryApi').getOptionVotingFor(pollId, address);
-    return 1;
+    //return 1;
   }
 
   async getAllWhitelistedPolls() {
@@ -54,7 +54,7 @@ export default class PollService extends PrivateService {
 
   async getWinningProposal(pollId) {
     //_getPoll(pollId) and grab end time
-    //call this.get('governance:queryApi').getMkrSupport() with the current blockNumber or poll end time, whichever is first, and then return the option with the most MKR
+    //call this.get('governance:queryApi').getMkrSupport() with the poll end time (if its in the future the query will just go up to the current block), and then return the option with the most MKR
   }
 
   async getNumUniqueVoters(pollId) {
@@ -63,7 +63,14 @@ export default class PollService extends PrivateService {
 
   async getMkrAmtVoted(pollId) {
     //_getPoll(pollId) and grab end time
-    //call this.get('governance:queryApi').getMkrAmtVoted with the current blockNumber or poll end time, whichever is first and then return the sum of all MKR
+    //call this.get('governance:queryApi').getMkrAmtVoted with the poll end time and then return the sum of all MKR
+    //wrap MKR amount in currency object
+  }
+
+  async getMkrWeight(address) {
+    //_getPoll(pollId) and grab end time
+    //call this.get('governance:queryApi').getMkrWeight(address)
+    //return MKR(5);
   }
 
   async getPercentageMkrVoted(pollId) {
