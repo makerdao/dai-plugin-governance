@@ -1,18 +1,20 @@
 import { PrivateService } from '@makerdao/services-core';
 import { POLLING } from './utils/constants';
 
-export default class PollService extends PrivateService {
-  constructor(name = 'poll') {
+export default class GovPollingService extends PrivateService {
+  constructor(name = 'govPolling') {
     super(name, ['smartContract']);
   }
 
-  createPoll(startDate, endDate, multiHash, url) {
-    return this._pollingContract().createPoll(
+  async createPoll(startDate, endDate, multiHash, url) {
+    const txo = await this._pollingContract().createPoll(
       startDate,
       endDate,
       multiHash,
       url
     );
+    const pollId = parseInt(txo.receipt.logs[0].topics[2]);
+    return pollId;
   }
 
   withdrawPoll(pollId) {

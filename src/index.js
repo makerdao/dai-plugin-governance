@@ -10,7 +10,7 @@ import {
 import ChiefService from './ChiefService';
 import VoteProxyService from './VoteProxyService';
 import VoteProxyFactoryService from './VoteProxyFactoryService';
-import PollService from './PollService';
+import GovPollingService from './GovPollingService';
 
 export default {
   addConfig: function(config, { network = 'mainnet', mcd }) {
@@ -47,11 +47,16 @@ export default {
 
     const makerConfig = {
       ...config,
-      additionalServices: ['chief', 'voteProxy', 'voteProxyFactory', 'polling'],
+      additionalServices: [
+        'chief',
+        'voteProxy',
+        'voteProxyFactory',
+        'govPolling'
+      ],
       chief: [ChiefService],
       voteProxy: [VoteProxyService],
       voteProxyFactory: [VoteProxyFactoryService],
-      poll: [PollService],
+      govPolling: [GovPollingService],
       smartContract: { addContracts },
       token: {
         erc20: [
