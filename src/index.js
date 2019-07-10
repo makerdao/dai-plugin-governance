@@ -51,7 +51,7 @@ export default {
       chief: [ChiefService],
       voteProxy: [VoteProxyService],
       voteProxyFactory: [VoteProxyFactoryService],
-      polling: [PollService],
+      poll: [PollService],
       smartContract: { addContracts },
       token: {
         erc20: [
