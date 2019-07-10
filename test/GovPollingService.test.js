@@ -56,9 +56,19 @@ test('can create poll', async () => {
 });
 
 test('can vote', async () => {
-  await govPollingService.vote(0, 1);
+  const OPTION_ID = 3;
+  const txo = await govPollingService.vote(0, OPTION_ID);
+  const loggedOptionId = parseInt(txo.receipt.logs[0].topics[3]);
+  // this will fail if the event was not emitted
+  expect(loggedOptionId).toBe(OPTION_ID);
 });
 
 test('can withdraw poll', async () => {
-  await govPollingService.withdrawPoll(0);
+  const POLL_ID = 0;
+  const txo = await govPollingService.withdrawPoll(POLL_ID);
+  // slice off the zeros used to pad the address to 32 bytes
+  const loggedCaller = txo.receipt.logs[0].topics[1].slice(26);
+  const { address: activeAddress } = maker.currentAccount();
+  // this will fail if the event was not emitted
+  expect(loggedCaller).toBe(activeAddress.slice(2));
 });
