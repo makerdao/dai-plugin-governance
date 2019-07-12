@@ -1,6 +1,7 @@
 import { PublicService } from '@makerdao/services-core';
+import assert from 'assert';
 
-const LOCAL_URL = 'http://localhost:3001';
+const LOCAL_URL = 'http://localhost:3001/v1';
 
 export default class QueryApi extends PublicService {
   constructor(name = 'govQueryApi') {
@@ -19,7 +20,6 @@ export default class QueryApi extends PublicService {
         variables
       })
     });
-
     const { data } = await resp.json();
     assert(data, `error fetching data from ${serverUrl}`);
     return data;
@@ -35,7 +35,7 @@ export default class QueryApi extends PublicService {
   }
 
   async getAllWhitelistedPolls() {
-    const query = `query () {activePolls {
+    const query = `{activePolls {
       nodes {
           creator
           pollId
@@ -48,6 +48,6 @@ export default class QueryApi extends PublicService {
     }`;
 
     const response = await this.getQueryResponse(this.serverUrl, query);
-    console.log('response', response);
+    return response.activePolls.nodes;
   }
 }
