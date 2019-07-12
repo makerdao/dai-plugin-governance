@@ -11,6 +11,7 @@ import ChiefService from './ChiefService';
 import VoteProxyService from './VoteProxyService';
 import VoteProxyFactoryService from './VoteProxyFactoryService';
 import GovPollingService from './GovPollingService';
+import GovQueryApiService from './GovQueryApiService';
 
 export default {
   addConfig: function(config, { network = 'mainnet', mcd }) {
@@ -51,12 +52,14 @@ export default {
         'chief',
         'voteProxy',
         'voteProxyFactory',
-        'govPolling'
+        'govPolling',
+        'govQueryApi'
       ],
       chief: [ChiefService],
       voteProxy: [VoteProxyService],
       voteProxyFactory: [VoteProxyFactoryService],
       govPolling: [GovPollingService],
+      govQueryApi: [GovQueryApiService],
       smartContract: { addContracts },
       token: {
         erc20: [
