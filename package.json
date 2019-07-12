@@ -41,6 +41,7 @@
     "deploy": "yarn build && yarn publish dist",
     "test": "jest --runInBand --config ./test/config/jestTestchainConfigOriginal.json",
     "test:testchain": "jest --runInBand --config ./test/config/jestTestchainConfig.json",
+    "test:integration": "jest --runInBand --config ./test/config/jestIntegrationConfig.json",
     "testnet": "./gov-testchain/deploy-gov",
     "ci": "./gov-testchain/deploy-gov --ci jest --coverage",
     "build": "./scripts/build.sh",
