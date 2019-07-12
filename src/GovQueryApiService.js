@@ -48,6 +48,34 @@ export default class QueryApi extends PublicService {
     }`;
 
     const response = await this.getQueryResponse(this.serverUrl, query);
-    return response.activePolls.nodes;
+    return response.activePolls.nodes.map(p => {
+      p.startDate = new Date(p.startDate * 1000);
+      p.endDate = new Date(p.endDate * 1000);
+      return p;
+    });
+  }
+
+  async getNumUniqueVoters(pollId) {
+    const query = `{uniqueVoters(argPollId:${pollId}){
+      nodes
+    }
+    }`;
+
+    const response = await this.getQueryResponse(this.serverUrl, query);
+    return parseInt(response.uniqueVoters.nodes[0]);
+  }
+
+  async getMkrWeight(address, blockNumber) {
+    const query = `{totalMkrWeightProxyAndNoProxyByAddress(argAddress: "${address}", argBlockNumber: ${blockNumber}){
+      nodes {
+        address
+        weight
+      }
+    }
+    }`;
+    const response = await this.getQueryResponse(this.serverUrl, query);
+    console.log('response', response);
+    if (!response.totalMkrWeightProxyAndNoProxyByAddress.nodes[0]) return 0;
+    return response.totalMkrWeightProxyAndNoProxyByAddress.nodes[0];
   }
 }
