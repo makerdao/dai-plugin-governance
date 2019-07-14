@@ -89,4 +89,16 @@ export default class QueryApi extends PublicService {
     const response = await this.getQueryResponse(this.serverUrl, query);
     return response.currentVote.nodes[0].optionId;
   }
+
+  async getMkrAmtVoted(pollId, blockNumber) {
+    const query = `{voteOptionMkrWeights(argPollId: ${pollId}, argBlockNumber: ${blockNumber}){
+    nodes{
+      optionId
+      mkrSupport
+    }
+  }
+  }`;
+    const response = await this.getQueryResponse(this.serverUrl, query);
+    return response.voteOptionMkrWeights.nodes;
+  }
 }
