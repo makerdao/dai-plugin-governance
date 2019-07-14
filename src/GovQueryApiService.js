@@ -74,8 +74,19 @@ export default class QueryApi extends PublicService {
     }
     }`;
     const response = await this.getQueryResponse(this.serverUrl, query);
-    console.log('response', response);
     if (!response.totalMkrWeightProxyAndNoProxyByAddress.nodes[0]) return 0;
     return response.totalMkrWeightProxyAndNoProxyByAddress.nodes[0];
+  }
+
+  async getOptionVotingFor(address, pollId) {
+    const query = `{
+      currentVote(argAddress: "${address}", argPollId: ${pollId}){
+        nodes{
+          optionId
+        }
+      }
+    }`;
+    const response = await this.getQueryResponse(this.serverUrl, query);
+    return response.currentVote.nodes[0].optionId;
   }
 }

@@ -22,3 +22,8 @@ test('get mkr weight', async () => {
   const weight = await service.getMkrWeight('address', 999999999);
   console.log('weight', weight);
 });
+
+test('get current vote', async () => {
+  const option = await service.getOptionVotingFor('0xv', 1);
+  console.log('option', option);
+});
