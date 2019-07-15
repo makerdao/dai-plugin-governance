@@ -75,7 +75,7 @@ export default class QueryApi extends PublicService {
     }`;
     const response = await this.getQueryResponse(this.serverUrl, query);
     if (!response.totalMkrWeightProxyAndNoProxyByAddress.nodes[0]) return 0;
-    return response.totalMkrWeightProxyAndNoProxyByAddress.nodes[0];
+    return response.totalMkrWeightProxyAndNoProxyByAddress.nodes[0].weight;
   }
 
   async getOptionVotingFor(address, pollId) {
@@ -99,6 +99,15 @@ export default class QueryApi extends PublicService {
   }
   }`;
     const response = await this.getQueryResponse(this.serverUrl, query);
-    return response.voteOptionMkrWeights.nodes;
+    const weights = response.voteOptionMkrWeights.nodes;
+    const totalWeight = weights.reduce(
+      (acc, cur) => acc + parseInt(cur.mkrSupport),
+      0
+    );
+    return weights.map(o => {
+      o.mkrSupport = parseInt(o.mkrSupport);
+      o.percentage = (100 * o.mkrSupport) / totalWeight;
+      return o;
+    });
   }
 }
