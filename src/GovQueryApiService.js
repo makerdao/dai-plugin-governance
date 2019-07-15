@@ -90,7 +90,7 @@ export default class QueryApi extends PublicService {
     return response.currentVote.nodes[0].optionId;
   }
 
-  async getMkrAmtVoted(pollId, blockNumber) {
+  async getMkrSupport(pollId, blockNumber) {
     const query = `{voteOptionMkrWeights(argPollId: ${pollId}, argBlockNumber: ${blockNumber}){
     nodes{
       optionId

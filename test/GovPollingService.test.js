@@ -72,3 +72,10 @@ test('can withdraw poll', async () => {
   // this will fail if the event was not emitted
   expect(loggedCaller).toBe(activeAddress.slice(2));
 });
+
+//--- caching tests
+
+test('getPercentageMkrVoted', async () => {
+  const percentage = await govPollingService.getPercentageMkrVoted(1);
+  console.log('percentage', percentage);
+});

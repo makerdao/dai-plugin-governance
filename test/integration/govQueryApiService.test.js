@@ -29,6 +29,6 @@ test('get current vote', async () => {
 });
 
 test('get mkr weight by option', async () => {
-  const weights = await service.getMkrAmtVoted(1, 999999999);
+  const weights = await service.getMkrSupport(1, 999999999);
   console.log('weights', weights);
 });
