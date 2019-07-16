@@ -32,3 +32,8 @@ test('get mkr weight by option', async () => {
   const weights = await service.getMkrSupport(1, 999999999);
   console.log('weights', weights);
 });
+
+test.only('get block number', async () => {
+  const num = await service.getBlockNumber(1511634513);
+  console.log('num', num);
+});

@@ -5,6 +5,7 @@ import { MKR } from './utils/constants';
 export default class GovPollingService extends PrivateService {
   constructor(name = 'govPolling') {
     super(name, ['smartContract', 'govQueryApi', 'token']);
+    this.polls = [];
   }
 
   async createPoll(startDate, endDate, multiHash, url) {
@@ -38,7 +39,13 @@ export default class GovPollingService extends PrivateService {
   }
 
   async getAllWhitelistedPolls() {
-    return this.get('govQueryApi').getAllWhitelistedPolls();
+    if (this.polls.length > 0) return this.polls;
+    this.polls = this.get('govQueryApi').getAllWhitelistedPolls();
+    return this.polls;
+  }
+
+  refresh() {
+    this.polls = [];
   }
 
   async getOptionVotingFor(address, pollId) {
@@ -88,6 +95,7 @@ export default class GovPollingService extends PrivateService {
 
   async getVoteHistory(pollId, numPlots) {
     const { startDate, endDate } = this._getPoll(pollId);
+
     //convert startDate and endDate to blockNumber?
     //get current block number
     let voteHistory = [];
@@ -101,7 +109,10 @@ export default class GovPollingService extends PrivateService {
         999999999
       );
       //todo: update getMkrSupport to also return the timestamp of the blocknumber supplied? or just use web3 to get it?
-      voteHistory.push({ time: 'time', options: mkrSupport });
+      voteHistory.push({
+        time: mkrSupport[0].blockTimestamp,
+        options: mkrSupport
+      });
     }
     return voteHistory;
   }

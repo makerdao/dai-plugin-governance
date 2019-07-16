@@ -90,6 +90,16 @@ export default class QueryApi extends PublicService {
     return response.currentVote.nodes[0].optionId;
   }
 
+  async getBlockNumber(unixTime) {
+    const query = `{
+      timeToBlockNumber(argUnix: ${unixTime}){
+      nodes
+    }
+    }`;
+    const response = await this.getQueryResponse(this.serverUrl, query);
+    return response.timeToBlockNumber.nodes[0];
+  }
+
   async getMkrSupport(pollId, blockNumber) {
     const query = `{voteOptionMkrWeights(argPollId: ${pollId}, argBlockNumber: ${blockNumber}){
     nodes{
@@ -107,6 +117,7 @@ export default class QueryApi extends PublicService {
     return weights.map(o => {
       o.mkrSupport = parseInt(o.mkrSupport);
       o.percentage = (100 * o.mkrSupport) / totalWeight;
+      o.blockTimestamp = new Date(o.blockTimestamp);
       return o;
     });
   }
