@@ -34,7 +34,7 @@ export default class GovPollingService extends PrivateService {
   //--- cache queries
 
   async getPoll(multiHash) {
-    const polls = await this.get('govQueryApi').getAllWhitelistedPolls();
+    const polls = await this.getAllWhitelistedPolls();
     const filtered = polls.filter(p => p.multiHash === multiHash);
     let lowest = Infinity;
     let lowestPoll;
@@ -48,7 +48,7 @@ export default class GovPollingService extends PrivateService {
   }
 
   async _getPoll(pollId) {
-    const polls = await this.get('govQueryApi').getAllWhitelistedPolls();
+    const polls = await this.getAllWhitelistedPolls();
     return polls.filter(p => p.pollId === pollId);
   }
 
