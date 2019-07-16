@@ -33,6 +33,11 @@ export default class GovPollingService extends PrivateService {
 
   //--- cache queries
 
+  async getPoll(multiHash) {
+    const polls = await this.get('govQueryApi').getAllWhitelistedPolls();
+    return polls.filter(p => p.multiHash === multiHash);
+  }
+
   async _getPoll(pollId) {
     const polls = await this.get('govQueryApi').getAllWhitelistedPolls();
     return polls.filter(p => p.pollId === pollId);
