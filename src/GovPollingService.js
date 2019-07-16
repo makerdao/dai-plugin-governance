@@ -40,7 +40,7 @@ export default class GovPollingService extends PrivateService {
 
   async getAllWhitelistedPolls() {
     if (this.polls.length > 0) return this.polls;
-    this.polls = this.get('govQueryApi').getAllWhitelistedPolls();
+    this.polls = await this.get('govQueryApi').getAllWhitelistedPolls();
     return this.polls;
   }
 
@@ -95,20 +95,22 @@ export default class GovPollingService extends PrivateService {
 
   async getVoteHistory(pollId, numPlots) {
     const { startDate, endDate } = this._getPoll(pollId);
-
-    //convert startDate and endDate to blockNumber?
-    //get current block number
+    const startUnix = Math.floor(startDate / 1000);
+    const endUnix = Math.floor(endDate / 1000); //should be current time if endDate hasn't happened yet
+    const [startBlock, endBlock] = await Promise.all([
+      this.get('govQueryApi').getBlockNumber(startUnix),
+      this.get('govQueryApi').getBlockNumber(endUnix)
+    ]);
     let voteHistory = [];
     for (
       let i = startBlock;
-      i <= Math.min(currentBlock, endBlock);
+      i <= endBlock;
       i += Math.ceil(endBlock - startBlock) / numPlots
     ) {
       const mkrSupport = this.get('govQueryApi').getMkrSupport(
         pollId,
         999999999
       );
-      //todo: update getMkrSupport to also return the timestamp of the blocknumber supplied? or just use web3 to get it?
       voteHistory.push({
         time: mkrSupport[0].blockTimestamp,
         options: mkrSupport
