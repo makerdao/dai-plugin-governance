@@ -4,7 +4,14 @@ import {
   sleep
 } from './helpers';
 import GovPollingService from '../src/GovPollingService';
-import { dummyMkrSupportData, dummyAllPollsData } from './fixtures';
+import {
+  dummyMkrSupportData,
+  dummyAllPollsData,
+  dummyBlockNumber,
+  dummyOption,
+  dummyWeight,
+  dummyNumUnique
+} from './fixtures';
 import { MKR } from '../src/utils/constants';
 
 let maker, govPollingService, govQueryApiService;
@@ -32,11 +39,11 @@ afterAll(async done => {
   }
 });
 
-xtest('can create Gov Polling Service', () => {
+test('can create Gov Polling Service', () => {
   expect(govPollingService).toBeInstanceOf(GovPollingService);
 });
 
-xtest('can create poll', async () => {
+test('can create poll', async () => {
   const START_DATE = Math.floor(new Date().getTime() / 1000) + 100;
   const END_DATE = START_DATE + 5000;
   const MULTI_HASH = 'dummy hash';
@@ -58,7 +65,7 @@ xtest('can create poll', async () => {
   expect(secondPollId).toBe(1);
 });
 
-xtest('can vote', async () => {
+test('can vote', async () => {
   const OPTION_ID = 3;
   const txo = await govPollingService.vote(0, OPTION_ID);
   const loggedOptionId = parseInt(txo.receipt.logs[0].topics[3]);
@@ -66,7 +73,7 @@ xtest('can vote', async () => {
   expect(loggedOptionId).toBe(OPTION_ID);
 });
 
-xtest('can withdraw poll', async () => {
+test('can withdraw poll', async () => {
   const POLL_ID = 0;
   const txo = await govPollingService.withdrawPoll(POLL_ID);
   // slice off the zeros used to pad the address to 32 bytes
@@ -94,6 +101,30 @@ test('getMkrAmtVoted', async () => {
   expect(total).toEqual(MKR(40000));
 });
 
+test('getOptionVotingFor', async () => {
+  const mockFn = jest.fn(async () => dummyOption);
+  govQueryApiService.getOptionVotingFor = mockFn;
+  const option = await govPollingService.getOptionVotingFor('0xaddress', 1);
+  expect(mockFn).toBeCalled();
+  expect(option).toEqual(dummyOption);
+});
+
+test('getNumUniqueVoters', async () => {
+  const mockFn = jest.fn(async () => dummyNumUnique);
+  govQueryApiService.getNumUniqueVoters = mockFn;
+  const option = await govPollingService.getNumUniqueVoters(1);
+  expect(mockFn).toBeCalled();
+  expect(option).toEqual(dummyNumUnique);
+});
+
+test('getMkrWeight', async () => {
+  const mockFn = jest.fn(async () => dummyWeight);
+  govQueryApiService.getMkrWeight = mockFn;
+  const option = await govPollingService.getMkrWeight('0xaddress');
+  expect(mockFn).toBeCalled();
+  expect(option).toEqual(MKR(dummyWeight));
+});
+
 test('getWinningProposal', async () => {
   const mockFn = jest.fn(async () => dummyMkrSupportData);
   govQueryApiService.getMkrSupport = mockFn;
@@ -108,7 +139,7 @@ test('getWinningProposal', async () => {
 //   govQueryApiService.getAllWhitelistedPolls = mockFn1;
 //   const mockFn2 = jest.fn(async () => dummyMkrSupportData);
 //   govQueryApiService.getMkrSupport = mockFn2;
-//   const mockFn3 = jest.fn(async () => 123456789);
+//   const mockFn3 = jest.fn(async (t) => dummyBlockNumber(t));
 //   govQueryApiService.getBlockNumber = mockFn3;
 //   //const history = await govPollingService.getVoteHistory(1,3);
 //   expect(mockFn1).toBeCalled();
@@ -118,10 +149,10 @@ test('getWinningProposal', async () => {
 // });
 
 //todo: figure out why .div isn't working
-xtest('getPercentageMkrVoted', async () => {
-  const mockFn = jest.fn(async () => dummyMkrSupportData);
-  govQueryApiService.getMkrSupport = mockFn;
-  const percentage = await govPollingService.getPercentageMkrVoted(1);
-  expect(mockFn).toBeCalled();
-  expect(percentage).toBe(4);
-});
+// test('getPercentageMkrVoted', async () => {
+//   const mockFn = jest.fn(async () => dummyMkrSupportData);
+//   govQueryApiService.getMkrSupport = mockFn;
+//   const percentage = await govPollingService.getPercentageMkrVoted(1);
+//   expect(mockFn).toBeCalled();
+//   expect(percentage).toBe(4);
+// });

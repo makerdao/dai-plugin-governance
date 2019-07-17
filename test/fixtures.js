@@ -35,3 +35,24 @@ export const dummyAllPollsData = [
     url: 'https://dummyURL/2'
   }
 ];
+
+class BlockNumGen {
+  constructor() {
+    this.i = 0;
+    this.nums = [8017399, 8200000];
+  }
+  next() {
+    return this.nums[i++];
+  }
+}
+
+export function dummyBlockNumber(unix) {
+  const g = new BlockNumGen();
+  return g.next();
+}
+
+export const dummyNumUnique = 225;
+
+export const dummyWeight = 5.5;
+
+export const dummyOption = 1;
