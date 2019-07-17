@@ -2,10 +2,11 @@ import { PrivateService } from '@makerdao/services-core';
 import { POLLING } from './utils/constants';
 import { MKR } from './utils/constants';
 
+const POSTGRES_MAX_INT = 2147483647;
+
 export default class GovPollingService extends PrivateService {
   constructor(name = 'govPolling') {
     super(name, ['smartContract', 'govQueryApi', 'token']);
-    this.polls = [];
   }
 
   async createPoll(startDate, endDate, multiHash, url) {
@@ -53,13 +54,13 @@ export default class GovPollingService extends PrivateService {
   }
 
   async getAllWhitelistedPolls() {
-    if (this.polls.length > 0) return this.polls;
+    if (this.polls) return this.polls;
     this.polls = await this.get('govQueryApi').getAllWhitelistedPolls();
     return this.polls;
   }
 
   refresh() {
-    this.polls = [];
+    this.polls = null;
   }
 
   async getOptionVotingFor(address, pollId) {
@@ -71,14 +72,17 @@ export default class GovPollingService extends PrivateService {
   }
 
   async getMkrWeight(address) {
-    const weight = this.get('govQueryApi').getMkrWeight(address, 999999999); //todo: a more elegant solution to current block number
+    const weight = await this.get('govQueryApi').getMkrWeight(
+      address,
+      POSTGRES_MAX_INT
+    );
     return MKR(weight);
   }
 
   async getMkrAmtVoted(pollId) {
     const weights = await this.get('govQueryApi').getMkrSupport(
       pollId,
-      999999999
+      POSTGRES_MAX_INT
     );
     return MKR(weights.reduce((acc, cur) => acc + cur.mkrSupport, 0));
   }
@@ -90,17 +94,17 @@ export default class GovPollingService extends PrivateService {
         .getToken(MKR)
         .totalSupply()
     ]);
-    return voted.div(supply);
+    return voted.div(total); //TODO: why is this throwing an error about NaN?
   }
 
   async getWinningProposal(pollId) {
-    const currentVotes = this.get('govQueryApi').getMkrSupport(
+    const currentVotes = await this.get('govQueryApi').getMkrSupport(
       pollId,
-      999999999
+      POSTGRES_MAX_INT
     );
     let max = currentVotes[0];
     for (let i = 1; i < currentVotes.length; i++) {
-      if (currentVotes[i] > max) {
+      if (currentVotes[i].mkrSupport > max.mkrSupport) {
         max = currentVotes[i];
       }
     }
@@ -110,20 +114,20 @@ export default class GovPollingService extends PrivateService {
   async getVoteHistory(pollId, numPlots) {
     const { startDate, endDate } = this._getPoll(pollId);
     const startUnix = Math.floor(startDate / 1000);
-    const endUnix = Math.floor(endDate / 1000); //should be current time if endDate hasn't happened yet
+    const endUnix = Math.floor(endDate / 1000);
     const [startBlock, endBlock] = await Promise.all([
       this.get('govQueryApi').getBlockNumber(startUnix),
-      this.get('govQueryApi').getBlockNumber(endUnix)
+      this.get('govQueryApi').getBlockNumber(endUnix) //should return current block number if endDate hasn't happened yet
     ]);
     let voteHistory = [];
     for (
-      let i = startBlock;
-      i <= endBlock;
-      i += Math.ceil(endBlock - startBlock) / numPlots
+      let i = endBlock;
+      i >= startBlock;
+      i -= Math.round(endBlock - startBlock) / numPlots
     ) {
-      const mkrSupport = this.get('govQueryApi').getMkrSupport(
+      const mkrSupport = await this.get('govQueryApi').getMkrSupport(
         pollId,
-        999999999
+        POSTGRES_MAX_INT
       );
       voteHistory.push({
         time: mkrSupport[0].blockTimestamp,
