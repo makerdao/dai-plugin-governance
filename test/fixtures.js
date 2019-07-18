@@ -36,19 +36,9 @@ export const dummyAllPollsData = [
   }
 ];
 
-class BlockNumGen {
-  constructor() {
-    this.i = 0;
-    this.nums = [8017399, 8200000];
-  }
-  next() {
-    return this.nums[i++];
-  }
-}
-
-export function dummyBlockNumber(unix) {
-  const g = new BlockNumGen();
-  return g.next();
+let i = 0;
+export function dummyBlockNumber() {
+  return [8017399, 8200000][i++ % 2];
 }
 
 export const dummyNumUnique = 225;

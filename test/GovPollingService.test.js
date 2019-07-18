@@ -54,7 +54,7 @@ test('can create poll', async () => {
     MULTI_HASH,
     URL
   );
-  expect(firstPollId).toBe(0);
+  expect(firstPollId).not.toBeNaN();
 
   const secondPollId = await govPollingService.createPoll(
     START_DATE,
@@ -62,7 +62,7 @@ test('can create poll', async () => {
     MULTI_HASH,
     URL
   );
-  expect(secondPollId).toBe(1);
+  expect(secondPollId).toBe(firstPollId + 1);
 });
 
 test('can vote', async () => {
@@ -133,26 +133,26 @@ test('getWinningProposal', async () => {
   expect(option).toBe(2);
 });
 
-//TODO: figure out why this is throwing a heap out of memery error
-// test('getVoteHistory', async () => {
-//   const mockFn1 = jest.fn(async () => dummyAllPollsData);
-//   govQueryApiService.getAllWhitelistedPolls = mockFn1;
-//   const mockFn2 = jest.fn(async () => dummyMkrSupportData);
-//   govQueryApiService.getMkrSupport = mockFn2;
-//   const mockFn3 = jest.fn(async (t) => dummyBlockNumber(t));
-//   govQueryApiService.getBlockNumber = mockFn3;
-//   //const history = await govPollingService.getVoteHistory(1,3);
-//   expect(mockFn1).toBeCalled();
-//   expect(mockFn2).toBeCalled();
-//   expect(mockFn3).toBeCalled();
-//   console.log('history');
-// });
+test('getVoteHistory', async () => {
+  // clear polls cache
+  govPollingService.polls = null;
+  const mockFn1 = jest.fn(async () => dummyAllPollsData);
+  govQueryApiService.getAllWhitelistedPolls = mockFn1;
+  const mockFn2 = jest.fn(async () => dummyMkrSupportData);
+  govQueryApiService.getMkrSupport = mockFn2;
+  const mockFn3 = jest.fn(async t => dummyBlockNumber(t));
+  govQueryApiService.getBlockNumber = mockFn3;
+  const history = await govPollingService.getVoteHistory(1, 3);
+  expect(mockFn1).toBeCalled();
+  expect(mockFn2).toBeCalled();
+  expect(mockFn3).toBeCalled();
+  expect(history[0].options).toBe(dummyMkrSupportData);
+});
 
-//todo: figure out why .div isn't working
-// test('getPercentageMkrVoted', async () => {
-//   const mockFn = jest.fn(async () => dummyMkrSupportData);
-//   govQueryApiService.getMkrSupport = mockFn;
-//   const percentage = await govPollingService.getPercentageMkrVoted(1);
-//   expect(mockFn).toBeCalled();
-//   expect(percentage).toBe(4);
-// });
+test('getPercentageMkrVoted', async () => {
+  const mockFn = jest.fn(async () => dummyMkrSupportData);
+  govQueryApiService.getMkrSupport = mockFn;
+  const percentage = await govPollingService.getPercentageMkrVoted(1);
+  expect(mockFn).toBeCalled();
+  expect(percentage).toBe(4);
+});

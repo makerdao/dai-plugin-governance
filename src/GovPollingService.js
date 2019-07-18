@@ -50,7 +50,7 @@ export default class GovPollingService extends PrivateService {
 
   async _getPoll(pollId) {
     const polls = await this.getAllWhitelistedPolls();
-    return polls.filter(p => p.pollId === pollId);
+    return polls.find(p => parseInt(p.pollId) === parseInt(pollId));
   }
 
   async getAllWhitelistedPolls() {
@@ -94,7 +94,10 @@ export default class GovPollingService extends PrivateService {
         .getToken(MKR)
         .totalSupply()
     ]);
-    return voted.div(total); //TODO: why is this throwing an error about NaN?
+    return voted
+      .div(total)
+      .div(100)
+      .toNumber(); //TODO: why is this throwing an error about NaN?
   }
 
   async getWinningProposal(pollId) {
@@ -112,27 +115,38 @@ export default class GovPollingService extends PrivateService {
   }
 
   async getVoteHistory(pollId, numPlots) {
-    const { startDate, endDate } = this._getPoll(pollId);
+    const { startDate, endDate } = await this._getPoll(pollId);
     const startUnix = Math.floor(startDate / 1000);
     const endUnix = Math.floor(endDate / 1000);
     const [startBlock, endBlock] = await Promise.all([
       this.get('govQueryApi').getBlockNumber(startUnix),
       this.get('govQueryApi').getBlockNumber(endUnix) //should return current block number if endDate hasn't happened yet
     ]);
-    let voteHistory = [];
-    for (
-      let i = endBlock;
-      i >= startBlock;
-      i -= Math.round(endBlock - startBlock) / numPlots
-    ) {
+
+    const voteHistory = [];
+    const interval = Math.round((endBlock - startBlock) / numPlots);
+    if (interval === 0) {
       const mkrSupport = await this.get('govQueryApi').getMkrSupport(
         pollId,
-        POSTGRES_MAX_INT
+        endBlock
       );
-      voteHistory.push({
-        time: mkrSupport[0].blockTimestamp,
-        options: mkrSupport
-      });
+      voteHistory.push([
+        {
+          time: mkrSupport[0].blockTimestamp,
+          options: mkrSupport
+        }
+      ]);
+    } else {
+      for (let i = endBlock; i >= startBlock; i -= interval) {
+        const mkrSupport = await this.get('govQueryApi').getMkrSupport(
+          pollId,
+          i
+        );
+        voteHistory.push({
+          time: mkrSupport[0].blockTimestamp,
+          options: mkrSupport
+        });
+      }
     }
     return voteHistory;
   }
