@@ -110,7 +110,9 @@ export default class QueryApi extends PublicService {
     }
   }
   }`;
+    console.log('QUERY', query);
     const response = await this.getQueryResponse(this.serverUrl, query);
+    console.log('RESPONSE', response);
     const weights = response.voteOptionMkrWeights.nodes;
     const totalWeight = weights.reduce(
       (acc, cur) => acc + parseInt(cur.mkrSupport),

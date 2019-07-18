@@ -111,7 +111,7 @@ export default class GovPollingService extends PrivateService {
         max = currentVotes[i];
       }
     }
-    return max.optionId;
+    return max ? max.optionId : 0;
   }
 
   async getVoteHistory(pollId, numPlots) {
