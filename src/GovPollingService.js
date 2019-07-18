@@ -64,7 +64,10 @@ export default class GovPollingService extends PrivateService {
   }
 
   async getOptionVotingFor(address, pollId) {
-    return this.get('govQueryApi').getOptionVotingFor(address, pollId);
+    return this.get('govQueryApi').getOptionVotingFor(
+      address.toLowerCase(),
+      pollId
+    );
   }
 
   async getNumUniqueVoters(pollId) {
@@ -73,7 +76,7 @@ export default class GovPollingService extends PrivateService {
 
   async getMkrWeight(address) {
     const weight = await this.get('govQueryApi').getMkrWeight(
-      address,
+      address.toLowerCase(),
       POSTGRES_MAX_INT
     );
     return MKR(weight);
