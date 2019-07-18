@@ -135,7 +135,7 @@ test('getWinningProposal', async () => {
 
 test('getVoteHistory', async () => {
   // clear polls cache
-  govPollingService.polls = null;
+  govPollingService.refresh();
   const mockFn1 = jest.fn(async () => dummyAllPollsData);
   govQueryApiService.getAllWhitelistedPolls = mockFn1;
   const mockFn2 = jest.fn(async () => dummyMkrSupportData);
