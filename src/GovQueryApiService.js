@@ -2,6 +2,8 @@ import { PublicService } from '@makerdao/services-core';
 import assert from 'assert';
 
 const LOCAL_URL = 'http://localhost:3001/v1';
+const STAGING_URL = 'https://staging-gov-db.makerfoundation.com/api/v1';
+const PROD_URL = 'https://gov-db.makerfoundation.com/api/v1';
 
 export default class QueryApi extends PublicService {
   constructor(name = 'govQueryApi') {
@@ -110,17 +112,20 @@ export default class QueryApi extends PublicService {
     }
   }
   }`;
-    console.log('QUERY', query);
     const response = await this.getQueryResponse(this.serverUrl, query);
-    console.log('RESPONSE', response);
     const weights = response.voteOptionMkrWeights.nodes;
-    const totalWeight = weights.reduce(
-      (acc, cur) => acc + parseInt(cur.mkrSupport),
-      0
-    );
+    const totalWeight = weights.reduce((acc, cur) => {
+      const mkrSupport = isNaN(parseInt(cur.mkrSupport))
+        ? 0
+        : parseInt(cur.mkrSupport);
+      return acc + mkrSupport;
+    }, 0);
     return weights.map(o => {
-      o.mkrSupport = parseInt(o.mkrSupport);
-      o.percentage = (100 * o.mkrSupport) / totalWeight;
+      const mkrSupport = isNaN(parseInt(o.mkrSupport))
+        ? 0
+        : parseInt(o.mkrSupport);
+      o.mkrSupport = mkrSupport;
+      o.percentage = (100 * mkrSupport) / totalWeight;
       o.blockTimestamp = new Date(o.blockTimestamp);
       return o;
     });
