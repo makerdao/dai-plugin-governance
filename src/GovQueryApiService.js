@@ -1,9 +1,6 @@
 import { PublicService } from '@makerdao/services-core';
 import assert from 'assert';
-
-const LOCAL_URL = 'http://localhost:3001/v1';
-const STAGING_URL = 'https://staging-gov-db.makerfoundation.com/api/v1';
-const PROD_URL = 'https://gov-db.makerfoundation.com/api/v1';
+import { netIdtoSpockUrl } from './utils/helpers';
 
 export default class QueryApi extends PublicService {
   constructor(name = 'govQueryApi') {
@@ -11,6 +8,7 @@ export default class QueryApi extends PublicService {
   }
 
   async getQueryResponse(serverUrl, query, variables) {
+    // console.log('query', query, variables);
     const resp = await fetch(serverUrl, {
       method: 'POST',
       headers: {
@@ -29,11 +27,7 @@ export default class QueryApi extends PublicService {
 
   connect() {
     const network = this.get('web3').network;
-    switch (network) {
-      default:
-        this.serverUrl = LOCAL_URL;
-        break;
-    }
+    this.serverUrl = netIdtoSpockUrl(network);
   }
 
   async getAllWhitelistedPolls() {

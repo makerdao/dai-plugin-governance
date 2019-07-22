@@ -145,8 +145,9 @@ export default class GovPollingService extends PrivateService {
           pollId,
           i
         );
+        const time = mkrSupport.length > 0 ? mkrSupport[0].blockTimestamp : 0;
         voteHistory.push({
-          time: mkrSupport[0].blockTimestamp,
+          time,
           options: mkrSupport
         });
       }
