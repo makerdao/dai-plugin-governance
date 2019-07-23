@@ -108,6 +108,8 @@ export default class QueryApi extends PublicService {
   }`;
     const response = await this.getQueryResponse(this.serverUrl, query);
     const weights = response.voteOptionMkrWeights.nodes;
+    // We don't want to calculate votes for 0:abstain
+    if (weights[0] && weights[0].optionId === 0) weights.shift();
     const totalWeight = weights.reduce((acc, cur) => {
       const mkrSupport = isNaN(parseInt(cur.mkrSupport))
         ? 0
