@@ -8,7 +8,6 @@ export default class QueryApi extends PublicService {
   }
 
   async getQueryResponse(serverUrl, query, variables) {
-    // console.log('query', query, variables);
     const resp = await fetch(serverUrl, {
       method: 'POST',
       headers: {

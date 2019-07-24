@@ -23,6 +23,8 @@ export const netIdtoSpockUrl = id => {
   switch (parseInt(id, 10)) {
     case 1:
       return PROD_URL;
+    case 42:
+      return STAGING_URL;
     default:
       return LOCAL_URL;
   }
