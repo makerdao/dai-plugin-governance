@@ -99,7 +99,7 @@ export default class GovPollingService extends PrivateService {
     ]);
     return voted
       .div(total)
-      .div(100)
+      .times(100)
       .toNumber(); //TODO: why is this throwing an error about NaN?
   }
 
