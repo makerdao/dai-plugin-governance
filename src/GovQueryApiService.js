@@ -110,15 +110,15 @@ export default class QueryApi extends PublicService {
     // We don't want to calculate votes for 0:abstain
     if (weights[0] && weights[0].optionId === 0) weights.shift();
     const totalWeight = weights.reduce((acc, cur) => {
-      const mkrSupport = isNaN(parseInt(cur.mkrSupport))
+      const mkrSupport = isNaN(parseFloat(cur.mkrSupport))
         ? 0
-        : parseInt(cur.mkrSupport);
+        : parseFloat(cur.mkrSupport);
       return acc + mkrSupport;
     }, 0);
     return weights.map(o => {
-      const mkrSupport = isNaN(parseInt(o.mkrSupport))
+      const mkrSupport = isNaN(parseFloat(o.mkrSupport))
         ? 0
-        : parseInt(o.mkrSupport);
+        : parseFloat(o.mkrSupport);
       o.mkrSupport = mkrSupport;
       o.percentage = (100 * mkrSupport) / totalWeight;
       o.blockTimestamp = new Date(o.blockTimestamp);
