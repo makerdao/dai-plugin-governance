@@ -97,7 +97,6 @@ export default class GovPollingService extends PrivateService {
         .getToken(MKR)
         .totalSupply()
     ]);
-    console.log('voted total', voted.toNumber(), total.toNumber());
     return voted
       .div(total)
       .times(100)
