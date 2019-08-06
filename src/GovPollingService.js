@@ -97,10 +97,11 @@ export default class GovPollingService extends PrivateService {
         .getToken(MKR)
         .totalSupply()
     ]);
+    console.log('voted total', voted.toNumber(), total.toNumber());
     return voted
       .div(total)
       .times(100)
-      .toNumber(); //TODO: why is this throwing an error about NaN?
+      .toNumber();
   }
 
   async getWinningProposal(pollId) {

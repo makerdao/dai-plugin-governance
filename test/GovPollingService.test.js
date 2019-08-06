@@ -154,5 +154,5 @@ test('getPercentageMkrVoted', async () => {
   govQueryApiService.getMkrSupport = mockFn;
   const percentage = await govPollingService.getPercentageMkrVoted(1);
   expect(mockFn).toBeCalled();
-  expect(percentage).toBe(4);
+  expect(percentage).toBe(40000);
 });
