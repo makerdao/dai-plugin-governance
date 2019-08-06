@@ -13,9 +13,10 @@ cache:
     - nix
   timeout: 9000
 before_install:
+  - . gov-testchain/install-dapptools.sh
   - npm i -g yarn@latest
 install:
   - yarn install
   - yarn build
 script:
-  - yarn test:testchain
+  - yarn testnet --ci yarn test

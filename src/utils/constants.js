@@ -10,3 +10,8 @@ export const CHIEF = 'CHIEF';
 
 /* Addresses */
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+
+/* Spock URLs */
+export const LOCAL_URL = 'http://localhost:3001/v1';
+export const STAGING_URL = 'https://staging-gov-db.makerfoundation.com/api/v1';
+export const PROD_URL = 'https://gov-db.makerfoundation.com/api/v1';

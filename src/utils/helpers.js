@@ -1,5 +1,5 @@
 import { createGetCurrency } from '@makerdao/currency';
-import { MKR } from './constants';
+import { MKR, LOCAL_URL, STAGING_URL, PROD_URL } from './constants';
 
 /**
  * @desc get network name
@@ -16,6 +16,17 @@ export const netIdToName = id => {
       return 'ganache';
     default:
       return '';
+  }
+};
+
+export const netIdtoSpockUrl = id => {
+  switch (parseInt(id, 10)) {
+    case 1:
+      return PROD_URL;
+    case 42:
+      return STAGING_URL;
+    default:
+      return LOCAL_URL;
   }
 };
 

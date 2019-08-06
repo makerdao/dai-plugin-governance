@@ -1,9 +1,17 @@
 import { map, prop } from 'ramda';
-import { VOTE_PROXY_FACTORY, CHIEF, MKR, IOU } from './utils/constants';
+import {
+  VOTE_PROXY_FACTORY,
+  CHIEF,
+  POLLING,
+  MKR,
+  IOU
+} from './utils/constants';
 
 import ChiefService from './ChiefService';
 import VoteProxyService from './VoteProxyService';
 import VoteProxyFactoryService from './VoteProxyFactoryService';
+import GovPollingService from './GovPollingService';
+import GovQueryApiService from './GovQueryApiService';
 
 export default {
   addConfig: function(config, { network = 'mainnet', mcd }) {
@@ -31,15 +39,27 @@ export default {
       [VOTE_PROXY_FACTORY]: {
         address: map(prop('VOTE_PROXY_FACTORY'), contractAddresses),
         abi: require('../contracts/abis/VoteProxyFactory.json')
+      },
+      [POLLING]: {
+        address: map(prop('POLLING'), contractAddresses),
+        abi: require('../contracts/abis/Polling.json')
       }
     };
 
     const makerConfig = {
       ...config,
-      additionalServices: ['chief', 'voteProxy', 'voteProxyFactory'],
+      additionalServices: [
+        'chief',
+        'voteProxy',
+        'voteProxyFactory',
+        'govPolling',
+        'govQueryApi'
+      ],
       chief: [ChiefService],
       voteProxy: [VoteProxyService],
       voteProxyFactory: [VoteProxyFactoryService],
+      govPolling: [GovPollingService],
+      govQueryApi: [GovQueryApiService],
       smartContract: { addContracts },
       token: {
         erc20: [
