@@ -5,9 +5,10 @@ import { netIdtoSpockUrl } from './utils/helpers';
 export default class QueryApi extends PublicService {
   constructor(name = 'govQueryApi') {
     super(name, ['web3']);
+    this.queryPromises = {};
   }
 
-  async getQueryResponse(serverUrl, query, variables) {
+  async getQueryResponse(serverUrl, query) {
     const resp = await fetch(serverUrl, {
       method: 'POST',
       headers: {
@@ -15,13 +16,19 @@ export default class QueryApi extends PublicService {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        query,
-        variables
+        query
       })
     });
     const { data } = await resp.json();
     assert(data, `error fetching data from ${serverUrl}`);
     return data;
+  }
+
+  async getQueryResponseMemoized(serverUrl, query) {
+    let cacheKey = `${serverUrl};${query}`;
+    if (this.queryPromises[cacheKey]) return this.queryPromises[cacheKey];
+    this.queryPromises[cacheKey] = this.getQueryResponse(serverUrl, query);
+    return this.queryPromises[cacheKey];
   }
 
   connect() {
@@ -105,7 +112,7 @@ export default class QueryApi extends PublicService {
     }
   }
   }`;
-    const response = await this.getQueryResponse(this.serverUrl, query);
+    const response = await this.getQueryResponseMemoized(this.serverUrl, query);
     const weights = response.voteOptionMkrWeights.nodes;
     // We don't want to calculate votes for 0:abstain
     if (weights[0] && weights[0].optionId === 0) weights.shift();
