@@ -8,7 +8,7 @@ export default class QueryApi extends PublicService {
     this.queryPromises = {};
   }
 
-  async getQueryResponse(serverUrl, query, variables) {
+  async getQueryResponse(serverUrl, query) {
     const resp = await fetch(serverUrl, {
       method: 'POST',
       headers: {
@@ -16,8 +16,7 @@ export default class QueryApi extends PublicService {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        query,
-        variables
+        query
       })
     });
     const { data } = await resp.json();
@@ -25,14 +24,10 @@ export default class QueryApi extends PublicService {
     return data;
   }
 
-  async getQueryResponseMemoized(serverUrl, query, variables) {
-    let cacheKey = `${serverUrl};${query};${variables}`;
+  async getQueryResponseMemoized(serverUrl, query) {
+    let cacheKey = `${serverUrl};${query}`;
     if (this.queryPromises[cacheKey]) return this.queryPromises[cacheKey];
-    this.queryPromises[cacheKey] = this.getQueryResponse(
-      serverUrl,
-      query,
-      variables
-    );
+    this.queryPromises[cacheKey] = this.getQueryResponse(serverUrl, query);
     return this.queryPromises[cacheKey];
   }
 
