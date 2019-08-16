@@ -5,7 +5,6 @@ import { netIdtoSpockUrl } from './utils/helpers';
 export default class QueryApi extends PublicService {
   constructor(name = 'govQueryApi') {
     super(name, ['web3']);
-    this.mkrSupport = {};
   }
 
   async getQueryResponse(serverUrl, query, variables) {
@@ -99,8 +98,6 @@ export default class QueryApi extends PublicService {
   }
 
   async getMkrSupport(pollId, blockNumber) {
-    if (this.mkrSupport[`${pollId};${blockNumber}`])
-      return this.mkrSupport[`${pollId};${blockNumber}`];
     const query = `{voteOptionMkrWeights(argPollId: ${pollId}, argBlockNumber: ${blockNumber}){
     nodes{
       optionId
@@ -118,7 +115,7 @@ export default class QueryApi extends PublicService {
         : parseFloat(cur.mkrSupport);
       return acc + mkrSupport;
     }, 0);
-    this.mkrSupport[`${pollId};${blockNumber}`] = weights.map(o => {
+    return weights.map(o => {
       const mkrSupport = isNaN(parseFloat(o.mkrSupport))
         ? 0
         : parseFloat(o.mkrSupport);
@@ -127,6 +124,5 @@ export default class QueryApi extends PublicService {
       o.blockTimestamp = new Date(o.blockTimestamp);
       return o;
     });
-    return this.mkrSupport[`${pollId};${blockNumber}`];
   }
 }
