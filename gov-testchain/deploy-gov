@@ -26,7 +26,7 @@ export ETH_RPC_ACCOUNTS=yes # Don't use ethsign
 
 cd $CWD/src/ds-chief
 dapp update
-dapp --use solc:0.5.0 build
+dapp --use solc:0.5.0 build --extract
 export SETH_ASYNC=yes
 test -z $GOV && GOVtx=$(dapp create DSToken $(seth --to-bytes32 $(seth --from-ascii 'GOV')))
 test -z $IOU && IOUtx=$(dapp create DSToken $(seth --to-bytes32 $(seth --from-ascii 'IOU')))
@@ -43,13 +43,13 @@ cd -
 
 cd  $CWD/src/vote-proxy
 dapp update
-dapp --use solc:0.5.0 build
+dapp --use solc:0.5.0 build --extract
 VOTE_PROXY_FACTORY=$(dapp create VoteProxyFactory $CHIEF)
 cd -
 
 cd  $CWD/src/symbolic-voting
 dapp update
-dapp --use solc:0.5.0 build
+dapp --use solc:0.5.0 build --extract
 POLLING=$(dapp create PollingEmitter)
 cd -
 
