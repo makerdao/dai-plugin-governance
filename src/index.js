@@ -3,6 +3,7 @@ import {
   VOTE_PROXY_FACTORY,
   CHIEF,
   POLLING,
+  ESM,
   MKR,
   IOU
 } from './utils/constants';
@@ -12,6 +13,7 @@ import VoteProxyService from './VoteProxyService';
 import VoteProxyFactoryService from './VoteProxyFactoryService';
 import GovPollingService from './GovPollingService';
 import GovQueryApiService from './GovQueryApiService';
+import EsmService from './EsmService';
 
 export default {
   addConfig: function(config, { network = 'mainnet', mcd }) {
@@ -43,6 +45,10 @@ export default {
       [POLLING]: {
         address: map(prop('POLLING'), contractAddresses),
         abi: require('../contracts/abis/Polling.json')
+      },
+      [ESM]: {
+        address: map(prop('ESM'), contractAddresses),
+        abi: require('../contracts/abis/ESM.json')
       }
     };
 
@@ -53,13 +59,15 @@ export default {
         'voteProxy',
         'voteProxyFactory',
         'govPolling',
-        'govQueryApi'
+        'govQueryApi',
+        'esm'
       ],
       chief: [ChiefService],
       voteProxy: [VoteProxyService],
       voteProxyFactory: [VoteProxyFactoryService],
       govPolling: [GovPollingService],
       govQueryApi: [GovQueryApiService],
+      esm: [EsmService],
       smartContract: { addContracts },
       token: {
         erc20: [
