@@ -53,6 +53,20 @@ dapp --use solc:0.5.0 build --extract
 POLLING=$(dapp create PollingEmitter)
 cd -
 
+cd $CWD/src/dss
+dapp update
+dapp --use solc:0.5.11 build --extract
+END=$(dapp create End)
+cd -
+
+cd  $CWD/src/esm
+dapp update
+dapp --use solc:0.5.6 build --extract
+PIT="0x0000000000000000000000000000000000000000"
+MIN=50000
+ESM=$(dapp create ESM $GOV $END $PIT $MIN)
+cd -
+
 # Save the contract addresses to a JSON file
 cat > $CWD/../contracts/addresses/testnet.json <<- EOM
 {
@@ -60,7 +74,9 @@ cat > $CWD/../contracts/addresses/testnet.json <<- EOM
   "IOU": "$IOU",
   "CHIEF": "$CHIEF",
   "POLLING": "$POLLING",
-  "VOTE_PROXY_FACTORY": "$VOTE_PROXY_FACTORY"
+  "VOTE_PROXY_FACTORY": "$VOTE_PROXY_FACTORY",
+  "ESM": "$ESM",
+  "END": "$END"
 }
 EOM
 
