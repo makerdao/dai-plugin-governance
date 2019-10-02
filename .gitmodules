@@ -9,7 +9,7 @@
 	url = https://github.com/makerdao/symbolic-voting
 [submodule "gov-testchain/src/esm"]
 	path = gov-testchain/src/esm
-	url = git@github.com:makerdao/esm.git
+	url = https://github.com/makerdao/esm.git
 [submodule "gov-testchain/src/dss"]
 	path = gov-testchain/src/dss
-	url = git@github.com:makerdao/dss.git
+	url = https://github.com/makerdao/dss.git
