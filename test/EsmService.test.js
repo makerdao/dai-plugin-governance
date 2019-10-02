@@ -30,3 +30,8 @@ afterAll(async done => {
 test('can create ESM Service', async () => {
   expect(esmService).toBeInstanceOf(EsmService);
 });
+
+test('can join mkr into esm', async () => {
+  const tx = await esmService.join(1);
+  console.log('tx', tx);
+});
