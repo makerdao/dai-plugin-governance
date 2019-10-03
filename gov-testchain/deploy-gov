@@ -18,7 +18,6 @@ export ETH_RPC_URL=http://127.1:$PORT
 until curl -s -o/dev/null "$ETH_RPC_URL"; do sleep 3; done
 
 # Configure seth
-export SOLC_FLAGS=${SOLC_FLAGS:-"--optimize"}
 export ETH_GAS=${ETH_GAS:-"4500000"}
 export ETH_FROM=${ETH_FROM:-$(seth rpc eth_coinbase)} # defaults to 0x16fb96a5fa0427af0c8f7cf1eb4870231c8154b6
 export SETH_STATUS=yes
@@ -60,19 +59,11 @@ MCD_END=$(dapp create End)
 cd -
 
 cd  $CWD/src/esm
-NEW_PRAGMA="pragma solidity ^0.5.4;"
-sed -i "1s/.*/$NEW_PRAGMA/" src/ESM.sol
-sed -i "1s/.*/$NEW_PRAGMA/" src/ESM.t.sol
-
 dapp update
-dapp --use solc:0.5.4 build --extract
+dapp --use solc:0.5.6 build --extract
 PIT="0x0000000000000000000000000000000000000000"
 MIN=50000
 MCD_ESM=$(dapp create ESM $GOV $MCD_END $PIT $MIN)
-
-OLD_PRAGMA="pragma solidity ^0.5.6;"
-sed -i "1s/.*/$OLD_PRAGMA/" src/ESM.sol
-sed -i "1s/.*/$OLD_PRAGMA/" src/ESM.t.sol
 cd -
 
 # Save the contract addresses to a JSON file
