@@ -47,7 +47,7 @@ export default {
         abi: require('../contracts/abis/Polling.json')
       },
       [ESM]: {
-        address: map(prop('ESM'), contractAddresses),
+        address: map(prop('MCD_ESM'), contractAddresses),
         abi: require('../contracts/abis/ESM.json')
       }
     };
