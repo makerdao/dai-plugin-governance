@@ -38,5 +38,5 @@ test('can access deployed contract interface', async () => {
 
 test('can return the minimum threshold', async () => {
   const threshold = await esmService.thresholdAmount();
-  expect(threshold.toNumber()).equal(50000);
+  expect(threshold.toNumber()).toBe(50000);
 });
