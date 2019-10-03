@@ -199,3 +199,5 @@ export const setUpAllowance = async (maker, address) => {
 
   maker.useAccount(lad);
 };
+
+export const addressRegex = /^0x[a-fA-F0-9]{40}$/;

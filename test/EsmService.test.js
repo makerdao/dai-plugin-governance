@@ -1,12 +1,12 @@
 import {
   setupTestMakerInstance,
   restoreSnapshotOriginal,
-  sleep
+  sleep,
+  addressRegex
 } from './helpers';
 import EsmService from '../src/EsmService';
 
 let maker, esmService;
-
 beforeAll(async () => {
   maker = await setupTestMakerInstance();
   esmService = maker.service('esm');
@@ -29,4 +29,14 @@ afterAll(async done => {
 
 test('can create ESM Service', async () => {
   expect(esmService).toBeInstanceOf(EsmService);
+});
+
+test('can access deployed contract interface', async () => {
+  const contract = await esmService._esmContract();
+  expect(addressRegex.test(contract.address)).toBe(true);
+});
+
+test('can return the minimum threshold', async () => {
+  const threshold = await esmService.thresholdAmount();
+  expect(threshold.toNumber()).equal(50000);
 });
