@@ -53,6 +53,28 @@ dapp --use solc:0.5.0 build --extract
 POLLING=$(dapp create PollingEmitter)
 cd -
 
+cd $CWD/src/dss
+dapp update
+dapp --use solc:0.5.11 build --extract
+MCD_END=$(dapp create End)
+cd -
+
+cd  $CWD/src/esm
+NEW_PRAGMA="pragma solidity ^0.5.4;"
+sed -i "1s/.*/$NEW_PRAGMA/" src/ESM.sol
+sed -i "1s/.*/$NEW_PRAGMA/" src/ESM.t.sol
+
+dapp update
+dapp --use solc:0.5.4 build --extract
+PIT="0x0000000000000000000000000000000000000000"
+MIN=50000
+MCD_ESM=$(dapp create ESM $GOV $MCD_END $PIT $MIN)
+
+OLD_PRAGMA="pragma solidity ^0.5.6;"
+sed -i "1s/.*/$OLD_PRAGMA/" src/ESM.sol
+sed -i "1s/.*/$OLD_PRAGMA/" src/ESM.t.sol
+cd -
+
 # Save the contract addresses to a JSON file
 cat > $CWD/../contracts/addresses/testnet.json <<- EOM
 {
@@ -60,7 +82,9 @@ cat > $CWD/../contracts/addresses/testnet.json <<- EOM
   "IOU": "$IOU",
   "CHIEF": "$CHIEF",
   "POLLING": "$POLLING",
-  "VOTE_PROXY_FACTORY": "$VOTE_PROXY_FACTORY"
+  "VOTE_PROXY_FACTORY": "$VOTE_PROXY_FACTORY",
+  "MCD_ESM": "$MCD_ESM",
+  "MCD_END": "$MCD_END"
 }
 EOM
 
