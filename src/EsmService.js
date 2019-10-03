@@ -10,7 +10,6 @@ export default class EsmService extends PrivateService {
   // Writes -----------------------------------------------
 
   join(amt, unit = MKR) {
-    //set allowance here, with requireAllowance?
     const mkrAmt = getCurrency(amt, unit).toFixed('wei');
     return this._esmContract().join(mkrAmt);
   }
