@@ -1,14 +1,18 @@
 import { PrivateService } from '@makerdao/services-core';
-import { ESM } from './utils/constants';
-import { END } from './utils/constants';
+import { MKR, ESM, END } from './utils/constants';
+import { getCurrency } from './utils/helpers';
 
 export default class EsmService extends PrivateService {
   constructor(name = 'esm') {
-    super(name, ['smartContract', 'web3']);
+    super(name, ['smartContract', 'web3', 'token', 'allowance']);
   }
 
   thresholdAmount() {
     return this._esmContract().min();
+  }
+
+  fired() {
+    return this._esmContract().fired();
   }
 
   async emergencyShutdownActive() {
@@ -18,21 +22,42 @@ export default class EsmService extends PrivateService {
 
   async canFire() {
     const [fired, live] = await Promise.all([
-      this._esmContract().fired(),
+      this.fired(),
       this.emergencyShutdownActive()
     ]);
     return !fired && !live;
   }
 
-  getTotalStaked() {
-    return this._esmContract().Sum();
+  async getTotalStaked() {
+    const total = await this._esmContract().Sum();
+    return getCurrency(total, MKR).shiftedBy(-18);
   }
 
-  getTotalStakedByAddress(address) {
+  async getTotalStakedByAddress(address = false) {
     if (!address) {
       address = this.get('web3').currentAddress();
     }
-    return this._esmContract().sum(address);
+    const total = await this._esmContract().sum(address);
+    return getCurrency(total, MKR).shiftedBy(-18);
+  }
+
+  async join(amount, skipChecks = false) {
+    const mkrAmount = getCurrency(amount, MKR);
+    if (skipChecks) {
+      const [fired, mkrBalance] = await Promise.all([
+        this.fired(),
+        this.get('token')
+          .getToken(MKR)
+          .balance()
+      ]);
+      if (fired) {
+        throw new Error('cannot join when emergency shutdown has been fired');
+      }
+      if (mkrBalance.lt(mkrAmount)) {
+        throw new Error('amount to join is greater than the user balance');
+      }
+    }
+    return this._esmContract().join(mkrAmount.toFixed('wei'));
   }
 
   _esmContract() {

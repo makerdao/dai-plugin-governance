@@ -1,5 +1,6 @@
 import {
   setupTestMakerInstance,
+  setUpAllowance,
   restoreSnapshotOriginal,
   sleep,
   addressRegex
@@ -64,4 +65,11 @@ test('can return the total amount of staked MKR', async () => {
 test('can return the total amount of staked MKR per user', async () => {
   const totalStaked = await esmService.getTotalStakedByAddress();
   expect(totalStaked.toNumber()).toEqual(0);
+});
+
+test('can join mkr', async () => {
+  await setUpAllowance(maker, esmService._esmContract().address);
+  await esmService.join(1, true);
+  const totalStaked = await esmService.getTotalStaked();
+  expect(totalStaked.toNumber()).toEqual(1);
 });
