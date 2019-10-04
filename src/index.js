@@ -4,6 +4,7 @@ import {
   CHIEF,
   POLLING,
   ESM,
+  END,
   MKR,
   IOU
 } from './utils/constants';
@@ -49,6 +50,10 @@ export default {
       [ESM]: {
         address: map(prop('MCD_ESM'), contractAddresses),
         abi: require('../contracts/abis/ESM.json')
+      },
+      [END]: {
+        address: map(prop('MCD_END'), contractAddresses),
+        abi: require('../contracts/abis/End.json')
       }
     };
 
