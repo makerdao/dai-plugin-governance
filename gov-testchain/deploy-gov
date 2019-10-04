@@ -9,7 +9,7 @@ PORT=${GOV_TESTNET_PORT:-2000}
 
 ./node_modules/.bin/ganache-cli -i 999 -p $PORT -a 1000 \
   -m "hill law jazz limb penalty escape public dish stand bracket blue jar" \
-  >./ganache.out & netpid=$!
+  > ./ganache.out & netpid=$!
 trap "kill $netpid" EXIT
 
 # Wait until it's up, then use it for the deployment.
@@ -18,7 +18,7 @@ export ETH_RPC_URL=http://127.1:$PORT
 until curl -s -o/dev/null "$ETH_RPC_URL"; do sleep 3; done
 
 # Configure seth
-# export SOLC_FLAGS=${SOLC_FLAGS:-"--optimize"}
+export SOLC_FLAGS=${SOLC_FLAGS:-"--optimize"}
 export ETH_GAS=${ETH_GAS:-"4500000"}
 export ETH_FROM=${ETH_FROM:-$(seth rpc eth_coinbase)} # defaults to 0x16fb96a5fa0427af0c8f7cf1eb4870231c8154b6
 export SETH_STATUS=yes
@@ -61,10 +61,10 @@ cd -
 
 cd  $CWD/src/esm
 dapp update
-dapp --use solc:0.5.11 build --extract
+dapp --use solc:0.5.6 build --extract
 PIT="0x0000000000000000000000000000000000000000"
-MIN=50000
-MCD_ESM=$(dapp create ESM $GOV $MCD_END $PIT $(seth --to-uint256 $(seth --to-wei $MIN)));
+MIN=$(seth --to-uint256 $(seth --to-wei 50000))
+MCD_ESM=$(dapp create ESM $GOV $MCD_END $PIT $MIN);
 cd -
 
 # Save the contract addresses to a JSON file
