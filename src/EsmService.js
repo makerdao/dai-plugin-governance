@@ -41,9 +41,9 @@ export default class EsmService extends PrivateService {
     return getCurrency(total, MKR).shiftedBy(-18);
   }
 
-  async join(amount, skipChecks = false) {
+  async stake(amount, skipChecks = false) {
     const mkrAmount = getCurrency(amount, MKR);
-    if (skipChecks) {
+    if (!skipChecks) {
       const [fired, mkrBalance] = await Promise.all([
         this.fired(),
         this.get('token')

@@ -67,7 +67,7 @@ test('can return the total amount of staked MKR per user', async () => {
   expect(totalStaked.toNumber()).toEqual(0);
 });
 
-test('can join mkr', async () => {
+test('can stake mkr', async () => {
   await setUpAllowance(maker, esmService._esmContract().address);
   await esmService.join(1, true);
   const totalStaked = await esmService.getTotalStaked();
