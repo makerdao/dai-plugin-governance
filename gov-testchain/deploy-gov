@@ -38,7 +38,7 @@ CHIEF=$(dapp create DSChief $GOV $IOU $MAX_YAYS)
 # CHIEF mints and burns IOUs, so it must be the owner of the token contract
 seth send $IOU 'setOwner(address)' $CHIEF
 # Seed our coinbase account with some Gov
-seth send $GOV 'mint(uint256)' $(seth --to-uint256 $(seth --to-wei 100 eth))
+seth send $GOV 'mint(uint256)' $(seth --to-uint256 $(seth --to-wei 100000 eth))
 cd -
 
 cd  $CWD/src/vote-proxy
@@ -63,7 +63,7 @@ cd  $CWD/src/esm
 dapp update
 dapp --use solc:0.5.6 build --extract
 PIT="0x0000000000000000000000000000000000000000"
-MIN=$(seth --to-uint256 $(seth --to-wei 50000))
+MIN=$(seth --to-uint256 $(seth --to-wei 50000 eth))
 MCD_ESM=$(dapp create ESM $GOV $MCD_END $PIT $MIN);
 cd -
 

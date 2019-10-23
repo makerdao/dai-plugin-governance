@@ -7,12 +7,14 @@ export default class EsmService extends PrivateService {
     super(name, ['smartContract', 'web3', 'token', 'allowance']);
   }
 
-  thresholdAmount() {
-    return this._esmContract().min();
+  async thresholdAmount() {
+    const min = await this._esmContract().min();
+    return getCurrency(min, MKR).shiftedBy(-18);
   }
 
-  fired() {
-    return this._esmContract().fired();
+  async fired() {
+    const _fired = await this._esmContract().fired();
+    return _fired.eq(1);
   }
 
   async emergencyShutdownActive() {
@@ -58,6 +60,25 @@ export default class EsmService extends PrivateService {
       }
     }
     return this._esmContract().join(mkrAmount.toFixed('wei'));
+  }
+
+  async triggerEmergencyShutdown(skipChecks = false) {
+    if (!skipChecks) {
+      const [thresholdAmount, totalStaked, canFire] = await Promise.all([
+        this.thresholdAmount(),
+        this.getTotalStaked(),
+        this.canFire()
+      ]);
+      if (totalStaked.lt(thresholdAmount)) {
+        throw new Error(
+          'total amount of staked MKR has not reached the required threshold'
+        );
+      }
+      if (!canFire) {
+        throw new Error('emergency shutdown has already been initiated');
+      }
+    }
+    return this._esmContract().fire();
   }
 
   _esmContract() {

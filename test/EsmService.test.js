@@ -11,6 +11,8 @@ let maker, esmService;
 beforeAll(async () => {
   maker = await setupTestMakerInstance();
   esmService = maker.service('esm');
+
+  await setUpAllowance(maker, esmService._esmContract().address);
 });
 
 afterAll(async done => {
@@ -68,8 +70,37 @@ test('can return the total amount of staked MKR per user', async () => {
 });
 
 test('can stake mkr', async () => {
-  await setUpAllowance(maker, esmService._esmContract().address);
-  await esmService.join(1, true);
+  await esmService.stake(1);
   const totalStaked = await esmService.getTotalStaked();
   expect(totalStaked.toNumber()).toEqual(1);
+});
+
+test('attempt to stake more MKR than balance will fail', async () => {
+  expect.assertions(1);
+  try {
+    await esmService.stake(100000);
+  } catch (e) {
+    expect(e).toEqual(Error('amount to join is greater than the user balance'));
+  }
+});
+
+test('triggering the esm with staked amount < threshold will fail', async () => {
+  expect.assertions(1);
+  try {
+    await esmService.triggerEmergencyShutdown();
+  } catch (e) {
+    expect(e).toEqual(
+      Error('total amount of staked MKR has not reached the required threshold')
+    );
+  }
+});
+
+xtest('can trigger emergency shutdown', async () => {
+  await esmService.stake(50001);
+
+  await esmService.triggerEmergencyShutdown();
+  const fireable = await esmService.canFire();
+  console.log(fireable);
+  const active = await esmService.emergencyShutdownActive();
+  expect(active).toBe(true);
 });
