@@ -86,7 +86,6 @@ export default class GovPollingService extends PrivateService {
     const { endDate } = await this._getPoll(pollId);
     const endUnix = Math.floor(endDate / 1000);
     const endBlock = await this.get('govQueryApi').getBlockNumber(endUnix);
-    console.log('endBlock', endBlock);
     const weights = await this.get('govQueryApi').getMkrSupport(
       pollId,
       endBlock
@@ -111,7 +110,6 @@ export default class GovPollingService extends PrivateService {
     const { endDate } = await this._getPoll(pollId);
     const endUnix = Math.floor(endDate / 1000);
     const endBlock = await this.get('govQueryApi').getBlockNumber(endUnix);
-    console.log('endBlock', endBlock);
     const currentVotes = await this.get('govQueryApi').getMkrSupport(
       pollId,
       endBlock
