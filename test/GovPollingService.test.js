@@ -96,6 +96,7 @@ test('getAllWhitelistedPolls', async () => {
 test('getMkrAmtVoted', async () => {
   const mockFn = jest.fn(async () => dummyMkrSupportData);
   govQueryApiService.getMkrSupport = mockFn;
+  govQueryApiService.getBlockNumber = jest.fn();
   const total = await govPollingService.getMkrAmtVoted(1);
   expect(mockFn).toBeCalled();
   expect(total).toEqual(MKR(40000));
