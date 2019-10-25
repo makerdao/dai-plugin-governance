@@ -83,9 +83,13 @@ export default class GovPollingService extends PrivateService {
   }
 
   async getMkrAmtVoted(pollId) {
+    const { endDate } = await this._getPoll(pollId);
+    const endUnix = Math.floor(endDate / 1000);
+    const endBlock = await this.get('govQueryApi').getBlockNumber(endUnix);
+    console.log('endBlock', endBlock);
     const weights = await this.get('govQueryApi').getMkrSupport(
       pollId,
-      POSTGRES_MAX_INT
+      endBlock
     );
     return MKR(weights.reduce((acc, cur) => acc + cur.mkrSupport, 0));
   }
@@ -104,9 +108,13 @@ export default class GovPollingService extends PrivateService {
   }
 
   async getWinningProposal(pollId) {
+    const { endDate } = await this._getPoll(pollId);
+    const endUnix = Math.floor(endDate / 1000);
+    const endBlock = await this.get('govQueryApi').getBlockNumber(endUnix);
+    console.log('endBlock', endBlock);
     const currentVotes = await this.get('govQueryApi').getMkrSupport(
       pollId,
-      POSTGRES_MAX_INT
+      endBlock
     );
     let max = currentVotes[0];
     for (let i = 1; i < currentVotes.length; i++) {
