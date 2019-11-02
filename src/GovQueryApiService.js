@@ -1,11 +1,12 @@
 import { PublicService } from '@makerdao/services-core';
 import assert from 'assert';
-import { netIdtoSpockUrl } from './utils/helpers';
+import { netIdtoSpockUrl, netIdtoSpockUrlStaging } from './utils/helpers';
 
 export default class QueryApi extends PublicService {
   constructor(name = 'govQueryApi') {
     super(name, ['web3']);
     this.queryPromises = {};
+    this.staging = false;
   }
 
   async getQueryResponse(serverUrl, query) {
@@ -31,9 +32,17 @@ export default class QueryApi extends PublicService {
     return this.queryPromises[cacheKey];
   }
 
+  initialize(settings) {
+    if (settings.staging) {
+      this.staging = true;
+    }
+  }
+
   connect() {
     const network = this.get('web3').network;
-    this.serverUrl = netIdtoSpockUrl(network);
+    this.serverUrl = this.staging
+      ? netIdtoSpockUrlStaging(network)
+      : netIdtoSpockUrl(network);
   }
 
   async getAllWhitelistedPolls() {

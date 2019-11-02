@@ -1,5 +1,5 @@
 import { createGetCurrency } from '@makerdao/currency';
-import { MKR, LOCAL_URL, STAGING_URL, PROD_URL } from './constants';
+import { MKR, LOCAL_URL, STAGING_MAINNET_URL, MAINNET_URL } from './constants';
 
 /**
  * @desc get network name
@@ -22,9 +22,20 @@ export const netIdToName = id => {
 export const netIdtoSpockUrl = id => {
   switch (parseInt(id, 10)) {
     case 1:
-      return PROD_URL;
+      return MAINNET_URL;
     case 42:
-      return STAGING_URL;
+      return KOVAN_URL;
+    default:
+      return LOCAL_URL;
+  }
+};
+
+export const netIdtoSpockUrlStaging = id => {
+  switch (parseInt(id, 10)) {
+    case 1:
+      return STAGING_MAINNET_URL;
+    case 42:
+      return KOVAN_URL;
     default:
       return LOCAL_URL;
   }

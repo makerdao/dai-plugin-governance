@@ -17,7 +17,7 @@ import GovQueryApiService from './GovQueryApiService';
 import EsmService from './EsmService';
 
 export default {
-  addConfig: function(config, { network = 'mainnet', mcd }) {
+  addConfig: function(config, { network = 'mainnet', mcd, staging = false }) {
     const contractAddresses = {
       kovan: mcd
         ? require('../contracts/addresses/kovan-mcd.json')
@@ -78,7 +78,7 @@ export default {
       voteProxy: [VoteProxyService],
       voteProxyFactory: [VoteProxyFactoryService],
       govPolling: [GovPollingService],
-      govQueryApi: [GovQueryApiService],
+      govQueryApi: [GovQueryApiService, { staging }],
       esm: [EsmService],
       smartContract: { addContracts },
       token: {
