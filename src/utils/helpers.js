@@ -1,5 +1,11 @@
 import { createGetCurrency } from '@makerdao/currency';
-import { MKR, LOCAL_URL, STAGING_MAINNET_URL, MAINNET_URL } from './constants';
+import {
+  MKR,
+  LOCAL_URL,
+  STAGING_MAINNET_URL,
+  KOVAN_URL,
+  MAINNET_URL
+} from './constants';
 
 /**
  * @desc get network name
