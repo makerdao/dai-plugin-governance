@@ -47,7 +47,8 @@
     "ci": "./gov-testchain/deploy-gov --ci jest --coverage",
     "build": "./scripts/build.sh",
     "precommit": "lint-staged",
-    "build:watch": "sane ./scripts/build.sh src --wait=10"
+    "build:watch": "sane ./scripts/build.sh src --wait=10",
+    "prepublishOnly": "if [ \"`basename $(pwd)`\" != 'dist' ]; then echo You must be in the dist folder to publish. && exit 1; fi"
   },
   "lint-staged": {
     "*.{js,json}": [
