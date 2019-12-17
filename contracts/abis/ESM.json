@@ -1,18 +1,68 @@
 [
   {
-    "constant": false,
-    "inputs": [{ "name": "wad", "type": "uint256" }],
-    "name": "join",
-    "outputs": [],
+    "inputs": [
+      { "internalType": "address", "name": "gem_", "type": "address" },
+      { "internalType": "address", "name": "end_", "type": "address" },
+      { "internalType": "address", "name": "pit_", "type": "address" },
+      { "internalType": "uint256", "name": "min_", "type": "uint256" }
+    ],
     "payable": false,
     "stateMutability": "nonpayable",
-    "type": "function"
+    "type": "constructor"
+  },
+  {
+    "anonymous": true,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes4",
+        "name": "sig",
+        "type": "bytes4"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "usr",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "arg1",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "arg2",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes",
+        "name": "data",
+        "type": "bytes"
+      }
+    ],
+    "name": "LogNote",
+    "type": "event"
   },
   {
     "constant": true,
     "inputs": [],
     "name": "Sum",
-    "outputs": [{ "name": "", "type": "uint256" }],
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "end",
+    "outputs": [
+      { "internalType": "contract EndLike", "name": "", "type": "address" }
+    ],
     "payable": false,
     "stateMutability": "view",
     "type": "function"
@@ -29,26 +79,8 @@
   {
     "constant": true,
     "inputs": [],
-    "name": "gem",
-    "outputs": [{ "name": "", "type": "address" }],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [{ "name": "", "type": "address" }],
-    "name": "sum",
-    "outputs": [{ "name": "", "type": "uint256" }],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
     "name": "fired",
-    "outputs": [{ "name": "", "type": "uint256" }],
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "payable": false,
     "stateMutability": "view",
     "type": "function"
@@ -56,8 +88,28 @@
   {
     "constant": true,
     "inputs": [],
-    "name": "end",
-    "outputs": [{ "name": "", "type": "address" }],
+    "name": "gem",
+    "outputs": [
+      { "internalType": "contract GemLike", "name": "", "type": "address" }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [{ "internalType": "uint256", "name": "wad", "type": "uint256" }],
+    "name": "join",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "min",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "payable": false,
     "stateMutability": "view",
     "type": "function"
@@ -66,41 +118,18 @@
     "constant": true,
     "inputs": [],
     "name": "pit",
-    "outputs": [{ "name": "", "type": "address" }],
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "payable": false,
     "stateMutability": "view",
     "type": "function"
   },
   {
     "constant": true,
-    "inputs": [],
-    "name": "min",
-    "outputs": [{ "name": "", "type": "uint256" }],
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "sum",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "payable": false,
     "stateMutability": "view",
     "type": "function"
-  },
-  {
-    "inputs": [
-      { "name": "gem_", "type": "address" },
-      { "name": "end_", "type": "address" },
-      { "name": "pit_", "type": "address" },
-      { "name": "min_", "type": "uint256" }
-    ],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "constructor"
-  },
-  {
-    "anonymous": true,
-    "inputs": [
-      { "indexed": true, "name": "sig", "type": "bytes4" },
-      { "indexed": true, "name": "usr", "type": "address" },
-      { "indexed": true, "name": "arg1", "type": "bytes32" },
-      { "indexed": true, "name": "arg2", "type": "bytes32" },
-      { "indexed": false, "name": "data", "type": "bytes" }
-    ],
-    "name": "LogNote",
-    "type": "event"
   }
 ]

@@ -48,11 +48,11 @@
     "inputs": [
       { "indexed": true, "name": "creator", "type": "address" },
       { "indexed": false, "name": "blockCreated", "type": "uint256" },
-      { "indexed": false, "name": "pollId", "type": "uint256" },
+      { "indexed": true, "name": "pollId", "type": "uint256" },
       { "indexed": false, "name": "startDate", "type": "uint256" },
       { "indexed": false, "name": "endDate", "type": "uint256" },
       { "indexed": false, "name": "multiHash", "type": "string" },
-      { "indexed": false, "name": "uri", "type": "string" }
+      { "indexed": false, "name": "url", "type": "string" }
     ],
     "name": "PollCreated",
     "type": "event"

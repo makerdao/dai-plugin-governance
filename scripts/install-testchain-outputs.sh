@@ -3,7 +3,7 @@ set -e
 
 CWD=`dirname $0`
 CONTRACTS=$CWD/../contracts
-SOURCE=${1:-$CWD/../../../node_modules/@makerdao/testchain}
+SOURCE=${1:-$CWD/../node_modules/@makerdao/testchain}
 
 CHIEF=`jq ".OLD_CHIEF" "$SOURCE/out/addresses.json"`
 jq ".CHIEF=$CHIEF" $CONTRACTS/addresses/testnet.json > testnet.tmp && mv testnet.tmp $CONTRACTS/addresses/testnet.json
@@ -18,7 +18,7 @@ cp $SOURCE/out/VoteProxyFactory.abi $CONTRACTS/abis/VoteProxyFactory.json
 
 POLLING=`jq ".POLLING" "$SOURCE/out/addresses.json"`
 jq ".POLLING=$POLLING" $CONTRACTS/addresses/testnet.json > testnet.tmp && mv testnet.tmp $CONTRACTS/addresses/testnet.json
-cp $SOURCE/out/Polling.abi $CONTRACTS/abis/Polling.json
+cp $SOURCE/out/PollingEmitter.abi $CONTRACTS/abis/Polling.json
 
 GOV=`jq ".GOV" "$SOURCE/out/addresses.json"`
 jq ".GOV=$GOV" $CONTRACTS/addresses/testnet.json > testnet.tmp && mv testnet.tmp $CONTRACTS/addresses/testnet.json
@@ -28,9 +28,6 @@ for CONTRACT in "MCD_ESM","ESM" "MCD_END","End"
 do
   IFS=',' read NAME ABI <<< "${CONTRACT}"
   ADDRESS=`jq ".$NAME" "$SOURCE/out/addresses-mcd.json"`
-  KOVAN_ADDRESS=`jq ".$NAME" "$CONTRACTS/../../dai-plugin-mcd/contracts/addresses/kovan.json"`
-  SUFFIX="_1"
-  jq ".$NAME$SUFFIX=$ADDRESS" $CONTRACTS/addresses/testnet.json > testnet.tmp && mv testnet.tmp $CONTRACTS/addresses/testnet.json
-  jq ".$NAME$SUFFIX=$KOVAN_ADDRESS" $CONTRACTS/addresses/kovan.json > testnet.tmp && mv testnet.tmp $CONTRACTS/addresses/kovan.json
+  jq ".$NAME=$ADDRESS" $CONTRACTS/addresses/testnet.json > testnet.tmp && mv testnet.tmp $CONTRACTS/addresses/testnet.json
   cp $SOURCE/out/mcd/$ABI.abi $CONTRACTS/abis/$ABI.json
 done

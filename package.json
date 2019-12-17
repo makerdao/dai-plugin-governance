@@ -25,6 +25,7 @@
     "@makerdao/dai": "^0.16.1",
     "@makerdao/dai-plugin-config": "^0.2.7-rc.3",
     "@makerdao/dai-plugin-governance": "^0.5.4",
+    "@makerdao/testchain": "^1.0.3",
     "@makerdao/testchain-client": "^0.2.6-rc.1",
     "babel-eslint": "^10.0.1",
     "babel-preset-env": "^1.7.0",
