@@ -41,10 +41,9 @@
   },
   "scripts": {
     "deploy": "yarn build && yarn publish dist",
-    "test": "jest --runInBand --config ./test/config/jestTestchainConfigOriginal.json",
-    "test:testchain": "jest --runInBand --config ./test/config/jestTestchainConfig.json",
+    "test": "yarn testchain --ci jest --runInBand --config ./test/config/jestTestchainConfigOriginal.json",
     "test:integration": "jest --runInBand --config ./test/config/jestIntegrationConfig.json",
-    "testnet": "./gov-testchain/deploy-gov",
+    "testchain": "./scripts/run-testchain.sh -s default -u",
     "ci": "./gov-testchain/deploy-gov --ci jest --coverage",
     "build": "./scripts/build.sh",
     "precommit": "lint-staged",

@@ -19,4 +19,4 @@ install:
   - yarn install
   - yarn build
 script:
-  - yarn testnet --ci yarn test
+  - yarn test
