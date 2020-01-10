@@ -3,13 +3,13 @@ import { MDAI } from '../src';
 export const dummyMkrSupportData = [
   {
     optionId: 1,
-    mkrSupport: 10000,
+    mkrSupport: 40,
     percentage: 25,
     blockTimestamp: Date.now()
   },
   {
     optionId: 2,
-    mkrSupport: 30000,
+    mkrSupport: 120,
     percentage: 75,
     blockTimestamp: Date.now()
   }

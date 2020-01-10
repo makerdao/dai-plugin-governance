@@ -99,7 +99,7 @@ test('getMkrAmtVoted', async () => {
   govQueryApiService.getBlockNumber = jest.fn();
   const total = await govPollingService.getMkrAmtVoted(1);
   expect(mockFn).toBeCalled();
-  expect(total).toEqual(MKR(40000));
+  expect(total).toEqual(MKR(160));
 });
 
 test('getOptionVotingFor', async () => {

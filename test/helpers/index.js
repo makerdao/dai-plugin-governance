@@ -60,7 +60,6 @@ export async function restoreSnapshotOriginal(snapId) {
 }
 
 export const setupMakerOld = async () => {
-  console.warn('Not using ex_testchain.');
   const accounts = {
     owner: {
       type: 'privateKey',
@@ -83,7 +82,8 @@ export const setupMakerOld = async () => {
   const maker = await Maker.create('http', {
     plugins: [[govPlugin, { network: 'ganache' }]],
     url: 'http://localhost:2000',
-    accounts
+    accounts,
+    log: false
   });
   await maker.authenticate();
   return maker;
