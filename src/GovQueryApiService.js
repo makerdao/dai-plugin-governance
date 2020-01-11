@@ -141,4 +141,20 @@ export default class QueryApi extends PublicService {
       return o;
     });
   }
+
+  async getEsmJoins(){
+    const query = `{allEsmJoins {
+      nodes {
+        txFrom
+        txHash
+        joinAmount
+        blockTimestamp
+      }
+  }
+  }`;
+  const response = await this.getQueryResponse(this.serverUrl, query);
+    const joins = response.allEsmJoins.nodes;
+    console.log('joins', joins);
+    return joins;
+  }
 }

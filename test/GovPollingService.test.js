@@ -10,7 +10,7 @@ import {
   dummyBlockNumber,
   dummyOption,
   dummyWeight,
-  dummyNumUnique
+  dummyNumUnique,
 } from './fixtures';
 import { MKR } from '../src/utils/constants';
 
